@@ -69,7 +69,7 @@ export default function HomeLoader() {
         handle.stop();
         if (window.__synkynLoader === handle) delete window.__synkynLoader;
         // Leaving Home mid-load must never leave the page scroll-locked.
-        document.documentElement.classList.remove("show-loader", "hide-loader");
+        document.documentElement.classList.remove("show-loader", "hide-loader", "loader-open");
       }, 0);
     });
   });

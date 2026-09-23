@@ -33,7 +33,18 @@ export const metadata: Metadata = {
     `dark` is now rendered on <html>, a saved "light" is honoured here.
   - loader: index.html always started with html.show-loader.
 */
-const BOOT_SCRIPT = `(function(){var d=document.documentElement;try{if(localStorage.getItem('color-theme')==='light'){d.classList.remove('dark');d.classList.add('light');}}catch(e){}var p=location.pathname;if(p==='/'||p==='/index.html'){d.classList.add('show-loader');d.classList.remove('hide-loader');}})();`;
+const BOOT_SCRIPT = `(function(){var d=document.documentElement;try{if(localStorage.getItem('color-theme')==='light'){d.classList.remove('dark');d.classList.add('light');}}catch(e){}var p=location.pathname;if(p==='/'||p==='/index.html'){d.classList.add('show-loader');d.classList.remove('hide-loader');setTimeout(function(){if(!window.__synkynLoader){d.classList.remove('show-loader','loader-open');d.classList.add('hide-loader');}},5000);}})();`;
+
+/*
+  Home's loader markup and CSS arrive in the page body, after the header, so a
+  browser that paints mid-stream could show the navbar for a frame first. This
+  cover is in <head>, so from the very first paint of Home everything except
+  the loader (which sits above it) is behind loader-coloured ink. It drops the
+  moment the panels start to split (`loader-open`). A pseudo-element rather
+  than hiding <body>: hidden iframes can hold back the hero video's autoplay.
+  The 5s timeout above only fires if the loader script never ran at all.
+*/
+const LOADER_COVER_CSS = `html.show-loader{background:#080808}html.show-loader:not(.loader-open)::after{content:"";position:fixed;inset:0;z-index:9999998;background:#080808;pointer-events:all}`;
 
 const GTM_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
 
@@ -43,6 +54,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <style dangerouslySetInnerHTML={{ __html: LOADER_COVER_CSS }} />
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />

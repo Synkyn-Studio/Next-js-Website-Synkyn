@@ -42,7 +42,7 @@ export function loaderBootstrap(): LoaderHandle {
 
   const kill = () => {
     finished = true;
-    root.classList.remove("show-loader");
+    root.classList.remove("show-loader", "loader-open");
     root.classList.add("hide-loader");
     if (loader) { loader.classList.add("is-hidden"); loader.hidden = true; }
     try { document.dispatchEvent(new CustomEvent("synkyn:loaderdone")); } catch (e) { /* noop */ }
@@ -62,7 +62,7 @@ export function loaderBootstrap(): LoaderHandle {
   if (!loader) { kill(); return handle; }
 
   root.classList.add("show-loader");
-  root.classList.remove("hide-loader");
+  root.classList.remove("hide-loader", "loader-open");
   loader.hidden = false;
   loader.classList.remove("is-hidden", "open", "is-complete");
 
@@ -176,6 +176,7 @@ export function loaderBootstrap(): LoaderHandle {
     loader.classList.add("is-complete");
     later(() => {
       loader.classList.add("open");
+      root.classList.add("loader-open"); // lifts the first-paint cover (layout.tsx)
       later(kill, 950);
     }, HOLD_MS);
   };
