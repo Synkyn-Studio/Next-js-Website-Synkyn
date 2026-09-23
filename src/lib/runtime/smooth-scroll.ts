@@ -17,7 +17,12 @@ function platform() {
   return { isMac, isIOS };
 }
 
+const prefersReducedMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
 function profileOptions(profile: LenisProfile) {
+  // Reduced motion: native, un-eased wheel scrolling (Lenis still drives
+  // ScrollTrigger and anchor links, it just stops animating the wheel).
+  if (prefersReducedMotion()) return { lerp: 1, duration: 0, wheelMultiplier: 1.0, smoothWheel: false, lag: 33 };
   if (profile === "apple") {
     const { isMac, isIOS } = platform();
     return {

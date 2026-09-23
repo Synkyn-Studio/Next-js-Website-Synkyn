@@ -13,11 +13,11 @@ export default function Header() {
           <Link className="flex min-w-0 shrink-0 items-center gap-2" href="/">
             <figure className="m-0 hidden lg:block lg:max-w-[112px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img id="nav-brand-logo-desktop" alt="Synkyn Studios" className="w-[80px] h-auto object-contain" src="/images/logo.png" />
+              <img id="nav-brand-logo-desktop" alt="Synkyn Studios" className="w-[80px] h-auto object-contain" src="/images/logo.webp" width={680} height={222} />
             </figure>
             <figure className="m-0 flex max-w-[52px] shrink-0 lg:hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img id="nav-brand-logo-mobile" alt="Synkyn Studios" className="w-full h-auto object-contain" src="/images/logo.png" />
+              <img id="nav-brand-logo-mobile" alt="Synkyn Studios" className="w-full h-auto object-contain" src="/images/logo.webp" width={680} height={222} />
             </figure>
           </Link>
         </div>
@@ -27,7 +27,7 @@ export default function Header() {
             <HeaderCta />
           </div>
           <div className="flex xl:hidden">
-            <button className="nav-hamburger bg-background-4 dark:bg-background-6 flex size-12 cursor-pointer flex-col items-center justify-center gap-[5px] rounded-full">
+            <button type="button" aria-expanded="false" aria-controls="mobile-sidebar" className="nav-hamburger bg-background-4 dark:bg-background-6 flex size-12 cursor-pointer flex-col items-center justify-center gap-[5px] rounded-full">
               <span className="sr-only">Menu</span>
               <span className="bg-stroke-9 dark:bg-stroke-1 block h-0.5 w-6" />
               <span className="bg-stroke-9 dark:bg-stroke-1 block h-0.5 w-6" />
@@ -36,7 +36,7 @@ export default function Header() {
           </div>
         </div>
       </div>
-      <aside className="sidebar dark:bg-background-8 scroll-bar fixed top-0 right-0 z-[9999] h-screen w-full translate-x-full rounded-l-3xl bg-white transition-all duration-300 sm:w-1/2 xl:hidden">
+      <aside id="mobile-sidebar" aria-label="Menu" className="sidebar dark:bg-background-8 scroll-bar fixed top-0 right-0 z-[9999] h-screen w-full translate-x-full rounded-l-3xl bg-white transition-all duration-300 sm:w-1/2 xl:hidden">
         <MobileMenu />
       </aside>
     </header>

@@ -40,8 +40,10 @@ export function loadScript(src: string, id?: string): Promise<void> {
   const existing = pending.get(src);
   if (existing) return existing;
   const promise = new Promise<void>((resolve, reject) => {
-    const tagged = id ? (document.getElementById(id) as HTMLScriptElement | null) : null;
+    let tagged = id ? (document.getElementById(id) as HTMLScriptElement | null) : null;
     if (tagged && tagged.dataset.loaded === "true") return resolve();
+    // A tag started early (the home loader starts the Vimeo API) that failed: retry fresh.
+    if (tagged && tagged.dataset.failed === "true") { tagged.remove(); tagged = null; }
     const el = tagged ?? document.createElement("script");
     el.src = src;
     el.async = false; // preserve insertion order, like `defer`

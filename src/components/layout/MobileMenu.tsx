@@ -21,8 +21,8 @@ export default function MobileMenu() {
     <div className="mobile-menu-inner">
       <div className="mobile-menu-top">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/images/logo.png" alt="Synkyn Studios" className="mobile-menu-logo" />
-        <button className="mobile-menu-close" aria-label="Close menu">
+        <img src="/images/logo.webp" width={680} height={222} alt="Synkyn Studios" className="mobile-menu-logo" />
+        <button type="button" className="mobile-menu-close" aria-label="Close menu">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />

@@ -7,6 +7,7 @@ import RouteAttributes from "@/components/runtime/RouteAttributes";
 import JsonLd from "@/components/seo/JsonLd";
 import { STRUCTURED_DATA } from "@/data/structured-data";
 import { pageMetadata, pageViewport } from "@/lib/metadata";
+import PageTransition from "@/components/layout/PageTransition";
 
 export const metadata = pageMetadata("notFound");
 export const viewport = pageViewport("notFound");
@@ -27,10 +28,12 @@ export default function NotFound() {
         ]}
       />
       {STRUCTURED_DATA.notFound.map((data, i) => <JsonLd key={i} data={data} />)}
-      <main className="s404-main" id="s404Main">
-        <NotFoundStage />
-        <NotFoundEffects />
-      </main>
+      <PageTransition>
+        <main className="s404-main" id="s404Main">
+          <NotFoundStage />
+          <NotFoundEffects />
+        </main>
+      </PageTransition>
       <Footer currentPath="" motto="— Turn Your Idea Into a High-End AI Film." />
       <PageRuntime profile="standard" markVisited={false} />
     </>

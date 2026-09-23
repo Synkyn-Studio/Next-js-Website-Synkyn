@@ -33,7 +33,7 @@ export default function OurStorySection() {
           <div className="sk3d-stage">
             <div className="sk3d-stage__glow" aria-hidden="true" />
             <figure className="sk3d-logo-plate">
-              <img alt="Synkyn Studios creative spark emblem" src="/images/spark.png" />
+              <img alt="Synkyn Studios creative spark emblem" src="/images/spark.png" width={283} height={377} loading="lazy" decoding="async" />
             </figure>
           </div>
         </div>

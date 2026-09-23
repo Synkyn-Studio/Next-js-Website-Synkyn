@@ -1,4 +1,4 @@
-import { preconnect, prefetchDNS, preload } from "react-dom";
+import { preconnect, prefetchDNS } from "react-dom";
 import ActuallySection from "@/components/home/ActuallySection";
 import FinalTalkCtaSection from "@/components/home/FinalTalkCtaSection";
 import HeroSection from "@/components/home/HeroSection";
@@ -13,7 +13,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { STRUCTURED_DATA } from "@/data/structured-data";
 import { pageMetadata, pageViewport } from "@/lib/metadata";
 import { ROUTES } from "@/lib/site";
-import { VIMEO_PLAYER_API } from "@/lib/runtime/vendors";
+import PageTransition from "@/components/layout/PageTransition";
 
 export const metadata = pageMetadata("home");
 export const viewport = pageViewport("home");
@@ -27,9 +27,6 @@ export default function HomePage() {
   prefetchDNS("https://vod-adaptive-ak.vimeocdn.com");
   preconnect("https://i.vimeocdn.com", { crossOrigin: "anonymous" });
   preconnect("https://f.vimeocdn.com", { crossOrigin: "anonymous" });
-  // The hero reveals on the Player API's first `playing` event; fetch it with
-  // the document instead of after hydration.
-  preload(VIMEO_PLAYER_API, { as: "script" });
 
   return (
     <>
@@ -47,14 +44,16 @@ export default function HomePage() {
       />
       {STRUCTURED_DATA.home.map((data, i) => <JsonLd key={i} data={data} />)}
       <HomeLoader />
-      <main>
-        <HeroSection />
-        <ActuallySection />
-        <PipelineSection />
-        <ResearchSponsorsSection />
-        <FinalTalkCtaSection />
-        <Footer currentPath={ROUTES.home} />
-      </main>
+      <PageTransition>
+        <main>
+          <HeroSection />
+          <ActuallySection />
+          <PipelineSection />
+          <ResearchSponsorsSection />
+          <FinalTalkCtaSection />
+          <Footer currentPath={ROUTES.home} />
+        </main>
+      </PageTransition>
       <HomeEffects />
       <PageRuntime profile="apple" markVisited={false} />
     </>

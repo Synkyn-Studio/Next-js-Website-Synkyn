@@ -38,7 +38,7 @@ export function headerScrollState(scope: Scope) {
     if (next === scrolled) return;
     scrolled = next;
     if (next) {
-      header.style.transition = "all 0.5s ease-in-out";
+      header.style.transition = "top 0.5s ease-in-out, background-color 0.5s ease-in-out";
       header.style.top = "20px";
       header.classList.add("header-two-scroll");
     } else {
@@ -168,23 +168,42 @@ export function mobileNavigation(scope: Scope): MobileNavApi | null {
     document.body.classList.remove("overflow-hidden", "mobile-menu-active");
     const l = lenis(); if (l && typeof l.start === "function") l.start();
   };
+  const hamburger = navbar.querySelector<HTMLElement>(".nav-hamburger");
   const isOpen = () => !!sidebar && sidebar.classList.contains("show-sidebar");
+  /*
+    The closed panel is only translated off-screen, so without `inert` its
+    links stay in the tab order and screen readers read a menu nobody can see.
+  */
+  const setExpanded = (open: boolean) => {
+    if (sidebar) sidebar.inert = !open;
+    if (hamburger) hamburger.setAttribute("aria-expanded", String(open));
+  };
+  setExpanded(isOpen());
+  scope.add(() => { if (sidebar) sidebar.inert = false; });
   const openMenu = () => {
     if (!sidebar) return;
     navbar.classList.remove("nav-hidden");
     sidebar.classList.add("show-sidebar");
     ov.classList.add("show-overlay");
     lockScroll();
+    setExpanded(true);
+    // The panel transitions `visibility` from hidden, and a hidden element
+    // refuses focus — move focus in once the transition has started.
+    scope.raf(() => scope.raf(() => {
+      if (isOpen()) sidebar.querySelector<HTMLElement>(".mobile-menu-close, a[href]")?.focus({ preventScroll: true });
+    }));
   };
   const closeMenu = () => {
     if (!sidebar) return;
+    const hadFocus = sidebar.contains(document.activeElement);
     sidebar.classList.remove("show-sidebar");
     ov.classList.remove("show-overlay");
     unlockScroll();
+    setExpanded(false);
+    if (hadFocus) hamburger?.focus({ preventScroll: true });
   };
   const toggleMenu = () => (isOpen() ? closeMenu() : openMenu());
 
-  const hamburger = navbar.querySelector<HTMLElement>(".nav-hamburger");
   if (hamburger) {
     scope.on(hamburger, "click", (e: MouseEvent) => {
       e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();

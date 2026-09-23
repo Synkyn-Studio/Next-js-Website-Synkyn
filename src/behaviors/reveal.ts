@@ -20,6 +20,7 @@ export function revealOnScroll(scope: Scope) {
     const els = document.querySelectorAll<HTMLElement>("[data-ns-animate]:not([data-ns-animate-init])");
     if (!els.length) return;
     const Springer = springer();
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     els.forEach((el) => {
       el.setAttribute("data-ns-animate-init", "true");
       const duration = attrNum(el, "data-duration", 0.6);
@@ -35,9 +36,14 @@ export function revealOnScroll(scope: Scope) {
       const type = el.getAttribute("data-animation-type") || "from";
       el.style.opacity = "1";
       el.style.filter = "blur(0)";
+      // Reduced motion: the content is simply there — no blur, slide or fade.
+      if (reduceMotion) { el.style.filter = ""; return; }
       const vars: Record<string, unknown> = type === "to"
         ? { opacity: 1, filter: "blur(0)", duration, delay, ease: spring ? ease : "power2.out" }
         : { opacity: 0, filter: "blur(16px)", duration, delay, ease: spring ? ease : "power2.out" };
+      // A leftover `filter: blur(0)` keeps a filter layer on the element for the
+      // life of the page (and repaints it on scroll); drop it once revealed.
+      vars.onComplete = () => { el.style.filter = ""; };
       if (rotation !== 0) vars.rotation = rotation;
       if (!instant) vars.scrollTrigger = { trigger: el, start, end, scrub: false };
       switch (direction) {

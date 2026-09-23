@@ -52,6 +52,8 @@ export function ambientCrystals(scope: Scope) {
   scope.on(window, "touchend", () => { pointer.active = false; });
 
   const PALETTE = ["#f2c200", "#ffd84d", "#ffe375", "#e8b800", "#fff4a3"];
+  // Unit triangle (circumradius 1); each crystal scales it by its size.
+  const TRIANGLE = new Path2D("M0 -1 L0.866 0.5 L-0.866 0.5 Z");
   const REPEL_R = 250;
   const GLOW_R = 250;
 
@@ -109,27 +111,24 @@ export function ambientCrystals(scope: Scope) {
       if (alpha > (IS_MOBILE ? 0.6 : 0.55)) alpha = IS_MOBILE ? 0.6 : 0.55;
       const s = this.size * (1 + this.boost * 0.35);
       const x = this.x + parX * this.depth, y = this.y + parY * this.depth;
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(this.rot);
+      /*
+        One setTransform (DPR × translate × rotate × scale) instead of
+        save/translate/rotate/restore per crystal, and a shared unit-triangle
+        path instead of rebuilding it — the same pixels for a fraction of the
+        per-frame canvas work. The stroke width is divided by the scale so it
+        stays 0.6px, and the glow is set only on the crystals that use it.
+      */
+      const c = Math.cos(this.rot) * s * DPR, sn = Math.sin(this.rot) * s * DPR;
+      ctx.setTransform(c, sn, -sn, c, x * DPR, y * DPR);
       ctx.globalAlpha = alpha;
-      if (this.glow || this.boost > 0.15) {
-        ctx.shadowColor = "#ffcf2e";
-        ctx.shadowBlur = (this.glow ? 6 : 0) + this.boost * 14 + 4 * pulse;
-      }
+      const glowing = this.glow || this.boost > 0.15;
+      if (glowing) ctx.shadowBlur = (this.glow ? 6 : 0) + this.boost * 14 + 4 * pulse;
       ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.moveTo(0, -s);
-      ctx.lineTo(s * 0.866, s * 0.5);
-      ctx.lineTo(-s * 0.866, s * 0.5);
-      ctx.closePath();
-      ctx.fill();
-      ctx.shadowBlur = 0;
+      ctx.fill(TRIANGLE);
+      if (glowing) ctx.shadowBlur = 0;
       ctx.globalAlpha = alpha * 0.45;
-      ctx.strokeStyle = "#fffbe6";
-      ctx.lineWidth = 0.6;
-      ctx.stroke();
-      ctx.restore();
+      ctx.lineWidth = 0.6 / s;
+      ctx.stroke(TRIANGLE);
     }
   }
 
@@ -164,10 +163,18 @@ export function ambientCrystals(scope: Scope) {
       parX = ((W * 0.5 - pointer.sx) / (W * 0.5)) * 14;
       parY = ((H * 0.5 - pointer.sy) / (H * 0.5)) * 14;
     }
-    ctx.clearRect(0, 0, W, H);
+    // The home loading screen covers the whole viewport: keep the frame
+    // budget for the page that is loading underneath it.
+    if (root.classList.contains("show-loader")) { scope.raf(loop); return; }
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Shadow colour and stroke style are the same for every crystal; set once.
+    ctx.shadowColor = "#ffcf2e";
+    ctx.strokeStyle = "#fffbe6";
     for (let i = 0; i < crystals.length; i++) { crystals[i].update(parX, parY); crystals[i].draw(parX, parY); }
     scope.raf(loop);
   };
+  const root = document.documentElement;
   scope.on(document, "visibilitychange", () => {
     if (document.hidden) running = false;
     else if (!running) { running = true; scope.raf(loop); }

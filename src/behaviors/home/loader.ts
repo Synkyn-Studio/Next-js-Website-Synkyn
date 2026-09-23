@@ -27,7 +27,6 @@ export function loaderBootstrap(): LoaderHandle {
   const root = document.documentElement;
   const loader = document.getElementById("synkynLoader");
   const timeouts: number[] = [];
-  const intervals: number[] = [];
   const frames: number[] = [];
   const offs: Array<() => void> = [];
   let stopped = false;
@@ -52,7 +51,6 @@ export function loaderBootstrap(): LoaderHandle {
     if (stopped) return;
     stopped = true;
     timeouts.forEach((id) => clearTimeout(id));
-    intervals.forEach((id) => clearInterval(id));
     frames.forEach((id) => cancelAnimationFrame(id));
     offs.forEach((off) => off());
   };
@@ -60,6 +58,22 @@ export function loaderBootstrap(): LoaderHandle {
   const handle: LoaderHandle = { el: loader, finished: () => finished, stop };
 
   if (!loader) { kill(); return handle; }
+
+  /*
+    Start the Vimeo Player API now, while the page is still parsing: the hero
+    reveals on its first `playing` event. `loadScript("vimeo-api-js")` in
+    vendors.ts adopts this tag. (A preload hint in the page would also be
+    applied on every other page that merely prefetches Home.)
+  */
+  if (!document.getElementById("vimeo-api-js") && !(window as { Vimeo?: unknown }).Vimeo) {
+    const api = document.createElement("script");
+    api.id = "vimeo-api-js";
+    api.async = true;
+    api.onload = () => { api.dataset.loaded = "true"; };
+    api.onerror = () => { api.dataset.failed = "true"; };
+    api.src = "https://player.vimeo.com/api/player.js";
+    document.head.appendChild(api);
+  }
 
   root.classList.add("show-loader");
   root.classList.remove("hide-loader", "loader-open");
@@ -69,12 +83,17 @@ export function loaderBootstrap(): LoaderHandle {
   const pctEl = loader.querySelector(".loader-pct") as HTMLElement | null;
   const barEl = loader.querySelector(".loader-bar") as HTMLElement | null;
   /*
-    Whole visit budget is 3s: the counter reaches 100% by MAX_MS (+ a short
-    catch-up), holds for HOLD_MS, then the panels take ~950ms to split open.
+    Whole visit budget is 3s. Until the page is ready (or MAX_MS) the counter
+    eases toward the real loading signals, capped at 99%. Then it always sweeps
+    the rest of the way in FILL_MS — the bar visibly completes, it never jumps —
+    holds 100% for HOLD_MS, and the panels split over OPEN_MS.
+    1700 + 260 + 220 + 820 = 3.0s worst case.
   */
   const MIN_MS = 900;    // minimum on-screen time, so the reveal still reads
-  const MAX_MS = 1700;   // hard ceiling, whatever fails to load
-  const HOLD_MS = 150;   // "100%" beat before the panels open
+  const MAX_MS = 1700;   // latest the final sweep starts, whatever fails to load
+  const FILL_MS = 260;   // final sweep from wherever the bar is to 100%
+  const HOLD_MS = 220;   // "100%" beat; also lets the bar's .2s CSS glide land
+  const OPEN_MS = 820;   // panel split: 40ms delay + 760ms (loader-critical.css)
   const startTime = performance.now();
   let lastNow = startTime;
 
@@ -90,11 +109,11 @@ export function loaderBootstrap(): LoaderHandle {
   const painted = parseFloat(loader.style.getPropertyValue("--loader-progress")) || 0;
   let shown = Math.max(0.01, Math.min(1, painted));
   let displayedPct = Math.max(1, Math.floor(shown * 100));
+  // Bar and number are written from the same value in the same frame, so the
+  // text can never read 100% before the bar is full (or the other way round).
   const paint = (v: number) => {
     loader.style.setProperty("--loader-progress", v.toFixed(4));
-    const targetPct = Math.max(1, Math.min(100, Math.floor(v * 100)));
-    const delta = targetPct - displayedPct;
-    if (delta > 0) displayedPct = Math.min(100, displayedPct + (delta > 10 ? Math.ceil(delta / 5) : 1));
+    displayedPct = Math.max(displayedPct, Math.max(1, Math.min(100, Math.floor(v * 100 + 1e-6))));
     const pctStr = (displayedPct < 10 ? "0" : "") + displayedPct + "%";
     if (pctEl && pctEl.textContent !== pctStr) pctEl.textContent = pctStr;
     if (barEl) barEl.setAttribute("aria-valuenow", String(displayedPct));
@@ -156,56 +175,94 @@ export function loaderBootstrap(): LoaderHandle {
     return Math.max(0.01, Math.min(1.0, sum));
   };
   /*
+    The hero's poster is what the panels open onto, so it has to be decoded —
+    not just downloaded — or the first revealed frames are the hero's black
+    backdrop. The poster is parsed after this script runs, so it is looked up
+    lazily.
+  */
+  let posterReady = false;
+  let posterAsked = false;
+  const readPoster = () => {
+    if (posterReady) return true;
+    const po = document.querySelector(".hero-video-poster") as HTMLImageElement | null;
+    if (!po) return document.readyState !== "loading"; // no poster on this page
+    if (!posterAsked) {
+      posterAsked = true;
+      const done = () => { posterReady = true; };
+      if (po.decode) po.decode().then(done, done); else if (po.complete) done(); else on(po, "load", done, { once: true });
+    }
+    return posterReady;
+  };
+
+  /*
     The page is ready for the reveal once the document is parsed, the fonts
-    are in, the images have arrived and the hero video is playing. It does not
-    wait for `load`, which also waits on the showreel iframe; MAX_MS caps the
-    wait if the video is slow or blocked (the poster covers that case).
+    are in, the images have arrived, the poster is decoded and the hero video
+    is playing. It does not wait for `load`, which also waits on the showreel
+    iframe; MAX_MS caps the wait if the video is slow or blocked (the poster
+    covers that case).
   */
   const isCriticalReady = () => {
     targetProgress();
-    return document.readyState !== "loading" && sig.font === 1 && sig.img >= 0.9 && sig.vimeo === 1;
+    return document.readyState !== "loading" && sig.font === 1 && sig.img >= 0.9 && readPoster() && sig.vimeo === 1;
+  };
+
+  const open = () => {
+    loader.classList.add("open");
+    root.classList.add("loader-open"); // lifts the first-paint cover (layout.tsx)
+    // The hero starts its intro now, so it is already animating in as the
+    // panels part — not after they have gone (hero-intro.ts).
+    try { document.dispatchEvent(new CustomEvent("synkyn:loaderopen")); } catch (e) { /* noop */ }
+    later(kill, OPEN_MS);
   };
 
   const complete = () => {
     if (finished) return;
     finished = true;
-    displayedPct = 100;
-    loader.style.setProperty("--loader-progress", "1");
-    if (pctEl) pctEl.textContent = "100%";
-    if (barEl) barEl.setAttribute("aria-valuenow", "100");
+    shown = 1;
+    paint(1);
     loader.classList.add("is-complete");
-    later(() => {
-      loader.classList.add("open");
-      root.classList.add("loader-open"); // lifts the first-paint cover (layout.tsx)
-      later(kill, 950);
-    }, HOLD_MS);
+    later(open, HOLD_MS);
   };
 
+  // -1 until the final sweep starts; then the value it sweeps up from.
+  let fillFrom = -1;
+  let fillStart = 0;
   const step = (now: number) => {
     if (finished || stopped) return;
     const dt = Math.min(50, Math.max(8, now - lastNow));
     lastNow = now;
     const elapsed = now - startTime;
-    const allDone = isCriticalReady() || elapsed >= MAX_MS;
-    const t = allDone ? 1.0 : Math.min(0.99, targetProgress());
-    const diff = t - shown;
-    if (diff > 0) {
-      const timeScale = dt / 16.67;
-      const maxStep = allDone ? 0.05 * timeScale : 0.018 * timeScale;
-      const minStep = (allDone ? 0.006 : 0.002) * timeScale;
-      shown += Math.max(minStep, Math.min(maxStep, (diff * 0.09 + 0.0008) * timeScale));
-      if (allDone && shown >= 0.992) shown = 1.0;
-      else if (!allDone && shown > 0.99) shown = 0.99;
+    if (fillFrom < 0) {
+      /*
+        Never let the bar sit still. The signals plateau while the page waits
+        on the hero video (up to MAX_MS), which read as a counter stuck at ~58%;
+        a time-based floor keeps it easing toward 92% by MAX_MS, and the real
+        signals win whenever they are ahead of it.
+      */
+      const k = Math.min(1, elapsed / MAX_MS);
+      const floor = 0.92 * (1 - (1 - k) * (1 - k));
+      const t = Math.min(0.99, Math.max(targetProgress(), floor));
+      const diff = t - shown;
+      if (diff > 0) {
+        const timeScale = dt / 16.67;
+        shown += Math.max(0.002 * timeScale, Math.min(0.018 * timeScale, (diff * 0.09 + 0.0008) * timeScale));
+        if (shown > 0.99) shown = 0.99;
+      }
+      if ((isCriticalReady() && elapsed >= MIN_MS - FILL_MS) || elapsed >= MAX_MS) { fillFrom = shown; fillStart = now; }
+    } else {
+      // Ease-out sweep to exactly 1 (quadratic: no long crawl through 99%).
+      const k = Math.min(1, (now - fillStart) / FILL_MS);
+      shown = fillFrom + (1 - fillFrom) * (1 - (1 - k) * (1 - k));
+      if (k >= 1) { complete(); return; }
     }
     paint(shown);
-    if (allDone && displayedPct >= 100 && elapsed >= MIN_MS) { complete(); return; }
     frame(step);
   };
   frame(step);
 
-  // Absolute backstop so a visitor is never trapped and the 3s budget holds
-  // even if animation frames are throttled (background tab, busy main thread).
-  later(() => { if (!finished) complete(); }, MAX_MS + 200);
+  // Absolute backstop so a visitor is never trapped when animation frames
+  // are not running at all (a background tab); normally the sweep completes.
+  later(() => { if (!finished) complete(); }, MAX_MS + FILL_MS + 600);
 
   /* Ambient gold particles */
   const canvas = loader.querySelector(".loader-canvas") as HTMLCanvasElement | null;

@@ -9,6 +9,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { STRUCTURED_DATA } from "@/data/structured-data";
 import { pageMetadata, pageViewport } from "@/lib/metadata";
 import { ROUTES } from "@/lib/site";
+import PageTransition from "@/components/layout/PageTransition";
 
 export const metadata = pageMetadata("about");
 export const viewport = pageViewport("about");
@@ -30,12 +31,14 @@ export default function AboutPage() {
         ]}
       />
       {STRUCTURED_DATA.about.map((data, i) => <JsonLd key={i} data={data} />)}
-      <main>
-        <AboutHeroSection />
-        <OurStorySection />
-        <TeamSection />
-        <Footer currentPath={ROUTES.about} />
-      </main>
+      <PageTransition>
+        <main>
+          <AboutHeroSection />
+          <OurStorySection />
+          <TeamSection />
+          <Footer currentPath={ROUTES.about} />
+        </main>
+      </PageTransition>
       <AboutEffects />
       <PageRuntime profile="standard" progressBar={false} />
     </>

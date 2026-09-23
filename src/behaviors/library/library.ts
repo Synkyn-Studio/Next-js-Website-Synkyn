@@ -412,32 +412,64 @@ export function heroParticles(scope: Scope) {
       parts.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.8 + 0.4, vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25, a: Math.random() * 0.5 + 0.15 });
     }
   };
+  /*
+    Links fade from 0.06 alpha to 0 with distance. Rather than a separate
+    path + stroke (and a new colour string) per pair — hundreds of draw calls a
+    frame — each link joins one of LINK_BUCKETS paths by its alpha, and each
+    bucket is stroked once. Steps of 0.01 alpha are invisible at this opacity.
+  */
+  const LINK_BUCKETS = 6;
+  const LINK_D2 = 12000;
+  const buckets: Path2D[] = [];
   const frame = () => {
     if (!running) return;
     ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#f2d400";
     for (const p of parts) {
       p.x += p.vx; p.y += p.vy;
       if (p.x < -10) p.x = w + 10; if (p.x > w + 10) p.x = -10;
       if (p.y < -10) p.y = h + 10; if (p.y > h + 10) p.y = -10;
+      ctx.globalAlpha = p.a;
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(242,212,0," + p.a + ")";
       ctx.fill();
     }
+    for (let k = 0; k < LINK_BUCKETS; k++) buckets[k] = new Path2D();
     for (let i = 0; i < parts.length; i++) {
+      const a = parts[i];
       for (let j = i + 1; j < parts.length; j++) {
-        const a = parts[i], b = parts[j];
-        const d2 = (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
-        if (d2 < 12000) {
-          ctx.strokeStyle = "rgba(242,212,0," + 0.06 * (1 - d2 / 12000) + ")";
-          ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        const b = parts[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < LINK_D2) {
+          const k = Math.min(LINK_BUCKETS - 1, ((1 - d2 / LINK_D2) * LINK_BUCKETS) | 0);
+          buckets[k].moveTo(a.x, a.y); buckets[k].lineTo(b.x, b.y);
         }
       }
     }
+    ctx.strokeStyle = "#f2d400";
+    ctx.lineWidth = 1;
+    for (let k = 0; k < LINK_BUCKETS; k++) {
+      ctx.globalAlpha = 0.06 * (k + 0.5) / LINK_BUCKETS;
+      ctx.stroke(buckets[k]);
+    }
+    ctx.globalAlpha = 1;
     scope.raf(frame);
   };
   resize();
-  scope.on(window, "resize", resize, { passive: true });
+  /*
+    Only rebuild when the hero really changes size. On phones the URL bar
+    showing/hiding fires `resize` while scrolling, and regenerating every
+    particle each time made the whole field jump.
+  */
+  let lastW = w, lastH = h, resizeTimer: number | null = null;
+  scope.on(window, "resize", () => {
+    scope.clearTimeout(resizeTimer);
+    resizeTimer = scope.timeout(() => {
+      const r = hero.getBoundingClientRect();
+      if (Math.abs(r.width - lastW) < 1 && Math.abs(r.height - lastH) < 120) return;
+      resize(); lastW = w; lastH = h;
+    }, 150);
+  }, { passive: true });
   scope.raf(frame);
   if ("IntersectionObserver" in window) {
     scope.observe(new IntersectionObserver((entries) => {

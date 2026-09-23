@@ -1,7 +1,7 @@
 export default function Lightbox() {
   return (
     <div className="pf-lb" id="pf-lb" data-lenis-prevent="" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project gallery">
-      <button className="pf-lb__close" id="pf-lb-close" aria-label="Close gallery">
+      <button type="button" className="pf-lb__close" id="pf-lb-close" aria-label="Close gallery">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -12,12 +12,12 @@ export default function Lightbox() {
           <div className="pf-lb__imgwrap" id="pf-lb-imgwrap">
             <img className="pf-lb__img" id="pf-lb-img" alt="Synkyn Studios Print Gallery Preview" draggable="false" />
           </div>
-          <button className="pf-lb__nav pf-lb__nav--prev" id="pf-lb-prev" aria-label="Previous image">
+          <button type="button" className="pf-lb__nav pf-lb__nav--prev" id="pf-lb-prev" aria-label="Previous image">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 18l-6-6 6-6" />
             </svg>
           </button>
-          <button className="pf-lb__nav pf-lb__nav--next" id="pf-lb-next" aria-label="Next image">
+          <button type="button" className="pf-lb__nav pf-lb__nav--next" id="pf-lb-next" aria-label="Next image">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 18l6-6-6-6" />
             </svg>
@@ -43,7 +43,7 @@ export default function Lightbox() {
             </div>
           </div>
           <div className="pf-lb__actions">
-            <button className="pf-lb__act pf-lb__act--primary" id="pf-lb-share">
+            <button type="button" className="pf-lb__act pf-lb__act--primary" id="pf-lb-share">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="18" cy="5" r="3" />
                 <circle cx="6" cy="12" r="3" />
@@ -54,7 +54,7 @@ export default function Lightbox() {
             </button>
           </div>
           <div className="pf-lb__projnav">
-            <button className="pf-lb__projbtn prev" id="pf-lb-prevproj">
+            <button type="button" className="pf-lb__projbtn prev" id="pf-lb-prevproj">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 18l-6-6 6-6" />
               </svg>
@@ -63,7 +63,7 @@ export default function Lightbox() {
                 <span id="pf-lb-prevproj-name">—</span>
               </span>
             </button>
-            <button className="pf-lb__projbtn next" id="pf-lb-nextproj">
+            <button type="button" className="pf-lb__projbtn next" id="pf-lb-nextproj">
               <span className="lbl">
                 <small>Next</small>
                 <span id="pf-lb-nextproj-name">—</span>

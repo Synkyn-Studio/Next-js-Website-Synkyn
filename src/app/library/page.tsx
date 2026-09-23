@@ -10,6 +10,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { STRUCTURED_DATA } from "@/data/structured-data";
 import { pageMetadata, pageViewport } from "@/lib/metadata";
 import { ROUTES } from "@/lib/site";
+import PageTransition from "@/components/layout/PageTransition";
 
 export const metadata = pageMetadata("library");
 export const viewport = pageViewport("library");
@@ -33,12 +34,14 @@ export default function LibraryPage() {
         ]}
       />
       {STRUCTURED_DATA.library.map((data, i) => <JsonLd key={i} data={data} />)}
-      <main>
-        <LibraryHero />
-        <LibraryWorks />
-        <MediaModal />
-        <Footer currentPath={ROUTES.library} active="library" />
-      </main>
+      <PageTransition>
+        <main>
+          <LibraryHero />
+          <LibraryWorks />
+          <MediaModal />
+          <Footer currentPath={ROUTES.library} active="library" />
+        </main>
+      </PageTransition>
       <LibraryEffects />
       <PageRuntime profile="apple" />
     </>

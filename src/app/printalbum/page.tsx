@@ -12,6 +12,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { STRUCTURED_DATA } from "@/data/structured-data";
 import { pageMetadata, pageViewport } from "@/lib/metadata";
 import { ROUTES } from "@/lib/site";
+import PageTransition from "@/components/layout/PageTransition";
 
 export const metadata = pageMetadata("printAlbum");
 export const viewport = pageViewport("printAlbum");
@@ -30,16 +31,18 @@ export default function PrintAlbumPage() {
         ]}
       />
       {STRUCTURED_DATA.printAlbum.map((data, i) => <JsonLd key={i} data={data} />)}
-      <main className="pf-page">
-        <PrintHero />
-        <FeaturedSection />
-        <GalleryControls />
-        <GallerySection />
-        <Lightbox />
-        <Toast />
-        <PrintAlbumEffects />
-        <Footer currentPath={ROUTES.printAlbum} active="printAlbum" />
-      </main>
+      <PageTransition>
+        <main className="pf-page">
+          <PrintHero />
+          <FeaturedSection />
+          <GalleryControls />
+          <GallerySection />
+          <Lightbox />
+          <Toast />
+          <PrintAlbumEffects />
+          <Footer currentPath={ROUTES.printAlbum} active="printAlbum" />
+        </main>
+      </PageTransition>
       <PageRuntime profile="apple" />
     </>
   );

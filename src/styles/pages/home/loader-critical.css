@@ -75,7 +75,8 @@ html.hide-loader .loader,
 
 .loader.open .loader-panel {
     transition: transform var(--loader-split-ms) var(--loader-ease-film);
-    transition-delay: 140ms;
+    /* Just enough for the stack to start fading; OPEN_MS in loader.ts = 40 + split. */
+    transition-delay: 40ms;
 }
 
 .loader.open .loader-top {
@@ -184,6 +185,10 @@ html.hide-loader .loader,
     transform: scaleX(var(--loader-progress));
     background: linear-gradient(90deg, rgba(242, 212, 0, .55), var(--loader-volt));
     will-change: transform;
+    /* loader.ts writes the value every frame; this short glide runs on the
+       compositor, so the bar keeps moving through the brief main-thread stalls
+       of parsing and hydration instead of freezing. HOLD_MS covers it. */
+    transition: transform .2s linear;
 }
 
 .loader.is-complete .loader-bar {

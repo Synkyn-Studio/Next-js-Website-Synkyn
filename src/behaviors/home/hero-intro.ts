@@ -9,8 +9,10 @@
   reveal, after it GSAP does, and there is no frame in between where the hero is
   hidden with nothing animating it.
 
-  The timeline is held until the loader's panels open (`synkyn:loaderdone`), so
-  the intro plays into a visible hero instead of behind an opaque overlay.
+  The timeline starts the moment the loader's panels begin to split
+  (`synkyn:loaderopen`), so the hero is already animating in as it is
+  uncovered — never an empty hero behind parting panels. Everything that
+  measures the page waits for the loader to be gone (`synkyn:loaderdone`).
 */
 
 import type { Scope } from "@/lib/runtime/scope";
@@ -19,11 +21,11 @@ import type { Scope } from "@/lib/runtime/scope";
 
 /*
   How long the hero waits for the loader before playing anyway. It has to clear
-  the loader's own worst case, or the failsafe fires first and the intro plays
-  behind the panels: MAX_MS (3800) + the 1% backstop walking the counter up to
-  100 (~1600) + the complete/open delays (260 + 950).
+  the loader's own worst case (loader.ts: ~3s, or its 2.6s rAF-less backstop +
+  the 1s open), or the failsafe fires first and the intro plays behind the
+  panels.
 */
-const LOADER_WAIT_MS = 7200;
+const LOADER_WAIT_MS = 4500;
 
 /*
   Resting scale of the background layer. It stays slightly over 1 so the scroll
@@ -126,20 +128,25 @@ export function heroIntro(scope: Scope) {
 
   /*
     While the loader is up `html, body { overflow: hidden }`, so ScrollTrigger
-    would measure a page that cannot scroll. Everything below the fold is
-    measured after the panels open.
+    would measure a page that cannot scroll. The intro plays as soon as the
+    panels start to part; the scroll-out is built once the loader is gone.
   */
-  const start = scope.wrap(() => {
-    tl.play(0);
+  let played = false;
+  let measured = false;
+  const play = scope.wrap(() => { if (played) return; played = true; tl.play(0); });
+  const measure = scope.wrap(() => {
+    play();
+    if (measured) return;
+    measured = true;
     buildScrollOut();
     if (ScrollTrigger) ScrollTrigger.refresh();
   });
 
-  if (!root.classList.contains("show-loader")) { start(); return; }
-
-  let fired = false;
-  const once = () => { if (fired) return; fired = true; start(); };
-  scope.on(document, "synkyn:loaderdone", once);
+  if (!root.classList.contains("show-loader")) { measure(); return; }
+  // GSAP can arrive after the panels have already started to part.
+  if (root.classList.contains("loader-open")) play();
+  scope.on(document, "synkyn:loaderopen", play);
+  scope.on(document, "synkyn:loaderdone", measure);
   // A loader that never reports done must not leave the hero blank.
-  scope.timeout(once, LOADER_WAIT_MS);
+  scope.timeout(measure, LOADER_WAIT_MS);
 }

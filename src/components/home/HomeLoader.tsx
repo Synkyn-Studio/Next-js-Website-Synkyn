@@ -93,7 +93,7 @@ export default function HomeLoader() {
           <div className="loader-tag">AI-NATIVE PRODUCTION</div>
           <div className="loader-logo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/logo.png" alt="Synkyn Studios" fetchPriority="high" />
+            <img src="/images/logo.webp" width={680} height={222} alt="Synkyn Studios" fetchPriority="high" />
           </div>
           <div className="loader-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={1} suppressHydrationWarning>
             <i />

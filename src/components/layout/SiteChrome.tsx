@@ -9,7 +9,7 @@ export function ScrollProgressBar() {
 
 export function BackToTopButton() {
   return (
-    <button id="back-to-top-btn" className="back-to-top-btn" aria-label="Back to top">
+    <button type="button" id="back-to-top-btn" className="back-to-top-btn" aria-label="Back to top">
       <svg className="back-to-top-icon" width="20" height="20" viewBox="0 0 52 52" fill="currentColor" aria-hidden="true">
         <path d="M41.4,21c0.8-0.8,0.8-1.9,0-2.7l-15-14.7c-0.8-0.8-2-0.8-2.8,0L8.6,18.3c-0.8,0.8-0.8,1.9,0,2.7l2.8,2.7 c0.8,0.8,2,0.8,2.8,0l4.7-4.6c0.8-0.8,2.2-0.2,2.2,0.9v27c0,1,0.9,2,2,2h4c1.1,0,2-1.1,2-2V20c0-1.2,1.4-1.7,2.2-0.9l4.7,4.6 c0.8,0.8,2,0.8,2.8,0L41.4,21z" />
       </svg>

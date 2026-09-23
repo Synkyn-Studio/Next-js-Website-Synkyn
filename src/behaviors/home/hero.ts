@@ -29,7 +29,10 @@ export function heroBackgroundVideo(scope: Scope) {
     Reveal on the first decoded frame, not on the iframe's `load` — `load` and
     `ready` fire while the player is still black, which read as a slow start
     (most visibly in Safari, where HLS start-up takes longest). Until then the
-    poster stays up. The fallback only matters if the Player API never loads.
+    poster stays up — and it stays up for good if no frame ever plays (Low
+    Power Mode, data saver, Vimeo blocked or unreachable). There is no timed
+    fallback: revealing a player that is not playing covers the poster with a
+    black box and a spinner.
   */
   const boot = () => {
     const onMessage = (e: MessageEvent) => {
@@ -50,7 +53,6 @@ export function heroBackgroundVideo(scope: Scope) {
       // A player that finished booting before we attached is already running.
       p.getPaused().then((paused: boolean) => { if (!paused) p.getCurrentTime().then((t: number) => { if (t > 0) reveal(); }); }).catch(() => undefined);
     }).catch(() => undefined);
-    scope.timeout(reveal, 5000);
   };
   const doc = document as Document & { prerendering?: boolean };
   if (doc.prerendering) scope.on(document, "prerenderingchange", boot, { once: true });
@@ -123,7 +125,20 @@ export function showreelModal(scope: Scope) {
     1.5s), so the two Vimeo players don't split the connection at start-up and
     the full-screen video gets there first.
   */
-  const startThumb = () => { if (thumbIframe && !thumbIframe.src && thumbIframe.getAttribute("data-src")) thumbIframe.src = thumbIframe.getAttribute("data-src")!; };
+  let thumbStarted = false;
+  const startThumb = () => {
+    if (thumbStarted || !thumbIframe) return;
+    thumbStarted = true;
+    if (!thumbIframe.src && thumbIframe.getAttribute("data-src")) thumbIframe.src = thumbIframe.getAttribute("data-src")!;
+    // Fade the preview in over its still frame on the first played frame.
+    loadVimeoApi().then(() => {
+      const p = getThumbPlayer();
+      if (!p) return;
+      const show = () => thumbIframe.classList.add("is-playing");
+      p.on("playing", show);
+      p.on("timeupdate", show);
+    }).catch(() => undefined);
+  };
   if (document.querySelector(".hero-video-bg.is-playing")) startThumb();
   else {
     scope.on(document, "synkyn:vimeoready", startThumb, { once: true });

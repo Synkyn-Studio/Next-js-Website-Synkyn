@@ -30,21 +30,28 @@ export function actuallyPinnedZoom() {
   const isMobile = window.innerWidth < 768;
   /*
     `.actually-area` carries `transition: opacity/transform .85s` for its
-    entry reveal, and `is-in-view` above has just finished it. Pinning writes to
-    this element, so leaving the transition on means every pin adjustment is
-    interpolated over .85s — the section arrives at each scroll position late and
-    chases it. `is-pinned` drops the transition now that the reveal is done.
+    entry reveal, and `is-in-view` above has just finished it. `is-pinned`
+    drops the transition so nothing on the section is interpolated while the
+    zoom-through scrubs.
   */
   section.classList.add("is-pinned");
   /*
+    The section is held on screen by `position: sticky` inside
+    `.actually-track` (home.css), not by a ScrollTrigger pin: a fixed pin was
+    reported as a full-screen layout shift on every pass (CLS ≈ 1.5–2 on Home,
+    where "good" is < 0.1), a transform pin trails the finger on native touch
+    scrolling, and `anticipatePin` snapped it to the top 50–90px early. The
+    timeline just scrubs across the track's extra 170vh.
+
     `scrub: true` rather than a smoothed `scrub: 0.6`. Lenis is already easing
     the scroll position, so a second easing pass here means the timeline keeps
     creeping toward its target after the wheel stops — and at the end of this
     timeline the heading is scaled up 28×, where a progress change too small to
     see becomes a large change in pixels. That creep is the shimmer.
   */
+  const track = section.closest(".actually-track") || section;
   const tl = gsap.timeline({
-    scrollTrigger: { trigger: section, pin: true, scrub: true, start: "top top", end: "+=170%", anticipatePin: 1, fastScrollEnd: true, invalidateOnRefresh: true },
+    scrollTrigger: { trigger: track, scrub: true, start: "top top", end: "bottom bottom", fastScrollEnd: true, invalidateOnRefresh: true },
   });
   tl.to(text, { backgroundPosition: "0% 0", ease: "none", duration: 0.35 });
   tl.to(text, { scale: isMobile ? 18 : 28, opacity: 0, ease: "power2.inOut", duration: 0.4 }, "+=0.05");

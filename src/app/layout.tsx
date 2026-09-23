@@ -43,23 +43,46 @@ const BOOT_SCRIPT = `(function(){var d=document.documentElement;try{if(localStor
   moment the panels start to split (`loader-open`). A pseudo-element rather
   than hiding <body>: hidden iframes can hold back the hero video's autoplay.
   The 5s timeout above only fires if the loader script never ran at all.
+
+  It is `body::before`, not `html::after`: ambient-fx sets `isolation: isolate`
+  on <body>, which makes body a stacking context. A cover outside body then
+  paints over *everything* in it — the loader included, blacking out the logo,
+  bar and counter for the whole load. Inside body it shares the loader's
+  stacking context and sits just beneath it (9999998 < 9999999), above the
+  header (99999–100005).
 */
-const LOADER_COVER_CSS = `html.show-loader{background:#080808}html.show-loader:not(.loader-open)::after{content:"";position:fixed;inset:0;z-index:9999998;background:#080808;pointer-events:all}`;
+const LOADER_COVER_CSS = `html.show-loader{background:#080808}html.show-loader:not(.loader-open) body::before{content:"";position:fixed;inset:0;z-index:9999998;background:#080808;pointer-events:all}`;
 
 const GTM_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
 
 const GTAG_SCRIPT = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`;
+
+/*
+  Route cross-fade for <PageTransition> (components/layout/PageTransition.tsx):
+  the old page fades out quickly, the new one fades up 12px. Only opacity and
+  transform, so it is composited. The overlay lets clicks through, the
+  unnamed root (header, fixed chrome) is not animated at all, and reduced
+  motion turns it off.
+*/
+const PAGE_TRANSITION_CSS = `::view-transition{pointer-events:none}::view-transition-group(root){animation:none}::view-transition-old(root){display:none}::view-transition-new(root){animation:none}::view-transition-old(.page-out){animation:160ms cubic-bezier(.4,0,1,1) both synkyn-page-out}::view-transition-new(.page-in){animation:320ms cubic-bezier(.16,1,.3,1) 90ms both synkyn-page-in}@keyframes synkyn-page-out{to{opacity:0}}@keyframes synkyn-page-in{from{opacity:0;transform:translate3d(0,12px,0)}}@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: LOADER_COVER_CSS }} />
+        <style dangerouslySetInnerHTML={{ __html: PAGE_TRANSITION_CSS }} />
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: GTM_SCRIPT }} />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
         <script dangerouslySetInnerHTML={{ __html: GTAG_SCRIPT }} />
         <link rel="preload" as="font" type="font/woff2" crossOrigin="" href="/fonts/inter-tight-latin-normal.woff2" />
+        {/*
+          main.css starts with `@import 'cursors.css'`, a render-blocking sheet
+          the browser only discovers once main.css has arrived — one more round
+          trip before the first paint (the loading screen). Fetch it alongside.
+        */}
+        <link rel="preload" as="style" href="/assets/cursors.css" />
         {GLOBAL_STYLESHEETS.map((href) => (
           <link key={href} rel="stylesheet" href={`${href}?v=${ASSET_VERSION}`} />
         ))}

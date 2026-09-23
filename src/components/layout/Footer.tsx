@@ -46,7 +46,7 @@ export default function Footer({
       <div className="main-container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <SafeImg src="/images/logo.png" alt={logoAlt} className="footer-logo" />
+            <SafeImg src="/images/logo.webp" width={680} height={222} alt={logoAlt} className="footer-logo" />
             <p className="footer-brand-title">About the studio</p>
             <p className="footer-tagline">
               Synkyn creates AI-powered commercials, product films, CGI visuals, and social media content for brands that want to look premium without slow production delays.

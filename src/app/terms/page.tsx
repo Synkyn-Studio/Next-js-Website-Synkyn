@@ -9,6 +9,7 @@ import TermsHero from "@/components/terms/TermsHero";
 import { STRUCTURED_DATA } from "@/data/structured-data";
 import { pageMetadata, pageViewport } from "@/lib/metadata";
 import { ROUTES } from "@/lib/site";
+import PageTransition from "@/components/layout/PageTransition";
 
 export const metadata = pageMetadata("terms");
 export const viewport = pageViewport("terms");
@@ -28,11 +29,13 @@ export default function TermsPage() {
       />
       {STRUCTURED_DATA.terms.map((data, i) => <JsonLd key={i} data={data} />)}
       <FloatingTocButton />
-      <main>
-        <TermsHero />
-        <TermsDocument />
-        <Footer currentPath={ROUTES.terms} active="terms" logoAlt="Synkyn Studios Logo" />
-      </main>
+      <PageTransition>
+        <main>
+          <TermsHero />
+          <TermsDocument />
+          <Footer currentPath={ROUTES.terms} active="terms" logoAlt="Synkyn Studios Logo" />
+        </main>
+      </PageTransition>
       <TermsEffects />
       <PageRuntime profile="standard" />
     </>

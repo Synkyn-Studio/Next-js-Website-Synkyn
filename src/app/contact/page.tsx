@@ -10,6 +10,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { STRUCTURED_DATA } from "@/data/structured-data";
 import { pageMetadata, pageViewport } from "@/lib/metadata";
 import { ROUTES } from "@/lib/site";
+import PageTransition from "@/components/layout/PageTransition";
 
 export const metadata = pageMetadata("contact");
 export const viewport = pageViewport("contact");
@@ -27,12 +28,14 @@ export default function ContactPage() {
         ]}
       />
       {STRUCTURED_DATA.contact.map((data, i) => <JsonLd key={i} data={data} />)}
-      <main>
-        <ContactHero />
-        <StudioDetailsSection />
-        <FaqSection />
-        <FinalCtaBand />
-      </main>
+      <PageTransition>
+        <main>
+          <ContactHero />
+          <StudioDetailsSection />
+          <FaqSection />
+          <FinalCtaBand />
+        </main>
+      </PageTransition>
       <Footer currentPath={ROUTES.contact} active="contact" />
       <ContactEffects />
       <PageRuntime profile="standard" />

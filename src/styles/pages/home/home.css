@@ -210,6 +210,15 @@ html {
     height: 100% !important;
     border: 0 !important;
     pointer-events: none !important;
+    /* Held over the still frame until the preview is really playing, so the
+       card never shows the player's black box and spinner. Not a true 0 —
+       Safari may hold back autoplay of video it treats as invisible. */
+    opacity: .001;
+    transition: opacity .6s ease, filter .5s ease;
+}
+
+#hero-thumbnail-video.is-playing {
+    opacity: 1;
 }
 
 @media (max-width: 767px) {
@@ -634,6 +643,26 @@ html {
 
 
 /* ===== inline block ===== */
+
+/*
+  The "AI Generated. Human Directed." zoom-through holds the section on screen
+  with native sticky positioning rather than a ScrollTrigger pin. A pin
+  switches the section to position: fixed (reported as a full-screen layout
+  shift, CLS ≈ 2) or moves it with transforms from the main thread (trails the
+  finger on touch scrolling). Sticky is composited by the browser: exact under
+  wheel, trackpad and touch, and no layout shift. 270vh = the 100vh section
+  plus the 170vh the timeline scrubs over.
+*/
+.actually-track {
+    position: relative;
+    height: 270vh;
+    max-width: 100%;
+}
+
+.actually-track > .actually-area {
+    position: sticky;
+    top: 0;
+}
 
 .actually-area {
     position: relative;

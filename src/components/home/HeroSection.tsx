@@ -44,9 +44,10 @@ export default function HeroSection() {
                 </div>
                 <div id="hero-showreel-wrap" className="shrink-0 flex justify-center md:justify-end w-full md:w-auto my-2 md:my-0">
                   <button aria-label="Watch SHOWREEL 2026" className="relative block overflow-hidden group active:scale-[0.97] transition-transform bg-black border-4 sm:border-6 border-accent dark:border-secondary rounded-2xl cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-secondary/50 dark:focus-visible:ring-accent/30 mx-auto md:mx-0" id="hero-how-it-works-btn" type="button" style={{ aspectRatio: "16 / 9" }}>
+                    <img className="absolute inset-0 w-full h-full object-cover pointer-events-none" src="/images/showreel-poster.webp" alt="" aria-hidden="true" width={640} height={360} decoding="async" />
                     <iframe className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-500 group-hover:blur-sm" id="hero-thumbnail-video" fetchPriority="low" data-src="https://player.vimeo.com/video/1210886734?background=1&autoplay=1&autopause=0&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&playsinline=1&dnt=1&quality=360p" title="Synkyn Studios SHOWREEL 2026 preview" tabIndex={-1} frameBorder="0" allow="autoplay; fullscreen; picture-in-picture" />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-300 bg-black/60 z-10">
-                      <img src="/images/logo.png" alt="Synkyn Studios" className="w-20 sm:w-24 h-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105" />
+                      <img src="/images/logo.webp" width={680} height={222} alt="Synkyn Studios" className="w-20 sm:w-24 h-auto object-contain drop-shadow-2xl transition-transform duration-300 group-hover:scale-105" />
                     </div>
                     <div className="absolute bottom-0 right-0 flex items-center justify-center px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-tl-2xl border-t border-l z-10 overflow-hidden" style={{ background: "linear-gradient(135deg, #ffe08a 0%, #f2d400 100%)", borderColor: "rgba(255, 255, 255, 0.35)", boxShadow: "0 -2px 18px rgba(242, 212, 0, 0.35)" }}>
                       <span className="micra-badge inline-block text-[11px] sm:text-[13px]" style={{ color: "#0a0a0a", fontWeight: "800", letterSpacing: ".02em" }}>
@@ -62,17 +63,17 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
-        <div id="video-modal" className="fixed inset-0 hidden flex-col items-center justify-center p-0 sm:p-6" style={{ zIndex: "2147483647" }} role="dialog" aria-modal="true">
+        <div id="video-modal" className="fixed inset-0 hidden flex-col items-center justify-center p-0 sm:p-6" style={{ zIndex: "2147483647" }} role="dialog" aria-modal="true" aria-labelledby="v-title">
           <div id="modal-backdrop" className="absolute inset-0 cinematic-backdrop transition-opacity duration-500 cursor-pointer" style={{ opacity: "0" }} aria-hidden="true" />
           <div id="v-title" className="v-header-title hidden-ui">SHOWREEL 2026</div>
           <div id="modal-content" className="relative bg-black overflow-hidden ring-1 ring-white/10 flex flex-col pointer-events-auto modal-card" style={{ transformOrigin: "center", willChange: "transform, opacity, border-radius", backfaceVisibility: "hidden", transform: "translateZ(0)" }}>
-            <button id="modal-close-btn" className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 text-white/90 hover:bg-black/60 hover:text-white transition-all backdrop-blur-md border border-white/10 group cursor-pointer" style={{ opacity: "0" }} aria-label="Close modal">
+            <button type="button" id="modal-close-btn" className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 text-white/90 hover:bg-black/60 hover:text-white transition-all backdrop-blur-md border border-white/10 group cursor-pointer" style={{ opacity: "0" }} aria-label="Close modal">
               <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke="#ffffff" d="M6 6l12 12M18 6L6 18" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
             <div className="v-stage">
-              <iframe id="modal-video" className="v-iframe" loading="lazy" data-src="https://player.vimeo.com/video/1210886734?autoplay=0&loop=1&title=0&byline=0&portrait=0&badge=0&controls=0&dnt=1&transparent=0" title="Synkyn Studios SHOWREEL 2026" frameBorder="0" referrerPolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" allowFullScreen />
+              <iframe id="modal-video" className="v-iframe" loading="lazy" data-src="https://player.vimeo.com/video/1210886734?autoplay=0&loop=1&title=0&byline=0&portrait=0&badge=0&controls=0&dnt=1&transparent=0" title="Synkyn Studios SHOWREEL 2026" frameBorder="0" referrerPolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" />
               <button id="v-click" className="v-click" type="button" aria-label="Play or pause" />
               <div id="v-controls" className="v-controls" role="group" aria-label="Video controls">
                 <button id="v-play" className="v-btn" type="button" aria-label="Play" />

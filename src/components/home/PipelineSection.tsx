@@ -212,7 +212,7 @@ export default function PipelineSection() {
               <stop offset="100%" stopColor="#ff7a1a" stopOpacity="0" />
             </linearGradient>
             <symbol id="s-cloud" viewBox="0 0 600 360" overflow="visible">
-              <image href="https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/vecteezy_a-dark-cumulus-cloud-contrasts-sharply-against-a-bright_57176514.png" width="600" height="360" preserveAspectRatio="xMidYMid contain" />
+              <image href="https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/vecteezy_a-dark-cumulus-cloud-contrasts-sharply-against-a-bright_57176514.png" width="600" height="360" preserveAspectRatio="xMidYMid meet" />
             </symbol>
             <symbol id="s-rocket-up" viewBox="0 0 64 170" overflow="visible">
               <svg x="-24.3" y="8" width="112.5" height="150" viewBox="81 40 668 891" preserveAspectRatio="xMidYMid meet" overflow="visible">
