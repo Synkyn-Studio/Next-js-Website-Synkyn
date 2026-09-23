@@ -25,19 +25,32 @@ export function heroBackgroundVideo(scope: Scope) {
     try { document.dispatchEvent(new CustomEvent("synkyn:vimeoready")); } catch { /* noop */ }
   };
 
+  /*
+    Reveal on the first decoded frame, not on the iframe's `load` — `load` and
+    `ready` fire while the player is still black, which read as a slow start
+    (most visibly in Safari, where HLS start-up takes longest). Until then the
+    poster stays up. The fallback only matters if the Player API never loads.
+  */
   const boot = () => {
-    scope.on(frame, "load", reveal, { once: true });
     const onMessage = (e: MessageEvent) => {
-      if (!e || !e.data || revealed) return;
+      if (!e || !e.data || revealed || e.source !== frame.contentWindow) return;
       try {
         const data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
-        if (data && (data.event === "play" || data.event === "ready" || data.event === "playing")) reveal();
+        if (data && (data.event === "playing" || data.event === "timeupdate" || data.event === "bufferend")) reveal();
       } catch { /* not JSON */ }
     };
     scope.on(window, "message", onMessage);
     const src = frame.getAttribute("src") || frame.getAttribute("data-src");
     if (!frame.src && src) frame.src = src;
-    scope.timeout(reveal, 1200);
+    loadVimeoApi().then(() => {
+      const p = getPlayer();
+      if (!p || revealed) return;
+      p.on("playing", reveal);
+      p.on("timeupdate", reveal);
+      // A player that finished booting before we attached is already running.
+      p.getPaused().then((paused: boolean) => { if (!paused) p.getCurrentTime().then((t: number) => { if (t > 0) reveal(); }); }).catch(() => undefined);
+    }).catch(() => undefined);
+    scope.timeout(reveal, 5000);
   };
   const doc = document as Document & { prerendering?: boolean };
   if (doc.prerendering) scope.on(document, "prerenderingchange", boot, { once: true });
@@ -82,9 +95,6 @@ export function heroBackgroundVideo(scope: Scope) {
     scope.on(poster, "error", () => { poster.style.display = "none"; }, { once: true });
     if (poster.complete && poster.naturalWidth === 0) poster.style.display = "none";
   }
-
-  // The static page loaded the Vimeo Player API with `defer` for this page.
-  loadVimeoApi().catch(() => undefined);
 }
 
 /** main.js — toggles `in-view` on #hero. */
@@ -108,7 +118,17 @@ export function showreelModal(scope: Scope) {
   const thumbIframe = document.getElementById("hero-thumbnail-video") as HTMLIFrameElement | null;
   const vTitle = document.getElementById("v-title");
 
-  if (thumbIframe && !thumbIframe.src && thumbIframe.getAttribute("data-src")) thumbIframe.src = thumbIframe.getAttribute("data-src")!;
+  /*
+    The thumbnail player starts once the hero background is playing (or after
+    1.5s), so the two Vimeo players don't split the connection at start-up and
+    the full-screen video gets there first.
+  */
+  const startThumb = () => { if (thumbIframe && !thumbIframe.src && thumbIframe.getAttribute("data-src")) thumbIframe.src = thumbIframe.getAttribute("data-src")!; };
+  if (document.querySelector(".hero-video-bg.is-playing")) startThumb();
+  else {
+    scope.on(document, "synkyn:vimeoready", startThumb, { once: true });
+    scope.timeout(startThumb, 1500);
+  }
   if (!videoModal || !modalContent || !iframe || !backdrop) return;
 
   // The modal is moved under <body> when opened; put it back before React

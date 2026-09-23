@@ -68,8 +68,13 @@ export function loaderBootstrap(): LoaderHandle {
 
   const pctEl = loader.querySelector(".loader-pct") as HTMLElement | null;
   const barEl = loader.querySelector(".loader-bar") as HTMLElement | null;
+  /*
+    Whole visit budget is 3s: the counter reaches 100% by MAX_MS (+ a short
+    catch-up), holds for HOLD_MS, then the panels take ~950ms to split open.
+  */
   const MIN_MS = 900;    // minimum on-screen time, so the reveal still reads
-  const MAX_MS = 3800;   // hard ceiling, whatever fails to load
+  const MAX_MS = 1700;   // hard ceiling, whatever fails to load
+  const HOLD_MS = 150;   // "100%" beat before the panels open
   const startTime = performance.now();
   let lastNow = startTime;
 
@@ -129,9 +134,15 @@ export function loaderBootstrap(): LoaderHandle {
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { sig.font = 1; }, () => { sig.font = 1; });
   else sig.font = 1;
 
-  // loader.js ran inline before the hero markup was parsed, so its Vimeo
-  // lookup always came back empty and this signal was complete from the start.
-  sig.vimeo = 1;
+  /*
+    Hold the reveal for the hero video (within MAX_MS) so the page opens on
+    moving footage rather than the poster. The hero behaviour marks the wrapper
+    `is-playing` and fires `synkyn:vimeoready` on the first real frame. With
+    reduced motion the video never plays, so there is nothing to wait for.
+  */
+  const reducedMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const readVimeo = () => (reducedMotion || document.querySelector(".hero-video-bg.is-playing") ? 1 : 0);
+  on(document, "synkyn:vimeoready", () => { sig.vimeo = 1; });
 
   if (document.readyState === "complete") sig.load = 1;
   else on(window, "load", () => { sig.load = 1; }, { once: true });
@@ -140,19 +151,20 @@ export function loaderBootstrap(): LoaderHandle {
     sig.dom = Math.max(sig.dom, readDom());
     sig.res = Math.max(sig.res, readRes());
     sig.img = Math.max(sig.img, readImg());
+    sig.vimeo = Math.max(sig.vimeo, readVimeo());
     const sum = sig.dom * WEIGHT.dom + sig.res * WEIGHT.res + sig.img * WEIGHT.img + sig.font * WEIGHT.font + sig.vimeo * WEIGHT.vimeo + sig.load * WEIGHT.load;
     return Math.max(0.01, Math.min(1.0, sum));
   };
   /*
     The page is ready for the reveal once the document is parsed, the fonts
-    are in and the images have arrived. The original also waited for `load`,
-    which waits for the hero's Vimeo iframes — several seconds of loading
-    screen for a player that sits behind a poster anyway and keeps loading
-    happily after the reveal.
+    are in, the images have arrived and the hero video is playing. It does not
+    wait for `load`, which also waits on the showreel iframe; MAX_MS caps the
+    wait if the video is slow or blocked (the poster covers that case).
   */
-  const isCriticalReady = () =>
-    ((sig.load === 1 || sig.dom === 1) && sig.font === 1 && sig.img >= 0.9 && sig.vimeo >= 0.7) ||
-    (document.readyState !== "loading" && sig.font === 1 && sig.img >= 0.9);
+  const isCriticalReady = () => {
+    targetProgress();
+    return document.readyState !== "loading" && sig.font === 1 && sig.img >= 0.9 && sig.vimeo === 1;
+  };
 
   const complete = () => {
     if (finished) return;
@@ -165,7 +177,7 @@ export function loaderBootstrap(): LoaderHandle {
     later(() => {
       loader.classList.add("open");
       later(kill, 950);
-    }, 260);
+    }, HOLD_MS);
   };
 
   const step = (now: number) => {
@@ -190,24 +202,9 @@ export function loaderBootstrap(): LoaderHandle {
   };
   frame(step);
 
-  // Absolute backstop so a visitor is never trapped.
-  later(() => {
-    if (finished) return;
-    const id = window.setInterval(() => {
-      if (finished) { clearInterval(id); return; }
-      if (displayedPct < 100) {
-        displayedPct += 1;
-        const pctStr = (displayedPct < 10 ? "0" : "") + displayedPct + "%";
-        if (pctEl) pctEl.textContent = pctStr;
-        if (barEl) barEl.setAttribute("aria-valuenow", String(displayedPct));
-        loader.style.setProperty("--loader-progress", (displayedPct / 100).toFixed(4));
-      } else {
-        clearInterval(id);
-        complete();
-      }
-    }, 16);
-    intervals.push(id);
-  }, MAX_MS);
+  // Absolute backstop so a visitor is never trapped and the 3s budget holds
+  // even if animation frames are throttled (background tab, busy main thread).
+  later(() => { if (!finished) complete(); }, MAX_MS + 200);
 
   /* Ambient gold particles */
   const canvas = loader.querySelector(".loader-canvas") as HTMLCanvasElement | null;

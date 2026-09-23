@@ -2147,7 +2147,9 @@ html.hero-armed #hero .hero-video-bg {
     transform: translate(-50%, -50%);
     border: 0;
     z-index: 2;
-    opacity: 0;
+    /* Not a true 0: Safari may hold back autoplay of video it treats as
+       invisible, which kept the Mac hero on the poster until the fallback. */
+    opacity: .001;
     transition: opacity .7s ease;
     pointer-events: none;
 }
