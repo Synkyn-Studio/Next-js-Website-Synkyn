@@ -1,0 +1,493 @@
+/* ============================================================
+   SYNKYN STUDIOS — THEME-MATCHED INTERACTIVE 404 EXPERIENCE
+   - Pitch-black #000000 backdrop allowing fx.js crystals to float unobstructed
+   - All lines above and below removed
+   - 404 rendered in signature Synkyn Gold & White metallic gradient
+   - High-definition live Frequency Oscilloscope Visualizer
+   - Zero-G drag-and-throw physics with spring damping
+   - Kinetic Shatter & Magnetic Reassembly
+   ============================================================ */
+.s404-main {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent !important;
+    /* Fully transparent to let fx.js crystals shine over pure black */
+    overflow: hidden;
+    padding: clamp(120px, 15vh, 170px) 20px clamp(60px, 9vh, 90px);
+    box-sizing: border-box;
+    perspective: 1200px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Container */
+.s404-container {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* ── PERFECT FREQUENCY OSCILLOSCOPE MODULE ── */
+.s404-freq-capsule {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 20px;
+    background: rgba(18, 18, 22, 0.65);
+    border: 1px solid rgba(242, 212, 0, 0.28);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(242, 212, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    margin-bottom: clamp(22px, 3.8vh, 34px);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.s404-freq-capsule:hover {
+    border-color: rgba(242, 212, 0, 0.55);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 28px rgba(242, 212, 0, 0.25);
+    transform: translateY(-2px);
+}
+
+.s404-freq-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.s404-freq-beacon {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f2d400;
+    box-shadow: 0 0 12px 2px #f2d400;
+    animation: s404BeaconPulse 2s ease-in-out infinite;
+}
+
+@keyframes s404BeaconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.35);
+        opacity: 0.55;
+    }
+}
+
+.s404-freq-title {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.s404-freq-val {
+    color: #f2d400;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 10px rgba(242, 212, 0, 0.5);
+}
+
+.s404-freq-tag {
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(242, 212, 0, 0.12);
+    border: 1px solid rgba(242, 212, 0, 0.3);
+    color: #ffd84d;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+.s404-freq-display {
+    width: 100%;
+    max-width: 320px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#s404FreqCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.s404-freq-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+}
+
+/* ── 3D Interactive Playable 404 Stage ── */
+.s404-stage {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+}
+
+/* Ambient Gold & Cyan Cosmic Aura behind Numerals */
+.s404-aura {
+    position: absolute;
+    width: clamp(380px, 65vw, 750px);
+    height: clamp(200px, 35vw, 400px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(242, 212, 0, 0.2) 0%, rgba(6, 182, 212, 0.08) 45%, transparent 75%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    transform: translateZ(-100px);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+/* Numerals Container */
+.s404-numerals {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(16px, 4.5vw, 50px);
+    transform-style: preserve-3d;
+    will-change: transform;
+    line-height: 0.82;
+}
+
+/* ── THEME-MATCHED NUMERALS (SYNKYN METALLIC GOLD & WHITE) ── */
+.s404-char {
+    position: relative;
+    display: inline-block;
+    font-family: inherit;
+    font-size: clamp(8.8rem, 24vw, 20rem);
+    font-weight: 850;
+    letter-spacing: -0.06em;
+    transform-style: preserve-3d;
+    will-change: transform;
+    cursor: grab;
+    touch-action: none;
+    transition: filter 0.25s ease;
+}
+
+.s404-char.is-dragging {
+    cursor: grabbing !important;
+    z-index: 20;
+    filter: drop-shadow(0 0 45px rgba(242, 212, 0, 0.75)) drop-shadow(0 0 70px rgba(6, 182, 212, 0.5));
+}
+
+.s404-char:active {
+    cursor: grabbing;
+}
+
+/* Base Layer: Warm Obsidian-Gold Shadow */
+.s404-char-shadow {
+    position: absolute;
+    inset: 0;
+    color: rgba(242, 212, 0, 0.35);
+    filter: blur(36px);
+    opacity: 0.85;
+    transform: translateZ(-35px) translateY(18px);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Sculpted Theme-Matched Gold & Chrome Metallic Core */
+.s404-char-core {
+    display: block;
+    background: linear-gradient(180deg, #ffffff 0%, #fff4b8 24%, #ffd84d 50%, #f2c200 75%, #caa000 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 40px rgba(242, 212, 0, 0.4), 0 0 80px rgba(242, 212, 0, 0.2);
+    transform: translateZ(14px);
+    pointer-events: none;
+}
+
+/* Interactive Chromatic Aberration & RGB Split */
+.s404-char-rgb {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: var(--s404-rgb-opacity, 0.45);
+    transform: translateZ(20px);
+    transition: opacity 0.25s ease;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 216, 77, 0));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+        calc(var(--s404-shift-x, 0px) * -1.2) 0 6px rgba(6, 182, 212, 0.85),
+        calc(var(--s404-shift-x, 0px) * 1.2) 0 6px rgba(242, 212, 0, 0.95);
+}
+
+/* Specular Studio Spotlight Highlight Sweep */
+.s404-char-light {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle 420px at var(--s404-char-x, 50%) var(--s404-char-y, 50%), rgba(255, 255, 255, 1) 0%, rgba(255, 235, 128, 0.6) 28%, transparent 72%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: var(--s404-light-opacity, 0.7);
+    transform: translateZ(30px);
+    transition: opacity 0.3s ease;
+}
+
+/* Ultra-crisp Theme Gold Stroke Edge */
+.s404-char-stroke {
+    position: absolute;
+    inset: 0;
+    -webkit-text-stroke: 1.5px rgba(242, 212, 0, 0.55);
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    transform: translateZ(24px);
+    transition: -webkit-text-stroke-color 0.3s ease;
+}
+
+.s404-char:hover .s404-char-stroke,
+.s404-char.is-dragging .s404-char-stroke {
+    -webkit-text-stroke-color: #ffd84d;
+}
+
+/* ── PERFECT CENTER ZERO WITH LUMINOUS CORE GLOW ── */
+.s404-zero-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 65%;
+    height: 75%;
+    transform: translate(-50%, -50%) translateZ(-15px);
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(242, 212, 0, 0.7) 0%, rgba(255, 216, 77, 0.4) 40%, rgba(6, 182, 212, 0.2) 65%, transparent 80%);
+    filter: blur(28px);
+    pointer-events: none;
+    opacity: 0.85;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, filter 0.35s ease;
+}
+
+.s404-char-2:hover .s404-zero-glow,
+.s404-char-2.is-dragging .s404-zero-glow {
+    transform: translate(-50%, -50%) translateZ(-15px) scale(1.4);
+    opacity: 1;
+    filter: blur(34px);
+}
+
+/* ── Shockwave Pulse Rings ── */
+.s404-pulse-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid rgba(242, 212, 0, 0.85);
+    box-shadow: 0 0 24px rgba(242, 212, 0, 0.55), inset 0 0 16px rgba(242, 212, 0, 0.3);
+    pointer-events: none;
+    z-index: 10;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+    animation: s404Shockwave 0.85s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes s404Shockwave {
+    0% {
+        transform: translate(-50%, -50%) scale(0.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2.8);
+        opacity: 0;
+    }
+}
+
+/* ── Content Details & Typography ── */
+.s404-details {
+    position: relative;
+    z-index: 4;
+    margin-top: clamp(28px, 4.5vh, 44px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+}
+
+.s404-title {
+    font-family: inherit;
+    font-size: clamp(1.45rem, 3.6vw, 2.3rem);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    color: #ffffff;
+    margin: 0 0 12px;
+}
+
+.s404-title span.s404-title-gradient {
+    background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.72) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.s404-desc {
+    font-size: clamp(0.92rem, 2.2vw, 1.05rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.62);
+    margin: 0 0 clamp(28px, 4vh, 38px);
+    max-width: 500px;
+}
+
+/* Action Buttons Row */
+.s404-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Magnetic Primary Home CTA */
+.s404-btn-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 999px;
+    background: #f2d400;
+    color: #060608;
+    font-size: 0.92rem;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow: 0 8px 28px rgba(242, 212, 0, 0.38), 0 0 24px rgba(242, 212, 0, 0.2);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.2s ease;
+    will-change: transform;
+}
+
+.s404-btn-primary:hover {
+    background: #ffdf29;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 36px rgba(242, 212, 0, 0.55), 0 0 36px rgba(242, 212, 0, 0.32);
+    color: #000;
+}
+
+.s404-btn-primary:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.s404-btn-primary svg {
+    transition: transform 0.25s ease;
+}
+
+.s404-btn-primary:hover svg {
+    transform: translateX(-3px);
+}
+
+/* Secondary Minimal Glass Ghost Button */
+.s404-btn-ghost {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.s404-btn-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.09);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.s404-btn-ghost:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.s404-btn-ghost svg {
+    transition: transform 0.25s ease;
+}
+
+.s404-btn-ghost:hover svg {
+    transform: translateX(4px);
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 860px) {
+    .s404-numerals {
+        gap: clamp(10px, 3.5vw, 24px);
+    }
+
+    .s404-char {
+        font-size: clamp(6.4rem, 26vw, 11rem);
+    }
+
+    .s404-freq-capsule {
+        padding: 10px 16px;
+        max-width: 92vw;
+    }
+
+    .s404-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .s404-btn-primary,
+    .s404-btn-ghost {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .s404-freq-beacon {
+        animation: none !important;
+    }
+
+    .s404-numerals,
+    .s404-char {
+        transform: none !important;
+    }
+}

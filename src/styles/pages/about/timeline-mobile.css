@@ -1,0 +1,25 @@
+@media (max-width: 767px) {
+    .investor-timeline-fade-left {
+        background: linear-gradient(to right,
+                var(--color-background-3),
+                transparent);
+    }
+
+    .investor-timeline-fade-right {
+        background: linear-gradient(to left,
+                var(--color-background-3),
+                transparent);
+    }
+
+    .dark .investor-timeline-fade-left {
+        background: linear-gradient(to right,
+                var(--color-helix-blue-dark-2),
+                transparent);
+    }
+
+    .dark .investor-timeline-fade-right {
+        background: linear-gradient(to left,
+                var(--color-helix-blue-dark-2),
+                transparent);
+    }
+}

@@ -1,0 +1,750 @@
+/*
+  Synkyn Studios
+  Copyright (c) 2026 Synkyn Studios. All rights reserved.
+*/
+
+/* ==========================================================================
+   Synkyn Studios — Premium Navigation System
+   Desktop styles are preserved. The mobile experience (<= 1279.98px) is a
+   dedicated, app-style navigation: top-attached black header + slide-down panel.
+   ========================================================================== */
+
+/* Base navbar definition */
+body header .header-two,
+header .header-two,
+.header-two {
+    position: fixed !important;
+    z-index: 99999 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* --------------------------------------------------------------------------
+   DESKTOP (>= 1280px) — keep floating pill centered without horizontal shift
+   -------------------------------------------------------------------------- */
+@media (min-width: 1280px) {
+
+    body header .header-two,
+    header .header-two,
+    .header-two {
+        position: fixed !important;
+        top: 3.5rem !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate3d(-50%, 0, 0) !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 1140px !important;
+        transition: top 0.4s ease-in-out, opacity 0.35s ease !important;
+        will-change: opacity, top;
+        z-index: 99999 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    @media (min-width: 1440px) {
+
+        body header .header-two,
+        header .header-two,
+        .header-two {
+            max-width: 1290px !important;
+        }
+    }
+
+    /* Desktop hidden state: faded out, strictly preserving horizontal centering */
+    body header .header-two.nav-hidden,
+    header .header-two.nav-hidden,
+    .header-two.nav-hidden {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transform: translate3d(-50%, 0, 0) !important;
+    }
+
+    #desktop-navbar {
+        display: flex !important;
+        min-height: 44px;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   MOBILE & TABLET REDESIGN (<= 1279.98px)
+   Matches the HTML `xl:` breakpoint where the desktop nav appears.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1279.98px) {
+
+    :root {
+        --nav-height: 58px;
+        --nav-accent: #ffd84d;
+        /* Synkyn theme yellow */
+        --nav-bg: #000000;
+        /* pure black header / panel */
+        --nav-border: rgba(255, 255, 255, 0.08);
+    }
+
+    /* ---------- HEADER (CLOSED STATE) ------------------------------------ */
+    /* Full-width, flush to the top of the viewport. No pill, no margin. */
+    body header .header-two,
+    header .header-two,
+    .header-two {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: translate3d(0, 0, 0) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: var(--nav-height) !important;
+        margin: 0 !important;
+        margin-top: 0px !important;
+        /* default for tablet */
+        border-radius: 0 0 14px 14px !important;
+        padding: 0 1rem !important;
+        border: none !important;
+        border-bottom: 1px solid var(--nav-border) !important;
+        background-color: rgba(0, 0, 0, 0.7) !important;
+        /* subtle dark-glass depth */
+        -webkit-backdrop-filter: blur(14px) saturate(120%);
+        backdrop-filter: blur(14px) saturate(120%);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+        z-index: 100000 !important;
+        /* always above content + panel */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0 !important;
+        transition: top 0.4s ease, opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        will-change: transform, opacity, top;
+    }
+
+    /* Hidden state — slide the whole bar up out of view (no display:none) */
+    body header .header-two.nav-hidden,
+    header .header-two.nav-hidden,
+    .header-two.nav-hidden {
+        transform: translate3d(0, -100%, 0) !important;
+        opacity: 1 !important;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
+    /* Logo — clear, correctly sized, left aligned */
+    .header-two figure.max-w-\[52px\] {
+        max-width: 95px !important;
+        margin: 0 !important;
+    }
+
+    .header-two figure.max-w-\[52px\] img {
+        max-height: 24px !important;
+        width: auto !important;
+        height: 27px !important;
+        object-fit: contain !important;
+    }
+
+    /* Force hide desktop logo on mobile/tablet to fix double-logo issue */
+    .header-two figure.lg\:block {
+        display: none !important;
+    }
+
+    /* Remove leftover desktop CTA spacing on the right cluster */
+    .header-two>.flex.items-center.gap-2 {
+        gap: 0 !important;
+    }
+
+    /* ---------- HAMBURGER ------------------------------------------------- */
+    .nav-hamburger {
+        background: transparent !important;
+        border: none !important;
+        width: 2rem !important;
+        height: 2rem !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 4px !important;
+        cursor: pointer !important;
+        position: relative !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    .nav-hamburger .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .nav-hamburger span:not(.sr-only) {
+        width: 1.25rem !important;
+        height: 2px !important;
+        border-radius: 9999px !important;
+        background-color: #ffffff !important;
+        transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 0.2s ease !important;
+        transform-origin: center !important;
+        display: block !important;
+    }
+
+    /* Morph the three bars into an "X" when the panel is open.
+       child(1) is the .sr-only label, so bars are children 2, 3, 4. */
+    body.mobile-menu-active .nav-hamburger span:nth-child(2) {
+        transform: translateY(6px) rotate(45deg) !important;
+    }
+
+    body.mobile-menu-active .nav-hamburger span:nth-child(3) {
+        opacity: 0 !important;
+        transform: scaleX(0.2) !important;
+    }
+
+    body.mobile-menu-active .nav-hamburger span:nth-child(4) {
+        transform: translateY(-6px) rotate(-45deg) !important;
+    }
+
+    /* ---------- DIM / BLUR BACKDROP ------------------------------------- */
+    .nav-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 99980 !important;
+        /* under the panel, over the page */
+        background: rgba(0, 0, 0, 0.55) !important;
+        -webkit-backdrop-filter: blur(4px) !important;
+        backdrop-filter: blur(4px) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: opacity 0.4s ease, visibility 0.4s ease !important;
+    }
+
+    .nav-overlay.show-overlay {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* ---------- MENU PANEL (OPEN STATE) --------------------------------- */
+    /* Full screen panel that slides from the right, matching the reference image. */
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        margin: 0 !important;
+        background-color: #0b0b0b !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: -10px 0 60px rgba(0, 0, 0, 0.6) !important;
+        z-index: 100005 !important;
+        /* ABOVE the header-two */
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 0 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior: contain !important;
+        transform: translate3d(100%, 0, 0) !important;
+        opacity: 1 !important;
+        visibility: hidden !important;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+            visibility 0.5s ease !important;
+        will-change: transform;
+        touch-action: pan-y !important;
+        /* disable double-tap / pinch zoom option on menu section */
+    }
+
+    .sidebar.show-sidebar {
+        transform: translate3d(0, 0, 0) !important;
+        visibility: visible !important;
+    }
+
+    /* Hide the legacy in-sidebar close button just in case */
+    .sidebar .nav-hamburger-close {
+        display: none !important;
+    }
+
+    /* ---------- INJECTED PANEL CONTENT ---------------------------------- */
+    .mobile-menu-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 100% !important;
+        padding: clamp(1rem, 3vh, 1.5rem) clamp(1rem, 4vw, 1.5rem) !important;
+    }
+
+    .mobile-menu-top {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: clamp(1.5rem, 5vh, 3rem) !important;
+    }
+
+    .mobile-menu-logo {
+        max-width: clamp(90px, 12vw, 110px) !important;
+        height: auto !important;
+    }
+
+    .mobile-menu-close {
+        background: transparent !important;
+        border: none !important;
+        padding: 0.5rem !important;
+        margin-right: -0.5rem !important;
+        cursor: pointer !important;
+        color: #ffffff !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .mobile-menu-links {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: clamp(0.5rem, 1.8vh, 0.85rem) !important;
+        margin-bottom: clamp(1.5rem, 4vh, 2.5rem) !important;
+    }
+
+    .mobile-menu-link {
+        font-family: 'Inter Tight', system-ui, sans-serif !important;
+        font-size: clamp(1.35rem, 4.2vh, 1.85rem) !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.025em !important;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        line-height: 1.2 !important;
+        transition: opacity 0.2s ease, color 0.2s ease !important;
+    }
+
+    .mobile-menu-link:active,
+    .mobile-menu-link:hover {
+        opacity: 0.7 !important;
+        transform: none !important;
+    }
+
+    .mobile-menu-divider {
+        height: 1px !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        margin: 0 -1.5rem clamp(1.25rem, 3.5vh, 2rem) -1.5rem !important;
+    }
+
+    .mobile-menu-footer-block {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.35rem !important;
+        margin-bottom: clamp(1rem, 2.8vh, 1.75rem) !important;
+    }
+
+    .mobile-menu-label {
+        font-family: 'Inter Tight', system-ui, sans-serif !important;
+        font-size: 0.8rem !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    .mobile-menu-email {
+        font-family: 'Inter Tight', system-ui, sans-serif !important;
+        font-size: clamp(1rem, 4vw, 1.25rem) !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
+        color: #ffffff !important;
+        text-decoration: none !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        word-break: break-all !important;
+    }
+
+    .mobile-menu-email .plus-icon {
+        font-weight: 400 !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .mobile-menu-location {
+        font-family: 'Inter Tight', system-ui, sans-serif !important;
+        font-size: clamp(0.85rem, 3vw, 0.95rem) !important;
+        font-weight: 500 !important;
+        color: #ffffff !important;
+        display: flex !important;
+        gap: 0.75rem !important;
+        margin-top: 0.5rem !important;
+    }
+
+    .mobile-menu-location .time-placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .mobile-menu-socials {
+        display: flex !important;
+        gap: 1.5rem !important;
+    }
+
+    .mobile-menu-socials a {
+        color: #ffffff !important;
+        transition: opacity 0.2s ease !important;
+    }
+
+    .mobile-menu-socials a:hover {
+        opacity: 0.7 !important;
+    }
+
+    .mobile-menu-bottom-bar {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: clamp(0.75rem, 2.5vh, 1.25rem) !important;
+        margin-top: auto !important;
+        padding-top: clamp(1rem, 3vh, 2rem) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .bottom-links {
+        display: flex !important;
+        gap: clamp(1rem, 4vw, 2rem) !important;
+        flex-wrap: wrap !important;
+    }
+
+    .bottom-links a {
+        font-family: 'Inter Tight', system-ui, sans-serif !important;
+        font-size: clamp(0.8rem, 2.5vw, 0.9rem) !important;
+        font-weight: 600 !important;
+        color: #ffffff !important;
+        text-decoration: none !important;
+    }
+
+    .bottom-copyright {
+        font-family: 'Inter Tight', system-ui, sans-serif !important;
+        font-size: 0.85rem !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+    }
+}
+
+/* Body scroll-lock while the mobile menu is open */
+body.overflow-hidden {
+    overflow: hidden !important;
+    height: 100% !important;
+}
+
+@media (max-width: 767.98px) {
+    body header .header-two {
+        margin-top: -34px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    #hero-how-it-works-btn {
+        display: block;
+        width: 100% !important;
+        max-width: 276px !important;
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+        margin: 0 auto !important;
+        border-width: 4px !important;
+        border-radius: 16px !important;
+        box-shadow: 0 10px 30px rgba(242, 212, 0, 0.3) !important;
+    }
+}
+
+/* Hero Bottom Content Layout Adjustment */
+.hero-bottom-content {
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 767px) {
+    .hero-bottom-content {
+        margin-bottom: -1.9rem;
+        gap: 2px !important;
+    }
+}
+
+/* ==========================================================================
+   NAVBAR POSITION LOCK — authoritative block, must stay last in this file
+   --------------------------------------------------------------------------
+   The header is fixed page chrome. It must never be moved by main.js's
+   [data-ns-animate] engine, by its headerTwo() inline-style writer, or by a
+   leftover Tailwind translate utility.
+
+   Why this resets `translate`, `rotate` and `scale` as well as `transform`:
+   those are four SEPARATE CSS properties. Depending on the Tailwind build,
+   `-translate-x-1/2` compiles either to a `transform: translate(...)` or to
+   the standalone `translate: -50%` property. Overriding only `transform`
+   leaves the standalone one alive, and the two COMPOSE — giving a double
+   -50% shift, which parks the pill off to the left. Resetting all four and
+   then applying one explicit transform removes that whole class of bug.
+   ========================================================================== */
+body header .header-two,
+header .header-two,
+.header-two {
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
+    animation: none !important;
+    clip-path: none !important;
+    rotate: none !important;
+    scale: none !important;
+}
+
+/* ---------- DESKTOP (>= 1280px): centred floating pill ---------- */
+@media (min-width: 1280px) {
+
+    body header .header-two,
+    header .header-two,
+    .header-two {
+        position: fixed !important;
+        top: 3.5rem !important;
+        left: 50% !important;
+        right: auto !important;
+        bottom: auto !important;
+        translate: none !important;
+        transform: translateX(-50%) !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 1140px !important;
+        transition: top 0.4s ease-in-out, opacity 0.35s ease !important;
+        will-change: opacity, top;
+        z-index: 99999 !important;
+    }
+
+    /* Hidden state fades only — never moves horizontally. */
+    body header .header-two.nav-hidden,
+    header .header-two.nav-hidden,
+    .header-two.nav-hidden {
+        translate: none !important;
+        transform: translateX(-50%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+}
+
+@media (min-width: 1440px) {
+
+    body header .header-two,
+    header .header-two,
+    .header-two {
+        max-width: 1290px !important;
+    }
+}
+
+/* ---------- MOBILE / TABLET (<= 1279.98px): full-width top bar ---------- */
+@media (max-width: 1279.98px) {
+
+    body header .header-two,
+    header .header-two,
+    .header-two {
+        left: 0 !important;
+        right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        translate: none !important;
+        transform: translate3d(0, 0, 0) !important;
+    }
+
+    /* Vertical slide-away is intentional and preserved. */
+    body header .header-two.nav-hidden,
+    header .header-two.nav-hidden,
+    .header-two.nav-hidden {
+        translate: none !important;
+        transform: translate3d(0, -100%, 0) !important;
+        opacity: 1 !important;
+    }
+}
+
+/* ==========================================================================
+   DESKTOP DROPDOWN — SLOW, SMOOTH DISMISS
+   --------------------------------------------------------------------------
+   WHY IT SNAPPED SHUT
+
+   main.css declares the closed state as:
+
+       .mega-menu, .dropdown-menu {
+           opacity: 0; visibility: hidden; transform: translateY(10px);
+           transition: opacity .3s, transform .3s, pointer-events 0s .3s;
+       }
+
+   `visibility` is set but is NOT in that transition list. So the moment
+   main.js removes .active, visibility flips to hidden instantly and the
+   element vanishes on frame one — the opacity fade never gets a chance to
+   be seen. On top of that, `.active` carried
+   `animation: .3s forwards menuSlideIn`, and killing an animation snaps the
+   element back to its unanimated state immediately.
+
+   THE FIX
+
+   Transition `visibility` with a delay equal to the fade duration, so it
+   only flips to hidden after the opacity has finished travelling. The
+   animation is replaced with plain transitions in both directions so
+   nothing can snap.
+
+   TIMING
+
+   Open is deliberately faster than close. A menu that takes a full second
+   to appear feels broken; one that takes a full second to leave feels
+   considered. Adjust either with the two variables below — they are the
+   only numbers you need to touch.
+   ========================================================================== */
+@media (min-width: 1280px) {
+
+    :root {
+        --nav-menu-in: 280ms;
+        --nav-menu-out: 1000ms;
+        --nav-menu-ease: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    /* ---------- CLOSED (and closing) ---------- */
+    .mega-menu,
+    .dropdown-menu {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(10px) scale(.985) !important;
+        pointer-events: none !important;
+        animation: none !important;
+        will-change: opacity, transform;
+        transition:
+            opacity var(--nav-menu-out) var(--nav-menu-ease),
+            transform var(--nav-menu-out) var(--nav-menu-ease),
+            visibility 0s linear var(--nav-menu-out) !important;
+    }
+
+    /* ---------- OPEN ---------- */
+    .mega-menu.active,
+    .dropdown-menu.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) scale(1) !important;
+        pointer-events: auto !important;
+        animation: none !important;
+        transition:
+            opacity var(--nav-menu-in) var(--nav-menu-ease),
+            transform var(--nav-menu-in) var(--nav-menu-ease),
+            visibility 0s !important;
+    }
+
+    /* The hover bridge is driven by inline opacity from main.js, so it only
+       needs its timing matched or it disappears a beat before the panel. */
+    .mega-menu-bridge,
+    .dropdown-menu-bridge {
+        transition: opacity var(--nav-menu-out) var(--nav-menu-ease) !important;
+    }
+
+    /* Arrow unwinds on the slow curve going out, snaps on the fast one
+       coming in, so it stays in step with the panel it belongs to. */
+    .nav-item .nav-arrow {
+        transition: transform var(--nav-menu-out) var(--nav-menu-ease) !important;
+    }
+
+    .nav-item:hover .nav-arrow,
+    .nav-item.active .nav-arrow,
+    .nav-item.menu-active .nav-arrow {
+        transition-duration: var(--nav-menu-in) !important;
+    }
+
+    /* Contents trail the panel very slightly — the panel starts moving
+       first and the cards follow, which reads as depth rather than as one
+       flat rectangle sliding. */
+    .dropdown-menu>*,
+    .mega-menu>* {
+        opacity: 0;
+        transform: translateY(6px);
+        transition:
+            opacity calc(var(--nav-menu-out) * .7) var(--nav-menu-ease),
+            transform calc(var(--nav-menu-out) * .7) var(--nav-menu-ease);
+    }
+
+    .dropdown-menu.active>*,
+    .mega-menu.active>* {
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+            opacity var(--nav-menu-in) var(--nav-menu-ease) 40ms,
+            transform var(--nav-menu-in) var(--nav-menu-ease) 40ms;
+    }
+}
+
+/* A slow dismiss is motion. Respect the preference. */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --nav-menu-in: 1ms;
+        --nav-menu-out: 1ms;
+    }
+}
+
+/* The link for the page you are already on. Kept subtle — it is a state
+   cue, not a button. desktop-navbar.js adds .is-current and aria-current. */
+.header-two a.is-current,
+#desktop-navbar a.is-current {
+    color: var(--color-accent, #f2d400) !important;
+}
+
+#desktop-navbar a.is-current>span {
+    opacity: .95;
+}
+
+/* ==========================================================================
+   FULL-BLEED VIEWPORT & HIDDEN SCROLLBAR (ALL PAGES)
+   --------------------------------------------------------------------------
+   Removes the vertical scrollbar track ("sidebar") so every page spans
+   edge-to-edge full screen without the side scrollbar moving up and down.
+   Wheel, trackpad, touch, keyboard and smooth scrolling remain 100% functional.
+   ========================================================================== */
+html {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+body {
+    scrollbar-width: none !important;
+    margin: 0 !important;
+    overscroll-behavior-x: none;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-x: clip !important;
+    max-width: 100% !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+
+/* Inner scrollers (mobile menu, dropdowns) keep a slim visible bar */
+.sidebar::-webkit-scrollbar,
+.dropdown-menu::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+    display: block !important;
+}
+
+/* ==========================================================================
+   MOBILE & TABLET BUTTER-SMOOTH SCROLLING (ZERO JITTER)
+   --------------------------------------------------------------------------
+   Promotes major page sections to their own composited GPU layers so the
+   compositor thread renders them at 60-120 FPS without layout thrashing.
+   ========================================================================== */
+@media (max-width: 1024px) {
+    html,
+    body {
+        -webkit-overflow-scrolling: touch !important;
+        scroll-behavior: auto !important;
+        touch-action: pan-y pinch-zoom;
+    }
+
+    /* Hardware accelerate heavy animated elements without breaking fixed coordinate contexts */
+    .hero-video-bg,
+    .pipeline-wrapper,
+    #hero-video {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+}

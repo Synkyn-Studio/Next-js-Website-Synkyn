@@ -1,0 +1,21 @@
+/*
+  Performance: the pipeline's drifting clouds, dust flecks and rocket flame,
+  and the sponsor logo marquees, run continuously and keep the compositor
+  repainting even while their section is far outside the viewport — which
+  costs frames on every other part of the page.
+
+  Their sections get `is-offscreen` (see behaviors/home/sections.ts →
+  pauseOffscreenDecor) whenever they are more than ~200px away, and the
+  animations resume exactly where they left off when scrolled back into view.
+  Nothing visible changes: the elements cannot be seen while paused.
+*/
+
+#pipeline-section.is-offscreen .fleck,
+#pipeline-section.is-offscreen .cloud,
+#pipeline-section.is-offscreen .rt-glow,
+#pipeline-section.is-offscreen .rt-flame-outer,
+#pipeline-section.is-offscreen .rt-flame-core,
+#pipeline-section.is-offscreen .rocket-rim,
+#research-sponsors.is-offscreen .logo-carousel-track {
+  animation-play-state: paused !important;
+}

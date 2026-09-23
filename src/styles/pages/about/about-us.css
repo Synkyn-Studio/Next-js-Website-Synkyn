@@ -1,0 +1,86 @@
+/*
+  Synkyn Studios
+  Copyright (c) 2026 Synkyn Studios. All rights reserved.
+*/
+
+.about-hero-origin-stack {
+    position: relative;
+    isolation: isolate
+}
+
+.about-hero-origin-stack__sticky-bg {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    width: 100%;
+    z-index: 0;
+    background-color: transparent
+}
+
+.about-hero-origin-stack__sticky-bg .particle-effect-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0
+}
+
+.about-hero-origin-stack__scroll {
+    position: relative;
+    z-index: 1;
+    margin-top: -100svh;
+    pointer-events: none;
+    background-color: transparent
+}
+
+.about-hero-origin-stack__scroll .hero-section {
+    pointer-events: none
+}
+
+.about-hero-origin-stack__scroll .pointer-events-auto,
+.about-hero-origin-stack__scroll .origin-story-section {
+    pointer-events: auto
+}
+
+.about-hero-origin-stack .origin-story-section {
+    min-height: 100svh;
+    scroll-margin-top: 6.5rem
+}
+
+.about-hero-origin-stack .origin-story-panel {
+    background-image: none !important;
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important
+}
+
+@keyframes helix-space-station-arc {
+    0% {
+        transform: translate(-360%) translateY(8rem);
+        opacity: 1
+    }
+
+    25% {
+        transform: translate(-64%) translateY(-1.5rem);
+        opacity: 1
+    }
+
+    50% {
+        transform: translate(0) translateY(-3.5rem);
+        opacity: 1
+    }
+
+    75% {
+        transform: translate(64%) translateY(-1.5rem);
+        opacity: 1
+    }
+
+    to {
+        transform: translate(360%) translateY(12rem);
+        opacity: 1
+    }
+}
+
+.helix-space-station-float.helix-space-station-float--in-view {
+    animation: helix-space-station-arc 28s linear infinite
+}

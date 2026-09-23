@@ -1,0 +1,521 @@
+/* ============================================================
+   Synkyn — Contact page (self-contained, scoped sk-c-*).
+   Transparent background, yellow/black theme, no forms.
+   Degrades gracefully without JS, respects reduced-motion.
+============================================================ */
+
+/* ── shared ── */
+.sk-c-eyebrow {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #f2c200;
+    font-weight: 600;
+}
+
+/* ── HERO ── */
+.sk-c-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(9rem, 18vw, 14rem) 0 clamp(3.5rem, 7vw, 6rem);
+    text-align: center;
+}
+
+.sk-c-hero__glow {
+    position: absolute;
+    top: -18%;
+    left: 50%;
+    width: min(760px, 90vw);
+    aspect-ratio: 1 / 1;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(242, 196, 0, 0.16), transparent 62%);
+    filter: blur(30px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.sk-c-hero__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+.sk-c-hero h1 {
+    margin: 1.15rem 0 1.15rem;
+    font-size: clamp(2.4rem, 6.4vw, 4.6rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
+    color: #fff;
+}
+
+.sk-c-hero h1 span {
+    background: linear-gradient(135deg, #fff 26%, #f2c200 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sk-c-hero__lead {
+    max-width: 620px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: clamp(1rem, 1.7vw, 1.18rem);
+    line-height: 1.7;
+}
+
+.sk-c-hero__cta {
+    margin-top: 2.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    justify-content: center;
+}
+
+/* big email button */
+.sk-c-mailbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1rem 1.8rem;
+    border-radius: 999px;
+    border: 1px solid #f2d400;
+    background: #f2d400;
+    color: #0a0a0a;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 14px 40px rgba(242, 196, 0, 0.22);
+}
+
+.sk-c-mailbtn svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.25s ease;
+}
+
+.sk-c-mailbtn:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 54px rgba(0, 0, 0, 0.5);
+}
+
+.sk-c-mailbtn:hover svg {
+    transform: translateX(4px);
+}
+
+.sk-c-ghostbtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 1.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 216, 77, 0.28);
+    background: rgba(255, 216, 77, 0.04);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+
+.sk-c-ghostbtn:hover {
+    border-color: rgba(255, 216, 77, 0.55);
+    background: rgba(255, 216, 77, 0.09);
+    transform: translateY(-2px);
+}
+
+.sk-c-hero__meta {
+    margin-top: 1.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.86rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.sk-c-pulse {
+    position: relative;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #6ee787;
+    box-shadow: 0 0 0 0 rgba(110, 231, 135, 0.6);
+    animation: skcPulse 2.2s infinite;
+}
+
+@keyframes skcPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(110, 231, 135, 0.55);
+    }
+
+    70% {
+        box-shadow: 0 0 0 9px rgba(110, 231, 135, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(110, 231, 135, 0);
+    }
+}
+
+/* ── CONTACT METHOD CARDS (tilt + glare) ── */
+.sk-c-section {
+    padding: clamp(3rem, 7vw, 5.5rem) 0;
+}
+
+.sk-c-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto clamp(2.2rem, 4vw, 3.2rem);
+    padding: 0 1.25rem;
+}
+
+.sk-c-head h2 {
+    margin: 0.9rem 0 0.75rem;
+    font-size: clamp(1.8rem, 4vw, 2.7rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: #fff;
+}
+
+.sk-c-head p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: clamp(0.98rem, 1.6vw, 1.08rem);
+    line-height: 1.7;
+}
+
+.sk-c-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    perspective: 1100px;
+}
+
+@media (max-width: 900px) {
+    .sk-c-cards {
+        grid-template-columns: 1fr;
+        max-width: 460px;
+    }
+}
+
+.sk-c-card {
+    position: relative;
+    border-radius: 20px;
+    text-decoration: none;
+    outline: none;
+    transform-style: preserve-3d;
+    transition: transform 0.2s ease-out;
+    will-change: transform;
+}
+
+.sk-c-card__inner {
+    position: relative;
+    height: 100%;
+    padding: 2rem 1.7rem 1.9rem;
+    border-radius: 20px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
+    border: 1px solid rgba(255, 216, 77, 0.16);
+    box-shadow: 0 12px 44px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 216, 77, 0.08);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.sk-c-card:hover .sk-c-card__inner,
+.sk-c-card:focus-visible .sk-c-card__inner {
+    border-color: rgba(255, 216, 77, 0.36);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 216, 77, 0.14);
+}
+
+.sk-c-card__glare {
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 224, 130, 0.2), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sk-c-card:hover .sk-c-card__glare,
+.sk-c-card:focus-visible .sk-c-card__glare {
+    opacity: 1;
+}
+
+.sk-c-card__icon {
+    display: inline-flex;
+    width: 54px;
+    height: 54px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    color: #f2c200;
+    margin-bottom: 1.15rem;
+    background: rgba(242, 196, 0, 0.1);
+    border: 1px solid rgba(242, 196, 0, 0.22);
+}
+
+.sk-c-card__icon svg {
+    width: 25px;
+    height: 25px;
+}
+
+.sk-c-card__label {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+    margin: 0 0 0.35rem;
+}
+
+.sk-c-card__value {
+    color: #fff;
+    font-size: 1.16rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5rem;
+    word-break: break-word;
+}
+
+.sk-c-card__copy {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.94rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.sk-c-card__arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.15rem;
+    color: #f2c200;
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.sk-c-card__arrow svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.25s ease;
+}
+
+.sk-c-card:hover .sk-c-card__arrow svg {
+    transform: translateX(4px);
+}
+
+.sk-c-card:focus-visible {
+    outline: 2px solid rgba(242, 196, 0, 0.65);
+    outline-offset: 5px;
+}
+
+/* ── PROCESS STEPS ── */
+.sk-c-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+@media (max-width: 900px) {
+    .sk-c-steps {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+    }
+}
+
+.sk-c-step {
+    position: relative;
+    padding: 2rem 1.7rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    transition: border-color 0.35s ease, transform 0.35s ease;
+}
+
+.sk-c-step:hover {
+    border-color: rgba(255, 216, 77, 0.28);
+    transform: translateY(-4px);
+}
+
+.sk-c-step__num {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 20%, #f2c200 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.sk-c-step__title {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+}
+
+.sk-c-step__copy {
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.93rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ── FAQ ── */
+.sk-c-faq {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+}
+
+.sk-c-faq__item {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.02);
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+}
+
+.sk-c-faq__item[open] {
+    border-color: rgba(255, 216, 77, 0.3);
+}
+
+.sk-c-faq__q {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.15rem 1.35rem;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.sk-c-faq__q::-webkit-details-marker {
+    display: none;
+}
+
+.sk-c-faq__q .sk-c-chev {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: #f2c200;
+    transition: transform 0.3s ease;
+}
+
+.sk-c-faq__item[open] .sk-c-chev {
+    transform: rotate(180deg);
+}
+
+.sk-c-faq__a {
+    padding: 0 1.35rem 1.25rem;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* ── FINAL CTA BAND ── */
+.sk-c-band {
+    position: relative;
+    overflow: hidden;
+    max-width: 1120px;
+    margin: clamp(2rem, 5vw, 4rem) auto 0;
+    padding: clamp(2.6rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 4rem);
+    border-radius: 26px;
+    text-align: center;
+    border: 1px solid rgba(255, 216, 77, 0.2);
+    background: linear-gradient(160deg, rgba(255, 216, 77, 0.07), rgba(255, 255, 255, 0.015));
+}
+
+.sk-c-band__glow {
+    position: absolute;
+    bottom: -40%;
+    left: 50%;
+    width: 60%;
+    aspect-ratio: 1 / 1;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(242, 196, 0, 0.2), transparent 66%);
+    filter: blur(46px);
+    pointer-events: none;
+}
+
+.sk-c-band__inner {
+    position: relative;
+    z-index: 1;
+}
+
+.sk-c-band h2 {
+    margin: 0.9rem auto 0.9rem;
+    max-width: 620px;
+    font-size: clamp(1.8rem, 4.2vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: #fff;
+}
+
+.sk-c-band p {
+    max-width: 520px;
+    margin: 0 auto 1.9rem;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: clamp(0.98rem, 1.6vw, 1.1rem);
+    line-height: 1.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sk-c-card,
+    .sk-c-step,
+    .sk-c-pulse,
+    .sk-c-mailbtn,
+    .sk-c-ghostbtn {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    #sticky-bar {
+        height: 4.5rem !important;
+    }
+}
+
+/* Connect button hover state -> Mail */
+.nav-connect-mail {
+    min-width: 98px;
+    justify-content: center;
+}
+
+.nav-connect-mail .btn-text-hover {
+    display: none;
+}
+
+.nav-connect-mail:hover .btn-text-default {
+    display: none;
+}
+
+.nav-connect-mail:hover .btn-text-hover {
+    display: inline;
+}

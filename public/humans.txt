@@ -1,0 +1,12 @@
+/* TEAM */
+  Author: Prajwal A B
+  Studio: Synkyn Studios
+  Site: https://www.synkynstudios.com/
+  Location: Bengaluru, Karnataka, India
+
+/* SITE */
+  Last update: 2026-09-07
+  Language: English
+  Doctype: HTML5
+  Standards: HTML5, CSS3, Schema.org
+  Sitemap: https://www.synkynstudios.com/sitemap.xml

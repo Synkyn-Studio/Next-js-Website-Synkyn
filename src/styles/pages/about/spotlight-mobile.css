@@ -1,0 +1,9 @@
+@media (max-width: 767px) {
+    .chroma-spotlight-section .chroma-spotlight-veil {
+        display: none !important;
+    }
+
+    .chroma-spotlight-section {
+        --spot-grayscale-opacity: 0;
+    }
+}
