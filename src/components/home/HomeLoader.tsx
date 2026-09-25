@@ -9,7 +9,7 @@
   execute), so the effect starts the same controller instead.
 */
 
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useSyncExternalStore } from "react";
 import { loaderBootstrap, LOADER_INLINE_SCRIPT, type LoaderHandle } from "@/behaviors/home/loader";
 import { revealFailsafe } from "@/behaviors/reveal";
 import { useImmediateBehavior } from "@/lib/runtime/use-behavior";
@@ -34,12 +34,23 @@ declare global {
 */
 let pendingTeardown: number | null = null;
 
+/*
+  True while rendering on the server and hydrating the first document load,
+  false for a render on the client (a client-side navigation to Home). The
+  inline script only belongs in server HTML: a <script> React creates on the
+  client is never executed, and React warns about it.
+*/
+const noopSubscribe = () => () => {};
+const useIsServerHtml = () => useSyncExternalStore(noopSubscribe, () => false, () => true);
+
 const liveRunFor = (el: HTMLElement | null) => {
   const live = window.__synkynLoader;
   return live && el && live.el === el ? live : null;
 };
 
 export default function HomeLoader() {
+  const serverHtml = useIsServerHtml();
+
   // Client-side navigation to Home: raise the loader before first paint.
   useLayoutEffect(() => {
     // A run that has already opened the page must stay down — re-raising it
@@ -101,7 +112,7 @@ export default function HomeLoader() {
           <div className="loader-pct" suppressHydrationWarning>01%</div>
         </div>
       </div>
-      <script dangerouslySetInnerHTML={{ __html: LOADER_INLINE_SCRIPT }} />
+      {serverHtml && <script dangerouslySetInnerHTML={{ __html: LOADER_INLINE_SCRIPT }} />}
     </>
   );
 }

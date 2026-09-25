@@ -21,9 +21,8 @@ import type { Scope } from "@/lib/runtime/scope";
 
 /*
   How long the hero waits for the loader before playing anyway. It has to clear
-  the loader's own worst case (loader.ts: ~3s, or its 2.6s rAF-less backstop +
-  the 1s open), or the failsafe fires first and the intro plays behind the
-  panels.
+  the loader's fixed timeline (loader.ts: 3s on screen + the 820ms open), or
+  the failsafe fires first and the intro plays behind the panels.
 */
 const LOADER_WAIT_MS = 4500;
 
@@ -139,7 +138,16 @@ export function heroIntro(scope: Scope) {
     if (measured) return;
     measured = true;
     buildScrollOut();
-    if (ScrollTrigger) ScrollTrigger.refresh();
+    if (!ScrollTrigger) return;
+    ScrollTrigger.refresh();
+    /*
+      The loader opens on a fixed 3s timeline, not when the page has finished
+      loading, so images and fonts can still be arriving and moving section
+      boundaries. Re-measure every scroll animation once they have.
+    */
+    const refresh = scope.wrap(() => ScrollTrigger.refresh());
+    if (document.readyState !== "complete") scope.on(window, "load", refresh, { once: true });
+    if (document.fonts && document.fonts.status !== "loaded") document.fonts.ready.then(refresh, () => undefined);
   });
 
   if (!root.classList.contains("show-loader")) { measure(); return; }

@@ -63,8 +63,13 @@ const GTAG_SCRIPT = `window.dataLayer=window.dataLayer||[];function gtag(){dataL
   transform, so it is composited. The overlay lets clicks through, the
   unnamed root (header, fixed chrome) is not animated at all, and reduced
   motion turns it off.
+
+  Arriving on Home, the loader is already up when the new page is captured
+  (HomeLoader raises it in a layout effect). The incoming snapshot is drawn in
+  the transition overlay, above the loader, so it would flash the hero for the
+  length of the fade-in; it is not drawn at all while the loader is showing.
 */
-const PAGE_TRANSITION_CSS = `::view-transition{pointer-events:none}::view-transition-group(root){animation:none}::view-transition-old(root){display:none}::view-transition-new(root){animation:none}::view-transition-old(.page-out){animation:160ms cubic-bezier(.4,0,1,1) both synkyn-page-out}::view-transition-new(.page-in){animation:320ms cubic-bezier(.16,1,.3,1) 90ms both synkyn-page-in}@keyframes synkyn-page-out{to{opacity:0}}@keyframes synkyn-page-in{from{opacity:0;transform:translate3d(0,12px,0)}}@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}`;
+const PAGE_TRANSITION_CSS = `::view-transition{pointer-events:none}::view-transition-group(root){animation:none}::view-transition-old(root){display:none}::view-transition-new(root){animation:none}::view-transition-old(.page-out){animation:160ms cubic-bezier(.4,0,1,1) both synkyn-page-out}::view-transition-new(.page-in){animation:320ms cubic-bezier(.16,1,.3,1) 90ms both synkyn-page-in}html.show-loader::view-transition-new(.page-in){display:none}@keyframes synkyn-page-out{to{opacity:0}}@keyframes synkyn-page-in{from{opacity:0;transform:translate3d(0,12px,0)}}@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
