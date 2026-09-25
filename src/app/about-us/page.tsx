@@ -4,6 +4,7 @@ import OurStorySection from "@/components/about/OurStorySection";
 import TeamSection from "@/components/about/TeamSection";
 import Footer from "@/components/layout/Footer";
 import PageStyle from "@/components/layout/PageStyle";
+import ResearchSponsorsSection from "@/components/home/ResearchSponsorsSection";
 import PageRuntime from "@/components/runtime/PageRuntime";
 import JsonLd from "@/components/seo/JsonLd";
 import { STRUCTURED_DATA } from "@/data/structured-data";
@@ -25,6 +26,7 @@ export default function AboutPage() {
           "pages/about/sk3d.css",
           "shared/enhanced-responsive.css",
           "pages/about/smooth-scroll.css",
+          "pages/home/logo-showcase.css",
           "pages/about/timeline-mobile.css",
           "pages/about/spotlight-mobile.css",
           "shared/sticky-bar-mobile.css",
@@ -36,6 +38,7 @@ export default function AboutPage() {
           <AboutHeroSection />
           <OurStorySection />
           <TeamSection />
+          <ResearchSponsorsSection />
           <Footer currentPath={ROUTES.about} />
         </main>
       </PageTransition>
