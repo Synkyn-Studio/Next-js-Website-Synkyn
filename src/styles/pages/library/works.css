@@ -88,6 +88,33 @@
   }
 }
 
+/* ── Row of three 16:9 videos under the grid (WORKS_ROW) ──
+   Same gaps as the grid, and the same gap above it, so it reads as one more
+   row of the grid rather than a separate block. */
+#bento-row-3 {
+  --bento-gap: clamp(12px, 1.4vw, 22px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--bento-gap);
+  margin-top: var(--bento-gap);
+  width: 100%;
+}
+
+@media (min-width: 641px) and (max-width: 1023.98px) {
+  #bento-row-3 {
+    gap: 26px;
+    margin-top: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  #bento-row-3 {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 18px;
+  }
+}
+
 /* ── Tile ── */
 .bento-item {
   position: relative;

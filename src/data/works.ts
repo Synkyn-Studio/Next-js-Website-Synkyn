@@ -97,6 +97,57 @@ export const WORKS: Work[] = [
   },
 ];
 
+/*
+  The row of three 16:9 videos under the bento grid (LibraryWorks.tsx).
+  Fill in each entry:
+    - title / category / description: text on the card and in the modal
+      (description is HTML, like the works above).
+    - thumbnail: the card's cover image URL.
+    - sources[0].src: the video URL. `type` is "vimeo" for a
+      player.vimeo.com/video/<id> link; use "youtube" for a YouTube link or
+      "video" for a direct .mp4 file.
+  A card with no video URL shows an empty placeholder and does not open.
+*/
+export const WORKS_ROW: Work[] = [
+  {
+    id: "work-red-bus",
+    title: "RedBus",
+    category: "Ad Film",
+    tag: "Film",
+    thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/redbuss.png?updatedAt=1784389746357",
+    description: "<strong>RedBus – GenAI Cleanups</strong><br><br><strong>Craft:</strong> Generative AI · VFX<br><strong>Focus:</strong> Seamless cleanups, frame refinement and photorealistic visual enhancement.",
+    sources: [
+      { type: "vimeo", src: "https://player.vimeo.com/video/1208148385" },
+      { type: "vimeo", src: "https://player.vimeo.com/video/1208148389" },
+      { type: "vimeo", src: "https://player.vimeo.com/video/1208148384" },
+      { type: "vimeo", src: "https://player.vimeo.com/video/1208148386" },
+    ],
+  },
+  {
+    id: "work-row-2",
+    title: "",
+    category: "",
+    tag: "Film",
+    ratio: "16:9",
+    thumbnail: "",
+    description: "",
+    sources: [{ type: "vimeo", src: "" }],
+  },
+  {
+    id: "work-row-3",
+    title: "",
+    category: "",
+    tag: "Film",
+    ratio: "16:9",
+    thumbnail: "",
+    description: "",
+    sources: [{ type: "vimeo", src: "" }],
+  },
+];
+
+/** Every card on the Library page: the bento grid, then the row under it. */
+export const ALL_WORKS: Work[] = [...WORKS, ...WORKS_ROW];
+
 export function getYouTubeId(url: string) {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);
   return m ? m[1] : null;

@@ -8,7 +8,7 @@
 import type { Scope } from "@/lib/runtime/scope";
 import { smoothScrollTo } from "@/lib/runtime/smooth-scroll";
 import { loadVimeoApi } from "@/lib/runtime/vendors";
-import { getInstagramShortcode, getVimeoId, getYouTubeId, WORKS, type Work } from "@/data/works";
+import { getInstagramShortcode, getVimeoId, getYouTubeId, ALL_WORKS, WORKS, type Work } from "@/data/works";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -40,9 +40,10 @@ export function libraryWorks(scope: Scope) {
   let activeVimeoPlayers: any[] = [];
 
   /* ---------- Cards: open + hover preview ---------- */
-  document.querySelectorAll<HTMLElement>("#bento-grid-container .bento-item").forEach((el) => {
-    const work = WORKS.find((w) => w.id === el.dataset.id);
-    if (!work) return;
+  document.querySelectorAll<HTMLElement>("#bento-grid-container .bento-item, #bento-row-3 .bento-item").forEach((el) => {
+    const work = ALL_WORKS.find((w) => w.id === el.dataset.id);
+    // A card whose media has not been filled in yet (WORKS_ROW) stays inert.
+    if (!work || !work.sources.some((s) => s.src)) return;
     scope.on(el, "click", () => openModal(work));
     scope.on(el, "keydown", (e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(work); } });
 
@@ -367,13 +368,13 @@ export function libraryWorks(scope: Scope) {
     if (!window.location.hash) return;
     const raw = window.location.hash.replace(/^#/, "").trim();
     if (!raw) return;
-    let target = WORKS.find((w) => w.id === raw);
+    let target = ALL_WORKS.find((w) => w.id === raw);
     if (!target) {
       if (raw === "work-yt-1" || raw === "nbk111" || raw === "work-nbk111") target = WORKS.find((w) => w.id === "work-nbk111");
       else if (raw === "recent-post" && WORKS.length > 0) target = WORKS[0];
       else target = WORKS.find((w) => w.id.toLowerCase().includes(raw.toLowerCase()) || (w.title && w.title.toLowerCase().includes(raw.toLowerCase())));
     }
-    if (target) {
+    if (target && target.sources.some((s) => s.src)) {
       const t = target;
       scope.timeout(() => {
         // Position the page behind the modal first; native smooth scrolling

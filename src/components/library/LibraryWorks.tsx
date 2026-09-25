@@ -1,4 +1,4 @@
-import { WORKS } from "@/data/works";
+import { WORKS, WORKS_ROW } from "@/data/works";
 import WorkCard from "./WorkCard";
 
 export default function LibraryWorks() {
@@ -8,6 +8,12 @@ export default function LibraryWorks() {
         <div className="main-container 2xl:!max-w-[1440px]">
           <div id="bento-grid-container">
             {WORKS.map((work) => (
+              <WorkCard key={work.id} work={work} />
+            ))}
+          </div>
+          {/* Three 16:9 videos under the grid — edit WORKS_ROW in data/works.ts. */}
+          <div id="bento-row-3">
+            {WORKS_ROW.map((work) => (
               <WorkCard key={work.id} work={work} />
             ))}
           </div>
