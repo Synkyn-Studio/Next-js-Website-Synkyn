@@ -80,8 +80,23 @@ export function megaMenus(scope: Scope) {
     cancelHide();
     menuTimeout = scope.timeout(() => { if (!isMouseInHeader && !isMouseInMenu) hideAll(); }, 200);
   };
+  /*
+    Switching straight from one menu to another: the outgoing panel would run
+    the slow dismiss underneath the incoming one (same position), so the two
+    showed through each other. `.menu-swap` gives it a short exit instead.
+  */
+  const SWAP_MS = 200;
+  const swapOut = (except: HTMLElement) => {
+    document.querySelectorAll<HTMLElement>(MENU_SEL).forEach((m) => {
+      if (m === except || !m.classList.contains("active")) return;
+      m.classList.add("menu-swap");
+      scope.timeout(() => { if (!m.classList.contains("active")) m.classList.remove("menu-swap"); }, SWAP_MS + 50);
+    });
+  };
   const showMenu = (navItem: HTMLElement, menu: HTMLElement) => {
     cancelHide();
+    swapOut(menu);
+    menu.classList.remove("menu-swap");
     hideAll();
     navItem.classList.add("active");
     menu.classList.add("active");
@@ -132,7 +147,32 @@ export function megaMenus(scope: Scope) {
   }, true);
   scope.on(document, "mouseleave", () => hideAll());
 
+  warmMenuMedia(scope);
+
   return { hideAll };
+}
+
+/*
+  Mega-menu images: fade each one in once loaded (instead of painting in
+  half-decoded), and decode them while idle so the first open doesn't hitch.
+  `.is-pending` is only ever added here, so without JS the images just show.
+*/
+function warmMenuMedia(scope: Scope) {
+  const imgs = document.querySelectorAll<HTMLImageElement>("#desktop-navbar img.nav-media");
+  imgs.forEach((img) => {
+    if (img.complete) return;
+    img.classList.add("is-pending");
+    const done = () => img.classList.remove("is-pending");
+    scope.on(img, "load", done);
+    scope.on(img, "error", done);
+  });
+  const decodeAll = () => imgs.forEach((img) => { img.decode?.().catch(() => { /* not loaded yet / failed */ }); });
+  if ("requestIdleCallback" in window) {
+    const id = window.requestIdleCallback(decodeAll, { timeout: 3000 });
+    scope.add(() => window.cancelIdleCallback(id));
+  } else {
+    scope.timeout(decodeAll, 1500);
+  }
 }
 
 /* ------------------------------------------------------------------ *

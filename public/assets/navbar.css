@@ -582,7 +582,7 @@ header .header-two,
    TIMING
 
    Open is deliberately faster than close. A menu that takes a full second
-   to appear feels broken; one that takes a full second to leave feels
+   to appear feels broken; one that takes most of a second to leave feels
    considered. Adjust either with the two variables below — they are the
    only numbers you need to touch.
    ========================================================================== */
@@ -590,8 +590,13 @@ header .header-two,
 
     :root {
         --nav-menu-in: 280ms;
-        --nav-menu-out: 1000ms;
+        --nav-menu-out: 700ms;
+        --nav-menu-swap: 200ms;
         --nav-menu-ease: cubic-bezier(.22, 1, .36, 1);
+        /* The expo curve above drops most of the opacity in the first frames,
+           which reads as a snap followed by a ghost. Leaving uses an even
+           ease-in-out so the panel visibly dissolves the whole way down. */
+        --nav-menu-ease-out: cubic-bezier(.45, 0, .25, 1);
     }
 
     /* ---------- CLOSED (and closing) ---------- */
@@ -604,8 +609,8 @@ header .header-two,
         animation: none !important;
         will-change: opacity, transform;
         transition:
-            opacity var(--nav-menu-out) var(--nav-menu-ease),
-            transform var(--nav-menu-out) var(--nav-menu-ease),
+            opacity var(--nav-menu-out) var(--nav-menu-ease-out),
+            transform var(--nav-menu-out) var(--nav-menu-ease-out),
             visibility 0s linear var(--nav-menu-out) !important;
     }
 
@@ -627,13 +632,13 @@ header .header-two,
        needs its timing matched or it disappears a beat before the panel. */
     .mega-menu-bridge,
     .dropdown-menu-bridge {
-        transition: opacity var(--nav-menu-out) var(--nav-menu-ease) !important;
+        transition: opacity var(--nav-menu-out) var(--nav-menu-ease-out) !important;
     }
 
     /* Arrow unwinds on the slow curve going out, snaps on the fast one
        coming in, so it stays in step with the panel it belongs to. */
     .nav-item .nav-arrow {
-        transition: transform var(--nav-menu-out) var(--nav-menu-ease) !important;
+        transition: transform var(--nav-menu-out) var(--nav-menu-ease-out) !important;
     }
 
     .nav-item:hover .nav-arrow,
@@ -650,8 +655,8 @@ header .header-two,
         opacity: 0;
         transform: translateY(6px);
         transition:
-            opacity calc(var(--nav-menu-out) * .7) var(--nav-menu-ease),
-            transform calc(var(--nav-menu-out) * .7) var(--nav-menu-ease);
+            opacity calc(var(--nav-menu-out) * .7) var(--nav-menu-ease-out),
+            transform calc(var(--nav-menu-out) * .7) var(--nav-menu-ease-out);
     }
 
     .dropdown-menu.active>*,
@@ -662,6 +667,32 @@ header .header-two,
             opacity var(--nav-menu-in) var(--nav-menu-ease) 40ms,
             transform var(--nav-menu-in) var(--nav-menu-ease) 40ms;
     }
+
+    /* Moving straight from one menu to the other: the outgoing panel gets out
+       of the way quickly instead of dissolving under the incoming one.
+       site-chrome.ts adds .menu-swap for the length of this exit. */
+    .mega-menu.menu-swap:not(.active),
+    .dropdown-menu.menu-swap:not(.active) {
+        transition:
+            opacity var(--nav-menu-swap) ease-out,
+            transform var(--nav-menu-swap) ease-out,
+            visibility 0s linear var(--nav-menu-swap) !important;
+    }
+
+    .dropdown-menu.menu-swap:not(.active)>*,
+    .mega-menu.menu-swap:not(.active)>* {
+        transition: opacity var(--nav-menu-swap) ease-out, transform var(--nav-menu-swap) ease-out;
+    }
+
+    /* "What's new" media fades in when it has loaded rather than painting in
+       row by row. Keeps the 900ms hover zoom from the Tailwind classes. */
+    #desktop-navbar img.nav-media {
+        transition: opacity 600ms var(--nav-menu-ease), transform 900ms ease-out;
+    }
+
+    #desktop-navbar img.nav-media.is-pending {
+        opacity: 0;
+    }
 }
 
 /* A slow dismiss is motion. Respect the preference. */
@@ -669,6 +700,7 @@ header .header-two,
     :root {
         --nav-menu-in: 1ms;
         --nav-menu-out: 1ms;
+        --nav-menu-swap: 1ms;
     }
 }
 

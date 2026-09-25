@@ -108,7 +108,12 @@ function CompanyLink({ href, title, subtitle, icon }: { href: string; title: str
   );
 }
 
-const BLURRED_MEDIA = "h-full w-full object-cover blur-sm scale-[1.20] transition-transform duration-[900ms] ease-out group-hover:scale-[1.25]";
+/*
+  Eager + low priority: the panels are hidden until hover, so lazy images only
+  started downloading on the first hover and popped in. site-chrome.ts fades
+  them in (.nav-media) once they have loaded.
+*/
+const BLURRED_MEDIA = "nav-media h-full w-full object-cover blur-sm scale-[1.20] transition-transform duration-[900ms] ease-out group-hover:scale-[1.25]";
 const ICON_STROKE = "stroke-secondary dark:stroke-accent";
 
 export default function DesktopNav() {
@@ -158,7 +163,7 @@ export default function DesktopNav() {
             href="/printalbum#project-1"
             title="Grooming - Zlade"
             subtitle="Print Album"
-            media={<SafeImg alt="Grooming - Zlade" className={BLURRED_MEDIA} decoding="async" loading="lazy" src="https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade/11.png?updatedAt=1783513857260" />}
+            media={<SafeImg alt="Grooming - Zlade" className={BLURRED_MEDIA} decoding="async" loading="eager" fetchPriority="low" src="https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade/11.png?updatedAt=1783513857260&tr=w-640,q-75" />}
           />
         </MegaMenuItem>
 
@@ -227,7 +232,7 @@ export default function DesktopNav() {
               <picture>
                 <source srcSet="/images/ns-img-485.avif" type="image/avif" />
                 <source srcSet="/images/ns-img-485.webp" type="image/webp" />
-                <SafeImg alt="NBK111 Glimpse" className={BLURRED_MEDIA} decoding="async" loading="lazy" src="/images/ns-img-485.png" />
+                <SafeImg alt="NBK111 Glimpse" className={BLURRED_MEDIA} decoding="async" loading="eager" fetchPriority="low" src="/images/ns-img-485.png" />
               </picture>
             }
           />

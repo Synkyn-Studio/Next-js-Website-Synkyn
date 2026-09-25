@@ -7,7 +7,7 @@ export const GTM_ID = "GTM-KLBKS7TM";
 export const GA_ID = "G-PST0K7RG3R";
 
 /** Cache-busting query for the unprocessed files in /public/assets. Bump when they change. */
-export const ASSET_VERSION = "1";
+export const ASSET_VERSION = "2";
 
 /** <body> classes used by every page except 404. */
 export const DEFAULT_BODY_CLASS = "bg-background-3 dark:bg-helix-blue-dark-2";
