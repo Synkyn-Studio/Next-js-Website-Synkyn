@@ -5,7 +5,7 @@ export default function FeaturedSection() {
         <div className="pf-head pf-reveal">
           <div>
             <p className="pf-head__eyebrow">Featured</p>
-            <h2 className="pf-head__title">Signature projects</h2>
+            <h2 className="pf-head__title">Spec projects</h2>
           </div>
           <p className="pf-head__note">A handful of works we’re especially proud of — tap any tile to open the full gallery.</p>
         </div>
