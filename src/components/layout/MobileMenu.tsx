@@ -40,7 +40,7 @@ export default function MobileMenu() {
 
       <div className="mobile-menu-footer-block">
         <div className="mobile-menu-label">{"Let's Talk"}</div>
-        <a href={`mailto:${CONTACT_EMAIL}`} className="mobile-menu-email">
+        <a href={`mailto:${CONTACT_EMAIL}`} className="mobile-menu-email js-email-cta">
           {CONTACT_EMAIL}
           <span className="plus-icon">+</span>
         </a>

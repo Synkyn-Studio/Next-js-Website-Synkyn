@@ -84,3 +84,15 @@
 .helix-space-station-float.helix-space-station-float--in-view {
     animation: helix-space-station-arc 28s linear infinite
 }
+
+/* Leadership grid with three founders: on desktop each card is wider than
+   in the old four-up row, so a fixed 180px photo box cropped the portraits to
+   hair and eyes. Keep the box at the old proportions instead (284 x 270): the
+   photos are cropped from the top at card width, so the framing stays the
+   same whatever the card width. */
+@media (min-width: 1024px) {
+    .chroma-grid .chroma-img-wrapper > div {
+        height: auto;
+        aspect-ratio: 284 / 270;
+    }
+}

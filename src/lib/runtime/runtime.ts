@@ -8,7 +8,7 @@
 
 import { APPLE_TUNED_ROUTES, normalisePath } from "@/lib/site";
 import { initSmoothScroll } from "./smooth-scroll";
-import { loadVendorExtras, loadVendors } from "./vendors";
+import { loadVendors } from "./vendors";
 
 let ready: Promise<void> | null = null;
 
@@ -17,7 +17,6 @@ export function whenRuntimeReady(): Promise<void> {
     ready = loadVendors().then(() => {
       const path = normalisePath(window.location.pathname);
       initSmoothScroll(APPLE_TUNED_ROUTES.has(path) ? "apple" : "standard");
-      loadVendorExtras();
     });
     ready.catch((err) => console.error("[synkyn] vendor bootstrap failed", err));
   }

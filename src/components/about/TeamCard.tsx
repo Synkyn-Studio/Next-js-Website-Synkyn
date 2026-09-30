@@ -18,7 +18,7 @@ export default function TeamCard({ member }: { member: TeamMember }) {
             className="absolute inset-0 h-full w-full object-cover object-top"
             src={photo}
             fill
-            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 400px"
+            sizes="(min-width: 768px) 33vw, 400px"
           />
         </div>
       </div>

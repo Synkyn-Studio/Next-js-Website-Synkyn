@@ -7,12 +7,13 @@
 import type { ReactNode } from "react";
 import SafeImg from "@/components/ui/SafeImg";
 import { getYouTubeId, getYouTubeThumbnail, type Work } from "@/data/works";
+import { IK_CARD, ikImage } from "@/lib/imagekit";
 
 const FILL_STYLE = { objectFit: "cover", objectPosition: "center", display: "block" } as const;
 const INSTAGRAM_FALLBACK = "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/skorman_web.png";
 
 function FillThumb({ src, alt }: { src: string; alt: string }) {
-  return <SafeImg src={src} alt={alt} className="absolute inset-0 w-full h-full" style={FILL_STYLE} loading="lazy" />;
+  return <SafeImg src={ikImage(src, IK_CARD)} alt={alt} className="absolute inset-0 w-full h-full" style={FILL_STYLE} loading="lazy" />;
 }
 const InstagramShade = () => <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300" />;
 

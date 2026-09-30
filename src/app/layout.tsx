@@ -83,11 +83,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: GTAG_SCRIPT }} />
         <link rel="preload" as="font" type="font/woff2" crossOrigin="" href="/fonts/inter-tight-latin-normal.woff2" />
         {/*
-          main.css starts with `@import 'cursors.css'`, a render-blocking sheet
-          the browser only discovers once main.css has arrived — one more round
-          trip before the first paint (the loading screen). Fetch it alongside.
+          Custom cursors (72 KB of inline SVG). main.css used to @import this,
+          which chained a second render-blocking request behind main.css. It is
+          linked directly now, ahead of main.css so the cascade order is
+          unchanged, and only for mouse pointers: touch devices never show a
+          cursor, so phones don't wait on it at all.
         */}
-        <link rel="preload" as="style" href="/assets/cursors.css" />
+        <link rel="stylesheet" href={`/assets/cursors.css?v=${ASSET_VERSION}`} media="(hover: hover) and (pointer: fine)" />
         {GLOBAL_STYLESHEETS.map((href) => (
           <link key={href} rel="stylesheet" href={`${href}?v=${ASSET_VERSION}`} />
         ))}

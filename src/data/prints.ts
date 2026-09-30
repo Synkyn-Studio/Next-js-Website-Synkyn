@@ -20,10 +20,10 @@ export const PRINT_PROJECTS: PrintProject[] = [
     "featured": true,
     "aspectRatio": 2.33,
     "images": [
-      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade_horizontal.png",
-      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/hf_20260704_062814_0edf2927-4afc-4ffa-801d-5803824143c6.png",
-      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/hf_20260706_110951_2529f6dd-cc1b-4900-aece-190f51613453.png",
-      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/hf_20260706_114824_431b8ca4-2b51-4fde-b83a-7eb9779ea840.png",
+      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade/11.png?updatedAt=1783513857260",
+      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade/5.png",
+      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade/7.png",
+      "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade/8.png",
       "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Prints/Zlade/6.png?updatedAt=1783525136871"
     ]
   },

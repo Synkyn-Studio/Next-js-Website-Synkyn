@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="https://www.synkynstudios.com/images/logo.png" alt="Synkyn Studios Logo" width="160" />
+  <img src="https://www.synkynstudios.com/images/logo.webp" alt="Synkyn Studios Logo" width="160" />
 
 </div>
 

@@ -1,0 +1,485 @@
+================================================================================
+  SYNKYN STUDIOS WEBSITE AUDIT
+  Site:    https://www.synkynstudios.com
+  Date:    30 Sep 2026
+  Scope:   the Next.js codebase (this repo) + the live site as deployed today
+  Note:    report only. No code was changed while making it.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+ OVERALL VERDICT
+--------------------------------------------------------------------------------
+
+The site looks premium. The dark cinematic style, the motion work (loader,
+pinned zoom, mega menu, page transitions) and the copy ("Less Syn, More Kyn",
+"AI Generated. Human Directed.") fit an AI film studio well. The technical
+base is good too: pages are server-rendered, URLs are clean, redirects and
+canonicals are set, and there is structured data.
+
+The weak spots are not the design. They are:
+
+  1. Speed. The home page makes every visitor wait about 4 seconds, and the
+     site ships very heavy CSS and JS.
+  2. Unfinished content that visitors can see: empty cards and a duplicated
+     project on the Library page.
+  3. Lead capture. The only way to get in touch is a mailto link, which does
+     nothing for many desktop users.
+  4. Trust and proof. There are no case studies, results, testimonials or
+     process pages, and no privacy policy.
+  5. Social sharing. Every page shares the plain logo as its preview image,
+     and the image size it declares is wrong.
+
+Fix section A first. It is small work with the biggest effect.
+
+
+================================================================================
+ A. CRITICAL: fix first (visible to visitors or losing leads)
+================================================================================
+
+A1. Empty placeholder cards on the Library page
+    Where:  src/data/works.ts, WORKS_ROW, entries "work-row-2" and "work-row-3"
+    What:   Both entries have an empty title, thumbnail and video URL, and they
+            are live on /library now (confirmed in the page HTML). Visitors see
+            two blank cards that do nothing when clicked.
+    Fix:    Fill them with real projects, or remove them until you have some.
+
+A2. RedBus appears twice on the Library page
+    Where:  src/data/works.ts. "RedBus" is in WORKS (around line 77) and again
+            in WORKS_ROW (around line 114), with the same four Vimeo videos.
+    What:   A portfolio with a repeated project looks thin.
+    Fix:    Keep one of them and put a different project in the other slot.
+
+A3. The home loader blocks every visit for about 3.8 seconds
+    Where:  src/behaviors/home/loader.ts (FILL_MS 2700 + HOLD_MS 300 +
+            OPEN_MS 820)
+    What:   The loader runs on a fixed timer. It never finishes early, and it
+            plays again every time someone clicks "Home" or the logo. Nearly
+            4 seconds of nothing is where visitors leave, especially people
+            arriving from ads and on phones. It also delays when Google sees
+            the main content (the LCP metric), which hurts rankings.
+    Fix:    - Show it only on the first visit of a session (for example, a
+              sessionStorage flag) and skip it on in-site navigation.
+            - Shorten it to about 1.2 to 1.5 seconds, or end it as soon as
+              the hero is ready.
+            - Skip it entirely for users who have "reduce motion" turned on.
+
+A4. The contact flow depends only on mailto links
+    Where:  src/components/contact/*, footer, header "Connect" button
+    What:   The FAQ even says "Why is there no contact form?". Clicking a
+            mailto link does nothing, or opens an unconfigured Mail/Outlook
+            app, for anyone who uses Gmail or Outlook in the browser. That is
+            a large share of desktop visitors, and those leads are lost
+            without you ever knowing.
+    Fix:    Keep the one-click email, but also add:
+            - A "Copy email" button (copy to clipboard, then show a toast).
+            - A short brief form: name, company, email, budget range,
+              timeline, project type. Formspree, Resend or a Next.js route
+              handler works, and it needs no backend server.
+            - A WhatsApp Business button. Many clients in India expect one.
+            - A "Book a 15-min call" link (Cal.com or Calendly).
+            Then track form submits and email clicks as conversions in GA4.
+
+A5. Contact page and 404 page block pinch-zoom
+    Where:  src/data/seo-meta.ts, the "notFound" and "contact" viewport
+            ("maximum-scale=1.0, user-scalable=no")
+    What:   This is an accessibility failure (WCAG 1.4.4) and Lighthouse
+            flags it. Visually impaired users can't zoom the contact details,
+            which is the one page they most need to read.
+    Fix:    Use "width=device-width, initial-scale=1, viewport-fit=cover"
+            everywhere, like the other pages already do.
+
+A6. No privacy policy, and analytics run without consent
+    Where:  site-wide (GTM + GA4 in src/app/layout.tsx). The only mention of
+            privacy is inside the Terms page.
+    What:   The site collects analytics data. India's DPDP Act 2023 requires
+            a privacy notice, and you list the US, UK and UAE as markets. UK
+            and EU visitors are also covered by GDPR, which requires consent
+            before analytics run.
+    Fix:    Add a /privacy page and link it in the footer next to Terms. Add
+            a light cookie-consent banner using Google Consent Mode v2.
+
+A7. The social share image is wrong on every page
+    Where:  src/data/seo-meta.ts (og:image and twitter:image) and
+            src/data/structured-data.ts (logo width and height)
+    What:   Every page uses /images/logo.png and declares it as 1200x630. The
+            file is actually 900x294. Links shared on WhatsApp, LinkedIn,
+            X and Slack show a cropped or stretched logo instead of a
+            cinematic frame, which is a big missed opportunity for a film
+            studio.
+    Fix:    Make a real 1200x630 JPG or WebP for each page, such as a still
+            from the showreel with the logo and page title. Next.js can also
+            generate these from an opengraph-image.tsx file. Correct the
+            width and height values in the structured data as well.
+
+
+================================================================================
+ B. PERFORMANCE: speed and Core Web Vitals
+================================================================================
+
+B1. main.css is 575 KB and blocks rendering on every page
+    Where:  public/assets/main.css (plus cursors.css 72 KB, navbar.css 26 KB
+            and footer.css 13 KB)
+    What:   This is a pre-built Tailwind/template stylesheet, and most of its
+            20,000+ lines are rules the site never uses. The browser has to
+            download and parse all of it before it shows anything. On a 4G
+            phone that alone takes seconds.
+    Fix:    - Run PurgeCSS on it (or move to Tailwind v4 with automatic
+              content scanning). A typical result is 30 to 60 KB.
+            - cursors.css is 72 KB because 17 custom cursors are embedded as
+              base64. Cursors only apply on desktop, so load them after
+              first paint or as small .svg files.
+            - Remove the "@import 'cursors.css'" from main.css. @import
+              chains add an extra round trip before first paint.
+
+B2. Heavy JavaScript loads on every page
+    Where:  src/lib/runtime/vendors.ts, public/vendor/*
+    What:   GSAP 120 KB, ScrollTrigger 77 KB, MotionPath 36 KB, Lenis 24 KB,
+            SplitText 13 KB, DrawSVG 6 KB and Springer 3 KB, all loaded on
+            every page, including Terms and 404 which barely animate. Add
+            GTM, gtag and the Vimeo player on top of that.
+    Fix:    Load each plugin only on the pages that use it. For example,
+            MotionPath and DrawSVG are probably only needed on one page.
+            Terms and 404 may only need Lenis.
+
+B3. The home hero video is a Vimeo iframe
+    Where:  src/components/home/HeroSection.tsx (hero-bg-iframe, plus a
+            second Vimeo iframe for the showreel thumbnail and a third in the
+            modal)
+    What:   A Vimeo "background" iframe loads the whole Vimeo player (hundreds
+            of KB of JS, several domains) before the first frame plays. It is
+            the slowest way to show a hero video, and it controls the LCP.
+    Fix:    Self-host a short, compressed loop as <video autoplay muted loop
+            playsinline poster=...> in MP4 (H.264) and WebM (AV1/VP9), about
+            1 to 2 MB and 720p for mobile. Show hero-poster.webp immediately.
+            Keep Vimeo only for the full showreel in the modal.
+
+B4. Unused large files in /public
+    Files:  public/images/noise.webp       6.98 MB  (not referenced anywhere)
+            public/images/rocket1.svg      809 KB   (not referenced)
+            public/images/rocket.svg       496 KB   (not referenced)
+            public/images/thumbnails/Camel.png      (not referenced)
+    What:   These are deployed but never loaded, so the site isn't slower.
+            They do bloat the repo and the deploys, and anyone can fetch
+            them by URL.
+    Fix:    Delete them, or move them to a separate design-assets folder
+            outside the repo.
+
+B5. Images that can shrink a lot
+    - Team photos (public/images/album/*.png) are 218 to 284 KB each as PNG.
+      As WebP or AVIF at display size they'd be about 20 to 40 KB each.
+    - logo.png is 176 KB, while logo.webp (58 KB) is already used in the UI.
+      A logo should be an SVG or a WebP under about 10 KB.
+    - PerfectGirl-SansSerif.otf is 96 KB as OTF. Convert it to WOFF2 (about
+      40 to 50 KB) and subset it to the characters you use.
+    - ns-img-485.png (270 KB) is only the fallback. Fine to keep, but it
+      could also be about 60 KB.
+    - Library and print thumbnails from ImageKit: add ?tr=w-800 (or the right
+      display width) to every one. The navbar Zlade image dropped from
+      550 KB to 15 KB this way.
+
+B6. GTM and gtag are both loaded
+    Where:  src/app/layout.tsx loads GTM-KLBKS7TM and gtag G-PST0K7RG3R.
+    What:   If GA4 is also configured inside GTM, every page view is counted
+            twice, which inflates traffic and halves the bounce rate. Either
+            way it is two analytics scripts.
+    Fix:    Pick one. Recommended: GTM only, with GA4 configured inside it.
+            Check GA4 real-time reports to confirm there's one page_view per
+            visit.
+
+B7. Measure before and after
+    Run PageSpeed Insights (mobile) on /, /library and /printalbum before
+    fixing A3, B1, B2 and B3, then again after. Aim for LCP under 2.5 s,
+    CLS under 0.1 and INP under 200 ms on mobile.
+
+
+================================================================================
+ C. SEO
+================================================================================
+
+C1. The structured data describes a site search that doesn't exist
+    Where:  src/data/structured-data.ts, WebSite.potentialAction.SearchAction
+            ("/library?q={search_term_string}")
+    What:   The Library page doesn't read ?q=. Structured data that doesn't
+            match what the site actually does can be ignored, or treated as
+            misleading, by search engines.
+    Fix:    Remove the SearchAction, or build real search or filtering on
+            /library.
+
+C2. The FAQ has no FAQ structured data
+    Where:  src/components/contact/FaqSection.tsx
+    Fix:    Add FAQPage JSON-LD with the same questions and answers. It is
+            cheap, and it helps AI search engines and answer boxes pick up
+            your answers.
+
+C3. Portfolio videos have no VideoObject structured data
+    Where:  src/data/works.ts. There is one VideoObject on Home, none for the
+            Library.
+    Fix:    Add a VideoObject for each Library work (name, description,
+            thumbnailUrl, uploadDate, embedUrl). This is how videos appear in
+            Google Video results, which matters a lot for a film studio.
+
+C4. Clean up the old meta tags
+    Where:  src/data/seo-meta.ts
+    What:   revisit-after, rating, distribution, expires, language,
+            geo.position, ICBM, X-UA-Compatible, msapplication-* and the
+            duplicate <meta name="title">. Search engines ignore all of these;
+            they only add weight to every page.
+    Fix:    Remove them. Keep title, description, robots, canonical, OG,
+            Twitter and theme-color.
+
+C5. There is only one page per topic
+    What:   You rank for what you have pages for. Right now there is one home
+            page that tries to cover films, ads, print, previs and AI VFX.
+            People search for things like "AI ad film production Bengaluru",
+            "AI product video agency India" or "AI VFX studio".
+    Fix:    Add one page per service (see D1) and one page per case study
+            (see D2), each with its own title, description, H1 and video.
+
+C6. The sitemap's lastModified is hardcoded
+    Where:  src/app/sitemap.ts, LAST_MODIFIED = "2026-09-07" for every URL.
+    Fix:    Set a real date per page, or the build date. Add the new service
+            and case-study URLs as you create them.
+
+C7. Library data is inconsistent
+    Where:  src/data/works.ts
+    - Tags are mixed: "Youtube" / "YouTube" / "Insta" / "Reels" / "Film".
+    - Categories are mixed: "reels", "Dragon Glimpse", "NBK111 Glimpse",
+      "Crayons", "Ad Film".
+    - One title is lowercase: "skroman automation".
+    - Skroman appears twice under two different names.
+    Fix:    Use one fixed set of categories (Ad Film, Film / Trailer, Social
+            Reel, Print & Key Art, AI VFX) and consistent Title Case names.
+            It also makes the filters described in D5 possible.
+
+C8. The team data is inconsistent
+    Where:  src/data/team.ts
+    What:   Pruthvij's role is "Gen AI artist", but the alt text says
+            "Co-founder and Gen AI Artist". Pick one. The CEO and MD should
+            probably be listed first.
+
+C9. Search Console and Bing Webmaster setup
+    - Make sure the property is https://www.synkynstudios.com/ (the root,
+      with www), not /library. This is what broke the Bing robots.txt test
+      earlier.
+    - Submit sitemap.xml in both tools.
+    - Create a Google Business Profile for "Synkyn Studios, Bengaluru" and
+      link it from the site. Local searches ("AI studio Bengaluru") depend
+      heavily on it.
+
+
+================================================================================
+ D. CONTENT AND CONVERSION: what to add
+================================================================================
+
+These are in order of how much business they bring.
+
+D1. Service pages (one each)
+    Films / Trailers, Ad Films & Commercials, Print & Digital Campaigns,
+    Storyboards & Previs, AI VFX & Set Extension. These already exist as
+    the 5 Pipeline cards on Home. Make each card link to its own page with:
+    what it is, 2 or 3 example videos, the process, turnaround time, what the
+    client provides, typical deliverables (formats and aspect ratios), and a
+    CTA.
+
+D2. Case studies (the biggest trust gap)
+    Right now the Library shows videos only. Buyers, especially agencies and
+    brand managers, want to know:
+      Brief -> Challenge -> Approach (AI + human) -> Result -> Numbers
+    Example: "RedBus: GenAI cleanups on 4 spots, delivered in 5 days instead
+    of a reshoot." Even 3 or 4 good case studies will do more than 20
+    videos. Give each one its own URL for SEO.
+
+D3. Proof and trust signals
+    - Client testimonials: a quote, name, role and company logo.
+    - Numbers: projects delivered, average turnaround, countries served,
+      views generated.
+    - The "Visionary Brands" logo wall: only show logos you have permission
+      to show, and link each one to its case study.
+    - Awards, press or festival selections, if you have any. The founders'
+      IMDb credits are already a strong signal, so mention them in the About
+      copy, not only as links.
+
+D4. A "How we work" / process section
+    Brief -> Moodboard & Previs -> Generation -> Human direction & compositing
+    -> Grading & Sound -> Delivery. Include timelines. It answers "how can AI
+    be cinematic?", which is the main doubt a buyer has.
+
+D5. Library improvements
+    - Filters by category (see C7) and by aspect ratio (16:9 / 9:16).
+    - A shareable URL for each work (already partly there with
+      #work-nbk111). Use a real /library/[slug] page so each work can be
+      indexed and shared.
+    - A "Before / After" slider for AI VFX and cleanup work. It is the
+      single most convincing format for VFX.
+
+D6. Pricing signals
+    You don't need exact prices, but "Projects from ₹X" or 3 tiers
+    (Social Pack / Ad Film / Campaign) filters out bad leads and brings in
+    good ones. At minimum, add a budget-range dropdown to the brief form
+    (A4).
+
+D7. An "AI transparency / ethics" section
+    Brands worry about copyright, likeness and legal risk with AI content.
+    A short page covering which tools you use, how you handle rights,
+    likeness consent, model licensing and brand safety builds trust with
+    enterprise clients. The Terms page already covers some of this; turn it
+    into a readable, client-facing page.
+
+D8. Newsletter / "Latest drops"
+    A small signup in the footer (Beehiiv, Substack or Resend Audiences) for
+    new work. It keeps agencies and brand managers coming back.
+
+D9. Blog / insights (for SEO over time)
+    Examples: "AI vs traditional ad shoots: cost and time", "How we made the
+    NBK111 glimpse", "Prompting for period-accurate visuals". Publish 1 or 2
+    a month. They rank for the searches your future clients make and show
+    expertise.
+
+D10. Careers / collaborate page
+    "We're hiring Gen AI artists / editors / colourists". It shows the studio
+    is growing and attracts talent.
+
+D11. More social channels
+    Only Instagram and LinkedIn are linked. Add YouTube (you already host
+    trailers there), Vimeo and Behance. Add them to the structured data
+    "sameAs" list as well.
+
+D12. A floating WhatsApp / "Start a project" button on mobile
+    A small persistent CTA in the bottom corner on phones. Most of your
+    social traffic will be mobile.
+
+
+================================================================================
+ E. ACCESSIBILITY
+================================================================================
+
+E1. Pinch-zoom is blocked on Contact and 404. See A5.
+
+E2. Reduced motion
+    Some CSS already respects prefers-reduced-motion, but the home loader,
+    Lenis smooth scroll, the pinned zoom, marquees and the hero video still
+    run. For users who have it turned on: skip the loader, turn off Lenis and
+    show static sections.
+
+E3. Low-contrast text
+    A lot of text uses white/60 or accent/60 on near-black, and hero
+    sub-lines are as small as 13px on mobile. Check key text with a contrast
+    checker. Body text needs a 4.5:1 ratio. Also check that the yellow
+    "is-current" link colour is readable in light mode.
+
+E4. Decorative images and duplicated marquee content
+    Home has 29 images with alt="". That is correct for decorative images and
+    duplicated marquee logos. Make sure the first copy of each brand logo has
+    a real alt (the brand name), and that the duplicated marquee sets are
+    hidden from screen readers with aria-hidden.
+
+E5. Keyboard navigation in the mega menu
+    The "Work" and "Company" triggers are href="#" links that open only on
+    hover. Keyboard users can reach them, but Enter does nothing. Make them
+    buttons with aria-expanded that open on Enter / Space and close on Esc,
+    with focus moving into the panel.
+
+E6. Custom cursors
+    Hide or restore the normal cursor for keyboard and touch users, and
+    never hide the text cursor inside inputs (this matters once the form
+    from A4 exists).
+
+
+================================================================================
+ F. SECURITY AND TECHNICAL HYGIENE
+================================================================================
+
+F1. Security headers are missing
+    Live check: only Strict-Transport-Security is present.
+    Add these in next.config.ts headers():
+      - X-Content-Type-Options: nosniff
+      - Referrer-Policy: strict-origin-when-cross-origin
+      - X-Frame-Options: SAMEORIGIN (or CSP frame-ancestors 'self')
+      - Permissions-Policy: camera=(), microphone=(), geolocation=()
+      - Content-Security-Policy that allows your real sources: self,
+        ik.imagekit.io, player.vimeo.com, *.vimeocdn.com, youtube,
+        instagram, googletagmanager and google-analytics.
+      - Add "; includeSubDomains; preload" to HSTS once you're sure.
+    Check the result at securityheaders.com. It currently scores about a D.
+
+F2. No linting, tests or CI
+    package.json has no ESLint config, no lint script and no tests. Add:
+      - eslint.config.mjs with next/core-web-vitals
+      - a "lint" script, and a GitHub Action that runs typecheck + lint +
+        build on every push
+      - optionally, a Lighthouse CI budget so performance can't silently
+        regress.
+
+F3. The git history is unreadable
+    Recent commits are all "updated" or "first commit". Use short,
+    descriptive messages ("Library: remove duplicate RedBus card"). It
+    makes rollbacks and reviews possible.
+
+F4. Content lives in code
+    Works, prints and team live in TypeScript files, so every portfolio
+    update needs a developer and a deploy. When you start publishing case
+    studies and a blog (D2, D9), move this content to a headless CMS such as
+    Sanity, Contentful or Payload, or at least to MDX files, so the team can
+    publish without touching code.
+
+F5. Monitoring
+    Add Vercel Analytics / Speed Insights (real-user Web Vitals) and an
+    uptime monitor (for example UptimeRobot). Optionally add Sentry to catch
+    JS errors in the heavy animation code on unusual devices.
+
+F6. The copyright year is hardcoded
+    "© 2026" appears in the hero, mobile menu and footer. Generate it from
+    new Date().getFullYear() so it never goes stale.
+
+
+================================================================================
+ G. SMALL POLISH ITEMS
+================================================================================
+
+  - "Less Syn / More Kyn" is the most memorable line on the site but it's an
+    H2, while the H1 is a 13px sentence. That's fine for SEO, but make sure
+    the visual hierarchy reads well on mobile.
+  - Contact page: "Karnataka 560001". If you have a real studio address, show
+    it with a Google Maps link. It builds trust and helps local SEO. If you
+    don't, remove the PIN code.
+  - Operating hours say "Mon–Fri". Add the expected reply time ("We reply
+    within 24 h").
+  - The home page title and description say "without delays". Something
+    more specific, like "in days, not weeks", is stronger and more
+    believable.
+  - The mobile menu has no "Services" or "Work" grouping, only a flat list.
+    Once the service pages exist, group them.
+  - Add a custom favicon for dark and light browser tabs (favicon.svg can use
+    prefers-color-scheme).
+  - The 404 page is noindex (good). Give it links to the Library and
+    Contact, not only Home.
+  - The print album lists big brands (Visa, Volkswagen, Yonex). Make sure
+    each one was client-commissioned or is clearly labelled as spec /
+    concept work, to avoid any trademark issues.
+
+
+================================================================================
+ SUGGESTED ORDER OF WORK
+================================================================================
+
+  Week 1 (quick wins, mostly small edits)
+    A1, A2, A5, A7, C1, C4, C7, C8, B4, B6, F1, F6
+
+  Week 2 (speed)
+    A3 (loader), B1 (CSS purge), B3 (self-hosted hero video), B5 (images),
+    B2 (per-page scripts). Measure with PageSpeed before and after.
+
+  Week 3 (leads and legal)
+    A4 (form, copy email, WhatsApp, booking link), A6 (privacy page and
+    consent), C2 and C3 (FAQ and Video structured data), GA4 conversion
+    events.
+
+  Month 2 onward (growth)
+    D1 service pages, D2 case studies, D3 testimonials and numbers,
+    D5 library filters and per-work pages, D4 process section, then the blog
+    and CMS (D9, F4).
+
+================================================================================
+  End of report
+================================================================================

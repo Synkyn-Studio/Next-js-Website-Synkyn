@@ -9,6 +9,7 @@ import type { Scope } from "@/lib/runtime/scope";
 import { smoothScrollTo } from "@/lib/runtime/smooth-scroll";
 import { loadVimeoApi } from "@/lib/runtime/vendors";
 import { getInstagramShortcode, getVimeoId, getYouTubeId, ALL_WORKS, WORKS, type Work } from "@/data/works";
+import { IK_FULL, ikImage } from "@/lib/imagekit";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -277,7 +278,7 @@ export function libraryWorks(scope: Scope) {
                 </blockquote>
               </div>`;
     }
-    return `<img src="${src.src}" alt="${work.title}" loading="lazy" />`;
+    return `<img src="${ikImage(src.src, IK_FULL)}" alt="${work.title}" loading="lazy" />`;
   };
 
   function openModal(work: Work) {

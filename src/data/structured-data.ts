@@ -20,8 +20,8 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "@type": "ImageObject",
             "@id": "https://www.synkynstudios.com/#logo",
             "url": "https://www.synkynstudios.com/images/logo.png",
-            "width": 1200,
-            "height": 630
+            "width": 900,
+            "height": 294
           },
           "description": "Synkyn Studios is an AI-first film and creative production studio in Bengaluru creating commercials, product films, CGI visuals, and social content.",
           "address": {
@@ -126,14 +126,6 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
           "publisher": {
             "@id": "https://www.synkynstudios.com/#organization"
           },
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": {
-              "@type": "EntryPoint",
-              "urlTemplate": "https://www.synkynstudios.com/library?q={search_term_string}"
-            },
-            "query-input": "required name=search_term_string"
-          },
           "inLanguage": "en-US"
         },
         {
@@ -148,7 +140,10 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "@id": "https://www.synkynstudios.com/#organization"
           },
           "primaryImageOfPage": {
-            "@id": "https://www.synkynstudios.com/#logo"
+            "@type": "ImageObject",
+            "url": "https://www.synkynstudios.com/og/home.jpg",
+            "width": 1200,
+            "height": 630
           },
           "description": "Synkyn Studios is an AI film studio in Bengaluru creating commercials, product films, CGI visuals, and social media content for modern brands without delays.",
           "inLanguage": "en-US"
@@ -159,7 +154,7 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
           "name": "Synkyn Studios SHOWREEL 2026 — AI Film & Creative Production",
           "description": "Synkyn Studios SHOWREEL 2026 highlighting AI-powered commercials, product films, CGI visuals, and cinematic brand storytelling made in Bengaluru, India.",
           "thumbnailUrl": [
-            "https://www.synkynstudios.com/images/logo.png"
+            "https://www.synkynstudios.com/images/showreel-poster.webp"
           ],
           "uploadDate": "2026-01-01T00:00:00+05:30",
           "embedUrl": "https://player.vimeo.com/video/1210886734",
@@ -224,8 +219,8 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "@type": "ImageObject",
             "@id": "https://www.synkynstudios.com/#logo",
             "url": "https://www.synkynstudios.com/images/logo.png",
-            "width": 1200,
-            "height": 630
+            "width": 900,
+            "height": 294
           },
           "description": "Synkyn Studios is a cinematic, AI-first creative studio based in Bengaluru, India, producing commercials, product films, CGI visuals, key art, and social content for brands that want a premium look without slow production timelines.",
           "foundingDate": "2023",
@@ -319,8 +314,8 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "@type": "ImageObject",
             "@id": "https://www.synkynstudios.com/#logo",
             "url": "https://www.synkynstudios.com/images/logo.png",
-            "width": 1200,
-            "height": 630
+            "width": 900,
+            "height": 294
           },
           "description": "Synkyn Studios is an AI-first film and creative production studio in Bengaluru creating commercials, product films, CGI visuals, and social content.",
           "address": {
@@ -396,8 +391,8 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "@type": "ImageObject",
             "@id": "https://www.synkynstudios.com/#logo",
             "url": "https://www.synkynstudios.com/images/logo.png",
-            "width": 1200,
-            "height": 630
+            "width": 900,
+            "height": 294
           },
           "description": "Synkyn Studios is a cinematic, AI-first creative studio in Bengaluru, India creating commercials, product films, CGI visuals, and social content.",
           "foundingDate": "2023",
@@ -515,8 +510,8 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "@type": "ImageObject",
             "@id": "https://www.synkynstudios.com/#logo",
             "url": "https://www.synkynstudios.com/images/logo.png",
-            "width": 1200,
-            "height": 630
+            "width": 900,
+            "height": 294
           },
           "description": "Synkyn Studios is an AI-first film and creative production studio in Bengaluru creating commercials, product films, CGI visuals, and social content.",
           "address": {
@@ -592,8 +587,8 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "@type": "ImageObject",
             "@id": "https://www.synkynstudios.com/#logo",
             "url": "https://www.synkynstudios.com/images/logo.png",
-            "width": 1200,
-            "height": 630
+            "width": 900,
+            "height": 294
           },
           "description": "Synkyn Studios is an AI-first film and creative production studio in Bengaluru creating commercials, product films, CGI visuals, and social content.",
           "address": {

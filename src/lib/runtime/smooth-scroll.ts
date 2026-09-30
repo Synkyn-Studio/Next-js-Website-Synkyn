@@ -22,7 +22,7 @@ const prefersReducedMotion = () => !!(window.matchMedia && window.matchMedia("(p
 function profileOptions(profile: LenisProfile) {
   // Reduced motion: native, un-eased wheel scrolling (Lenis still drives
   // ScrollTrigger and anchor links, it just stops animating the wheel).
-  if (prefersReducedMotion()) return { lerp: 1, duration: 0, wheelMultiplier: 1.0, smoothWheel: false, lag: 33 };
+  if (prefersReducedMotion()) return { lerp: 1, duration: 0, wheelMultiplier: 1.0, smoothWheel: false };
   if (profile === "apple") {
     const { isMac, isIOS } = platform();
     return {
@@ -30,10 +30,9 @@ function profileOptions(profile: LenisProfile) {
       duration: isMac ? 0.7 : 0.9,
       wheelMultiplier: isMac ? 0.95 : 1.0,
       smoothWheel: !isIOS,
-      lag: isMac || isIOS ? 16 : 33,
     };
   }
-  return { lerp: 0.12, duration: 0.9, wheelMultiplier: 1.0, smoothWheel: true, lag: 33 };
+  return { lerp: 0.12, duration: 0.9, wheelMultiplier: 1.0, smoothWheel: true };
 }
 
 let progressEnabled = true;
@@ -73,10 +72,17 @@ export function initSmoothScroll(profile: LenisProfile) {
     wheelMultiplier: opts.wheelMultiplier,
     touchMultiplier: 1.0,
     smoothWheel: opts.smoothWheel,
-    smoothTouch: false,
+    // Touch keeps the platform's own momentum scrolling; faking it feels wrong on phones.
+    syncTouch: false,
     orientation: "vertical",
     gestureOrientation: "vertical",
     infinite: false,
+    // Scrollable panels (library modal, lightbox, terms contents, mobile menu)
+    // scroll natively under the pointer instead of dragging the page with them.
+    allowNestedScroll: true,
+    // A click on a link while the page is still gliding stops the glide, so the
+    // next route doesn't inherit leftover momentum.
+    stopInertiaOnNavigate: true,
     prevent: (node: HTMLElement) => node.classList?.contains("scroll-bar") || node.hasAttribute?.("data-lenis-prevent"),
   });
   window.lenis = lenis;
@@ -86,7 +92,13 @@ export function initSmoothScroll(profile: LenisProfile) {
     window.ScrollTrigger.config({ ignoreMobileResize: true });
     lenis.on("scroll", window.ScrollTrigger.update);
     window.gsap.ticker.add((time: number) => lenis.raf(time * 1000));
-    window.gsap.ticker.lagSmoothing(500, opts.lag);
+    /*
+      Lenis and GSAP share one clock. With lag smoothing on, a slow frame makes
+      GSAP pretend less time passed than really did, so Lenis and every
+      ScrollTrigger scrub fall out of step with the wheel and then catch up in
+      a visible jump. Lenis' own guidance for the GSAP ticker is to turn it off.
+    */
+    window.gsap.ticker.lagSmoothing(0);
   } else {
     const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
@@ -102,10 +114,10 @@ export function applyLenisProfile(profile: LenisProfile) {
   if (!lenis || profile === activeProfile) return;
   activeProfile = profile;
   const opts = profileOptions(profile);
+  // Lenis reads these per event, so updating the options is enough.
+  // (`isSmooth` is a read-only getter since Lenis 1.1; assigning it throws.)
   Object.assign(lenis.options, { lerp: opts.lerp, duration: opts.duration, smoothWheel: opts.smoothWheel, wheelMultiplier: opts.wheelMultiplier });
-  lenis.isSmooth = opts.smoothWheel || lenis.options.smoothTouch;
   if (lenis.virtualScroll && lenis.virtualScroll.options) lenis.virtualScroll.options.wheelMultiplier = opts.wheelMultiplier;
-  if (window.gsap) window.gsap.ticker.lagSmoothing(500, opts.lag);
 }
 
 /** Native-scroll fallback for the chrome (the navbar.js "BACK-TO-TOP — NATIVE FALLBACK"). */

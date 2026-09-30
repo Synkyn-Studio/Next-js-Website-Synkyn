@@ -1,33 +1,20 @@
 /*
-  Loads the original vendor bundles from /public/vendor exactly once, in the
-  same execution order the static pages used (SplitText was included before the
-  GSAP core there, and every plugin resolves `gsap` lazily, so that order is
-  kept as-is).
-*/
+  Vendor bundles from /public/vendor, loaded exactly once.
 
-/*
   What the pages actually animate with: the GSAP core, ScrollTrigger, Lenis and
   Springer. These are rendered as deferred tags in the document so the scroll
-  and reveal engines are ready as early as possible.
+  and reveal engines are ready as early as possible. (SplitText, DrawSVG and
+  MotionPath came with the original template but nothing here uses them, so
+  they are no longer shipped.)
+
+  Lenis carries its version in the file name: /vendor is cached for a day, and
+  a new name guarantees nobody runs new code against a stale Lenis.
 */
 export const VENDOR_SCRIPTS = [
   "/vendor/gsap.min.js",
   "/vendor/scroll-trigger.min.js",
-  "/vendor/lenis.min.js",
+  "/vendor/lenis-1.3.26.min.js",
   "/vendor/springer.min.js",
-] as const;
-
-/*
-  The remaining plugins of the original bundle. Nothing on these pages uses
-  them (they belong to template features that were never on this site), and
-  parsing them ahead of Lenis delayed smooth scrolling by ~55KB of script.
-  They are still loaded — during idle time — so any markup that relies on them
-  keeps working, GSAP registers plugins whenever they arrive.
-*/
-export const VENDOR_EXTRAS = [
-  "/vendor/split-text.min.js",
-  "/vendor/draw-svg.min.js",
-  "/vendor/motionpathplugin.min.js",
 ] as const;
 
 export const VIMEO_PLAYER_API = "https://player.vimeo.com/api/player.js";
@@ -62,14 +49,6 @@ export function loadScript(src: string, id?: string): Promise<void> {
 let vendorsPromise: Promise<void> | null = null;
 
 const vendorsReady = () => !!(window.gsap && window.ScrollTrigger && window.Lenis && window.Springer);
-
-/** Loads the plugins the pages do not use, once the browser is idle. */
-export function loadVendorExtras() {
-  const run = () => VENDOR_EXTRAS.forEach((src) => loadScript(src).catch(() => undefined));
-  const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-  if (ric) ric(run, { timeout: 4000 });
-  else setTimeout(run, 2000);
-}
 
 /**
  * Resolves once GSAP, its plugins, Lenis and Springer are available globally.

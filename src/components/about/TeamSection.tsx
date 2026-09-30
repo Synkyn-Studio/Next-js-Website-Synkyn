@@ -20,7 +20,7 @@ export default function TeamSection() {
         </div>
         <div className="mt-6 space-y-4 sm:mt-8 md:mt-6 md:space-y-4">
           <div className="relative min-h-0 w-full min-w-0">
-            <div className="chroma-grid js-chroma-grid relative mx-auto grid w-full min-w-0 max-w-[min(100%,1400px)] grid-cols-1 items-stretch justify-items-center gap-3 px-0 sm:gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-4 lg:justify-items-stretch lg:px-0" data-columns="4" data-damping="0.45" data-ease="power3.out" data-fade-out="0.6" data-radius="240">
+            <div className="chroma-grid js-chroma-grid relative mx-auto grid w-full min-w-0 max-w-[min(100%,1400px)] grid-cols-1 items-stretch justify-items-center gap-3 px-0 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-3 lg:justify-items-stretch lg:px-0" data-columns="3" data-damping="0.45" data-ease="power3.out" data-fade-out="0.6" data-radius="240">
               {TEAM.map((member) => (
                 <TeamCard key={member.name} member={member} />
               ))}

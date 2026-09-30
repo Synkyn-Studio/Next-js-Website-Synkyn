@@ -26,7 +26,7 @@ export const WORKS: Work[] = [
   {
     id: "work-ig-1",
     title: "Skroman Smart Switches",
-    category: "reels",
+    category: "Social Reel",
     tag: "Reels",
     ratio: "9:16",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/hf_20260621_211115_a8ae6a61-15eb-4fcd-a87e-8b37d91256cf.png?updatedAt=1784388403481",
@@ -36,8 +36,8 @@ export const WORKS: Work[] = [
   {
     id: "work-dragon",
     title: "Dragon",
-    category: "Dragon Glimpse",
-    tag: "Youtube",
+    category: "Film / Trailer",
+    tag: "YouTube",
     ratio: "16:9",
     description: "<strong>Dragon Glimpse – Telugu</strong><br><br><strong>Featuring:</strong> NTR, Anil Kapoor & Rukmini Vasanth<br><strong>Music:</strong> Ravi Basrur<br><strong>Directed by:</strong> Prashanth Neel",
     sources: [{ type: "youtube", src: "https://youtu.be/FlOzIM7Yov4?si=pdGIj50dAFhKnGQ5" }],
@@ -45,7 +45,7 @@ export const WORKS: Work[] = [
   {
     id: "work-nbk111",
     title: "NBK111",
-    category: "NBK111 Glimpse",
+    category: "Film / Trailer",
     tag: "YouTube",
     description: "<strong>NBK 111 – Entry of an Era</strong><br><br><strong>Starring:</strong> Nandamuri Balakrishna<br><strong>Directed by:</strong> Gopichand Malineni<br><strong>Cinematography:</strong> Arvind S. Kashyap<br><strong>Music:</strong> S. Thaman<br><strong>Production:</strong> Vriddhi Cinemas",
     sources: [{ type: "youtube", src: "https://youtu.be/3u_wE0ocFus?si=JHUwwCjkXAab_VFG" }],
@@ -53,7 +53,7 @@ export const WORKS: Work[] = [
   {
     id: "work-camel-2",
     title: "Camel",
-    category: "Crayons",
+    category: "Ad Film",
     tag: "Film",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/hf_20260303_194843_2dc8f410-cfc2-417f-9dbd-b15e9bdd28c6.png?updatedAt=1784389455208",
     description: "<strong>Camel – Spec AI Film</strong><br><br><strong>Concept:</strong> Reimagining the world of Camel Crayons through AI-driven visual storytelling.",
@@ -75,7 +75,7 @@ export const WORKS: Work[] = [
   {
     id: "work-red-bus",
     title: "RedBus",
-    category: "Ad Film",
+    category: "AI VFX",
     tag: "Film",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/redbuss.png?updatedAt=1784389746357",
     description: "<strong>RedBus – GenAI Cleanups</strong><br><br><strong>Craft:</strong> Generative AI · VFX<br><strong>Focus:</strong> Seamless cleanups, frame refinement and photorealistic visual enhancement.",
@@ -88,31 +88,20 @@ export const WORKS: Work[] = [
   },
   {
     id: "work-skroman",
-    title: "skroman automation",
-    category: "Ad Film",
-    tag: "Insta",
+    title: "Skroman Automation",
+    category: "Social Reel",
+    tag: "Instagram",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/skorman_web.png",
     description: "<strong>Skroman Smart Home Automation</strong><br><br><strong>Concept:</strong> Intelligent living, reimagined.<br><strong>Focus:</strong> Smart lighting · Home security · Voice & App Control · Energy Automation<br><br><strong>Experience:</strong> A sleek lifestyle film showcasing the seamless intersection of technology, comfort and modern living.",
     sources: [{ type: "instagram", src: "https://www.instagram.com/reel/DZCmDTOhcIK/" }],
   },
 ];
 
-/*
-  The row of three 16:9 videos under the bento grid (LibraryWorks.tsx).
-  Fill in each entry:
-    - title / category / description: text on the card and in the modal
-      (description is HTML, like the works above).
-    - thumbnail: the card's cover image URL.
-    - sources[0].src: the video URL. `type` is "vimeo" for a
-      player.vimeo.com/video/<id> link; use "youtube" for a YouTube link or
-      "video" for a direct .mp4 file.
-  A card with no video URL shows an empty placeholder and does not open.
-*/
 export const WORKS_ROW: Work[] = [
   {
     id: "work-red-bus",
     title: "RedBus",
-    category: "Ad Film",
+    category: "AI VFX",
     tag: "Film",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/redbuss.png?updatedAt=1784389746357",
     description: "<strong>RedBus – GenAI Cleanups</strong><br><br><strong>Craft:</strong> Generative AI · VFX<br><strong>Focus:</strong> Seamless cleanups, frame refinement and photorealistic visual enhancement.",

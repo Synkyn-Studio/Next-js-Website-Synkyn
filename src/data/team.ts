@@ -19,14 +19,6 @@ export const TEAM: TeamMember[] = [
     profile: { kind: "imdb", href: "https://www.imdb.com/name/nm14718630/?ref_=ext_shr_lnk" },
   },
   {
-    name: "Bhuvan Gowda",
-    role: "Managing Director",
-    photo: "/images/album/Bhuvan.png",
-    alt: "Bhuvan Gowda - Managing Director and Cinematographer at Synkyn Studios",
-    accent: "#f59e0b",
-    profile: { kind: "imdb", href: "https://www.imdb.com/name/nm6703377/?ref_=ext_shr_lnk" },
-  },
-  {
     name: "Deepen Ingale",
     role: "Co-founder, CEO",
     photo: "/images/album/Deepen.png",
@@ -38,7 +30,7 @@ export const TEAM: TeamMember[] = [
     name: "Pruthvij Prabhu",
     role: "Gen AI artist",
     photo: "/images/album/Pruthvij.png",
-    alt: "Pruthvij Prabhu - Co-founder and Gen AI Artist at Synkyn Studios",
+    alt: "Pruthvij Prabhu - Gen AI Artist at Synkyn Studios",
     accent: "#a855f7",
     profile: { kind: "linkedin", href: "https://www.linkedin.com/in/pruthvij-v-prabhu-b58bb6299/" },
   },

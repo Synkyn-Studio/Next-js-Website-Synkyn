@@ -7,6 +7,7 @@
 import { whenRuntimeReady } from "@/lib/runtime/runtime";
 import type { Scope } from "@/lib/runtime/scope";
 import { PRINT_PROJECTS as projects, type PrintProject } from "@/data/prints";
+import { IK_CARD, IK_FULL, IK_THUMB, ikImage } from "@/lib/imagekit";
 
 const esc = (str: unknown) => String(str == null ? "" : str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 const FEAT_SIZES = ["s-row1-land", "s-row1-port", "s-row1-port", "s-row2-land", "s-row2-land"];
@@ -70,7 +71,7 @@ export function printAlbum(scope: Scope) {
     const count = (p.images || []).length;
     return (
       '<div class="pf-media" data-label="' + esc(p.title) + '">' +
-      (first ? '<img alt="' + esc(p.title) + '" data-src="' + esc(first) + '" loading="lazy" decoding="async" />' : "") +
+      (first ? '<img alt="' + esc(p.title) + '" data-src="' + esc(ikImage(first, IK_CARD)) + '" loading="lazy" decoding="async" />' : "") +
       '<div class="pf-media__shade"></div>' +
       '<span class="pf-badge">' + esc(p.category) + "</span>" +
       (count > 1 ? '<span class="pf-count">' + ICON_COUNT + count + "</span>" : "") +
@@ -262,7 +263,7 @@ export function printAlbum(scope: Scope) {
   const projectListForNav = () => (filtered.length ? filtered : projects);
   const applyTransform = () => { lbWrap.style.transform = "translate(" + panX + "px," + panY + "px) scale(" + scale + ")"; };
   const resetZoom = () => { scale = 1; panX = 0; panY = 0; applyTransform(); };
-  const preload = (src?: string) => { if (src) { const im = new Image(); im.src = src; } };
+  const preload = (src?: string) => { if (src) { const im = new Image(); im.src = ikImage(src, IK_FULL); } };
 
   const setImage = () => {
     if (!curProject) return;
@@ -274,7 +275,7 @@ export function printAlbum(scope: Scope) {
     lbImg.classList.add("swap");
     scope.raf(() => {
       scope.timeout(() => {
-        lbImg.src = src;
+        lbImg.src = ikImage(src, IK_FULL);
         lbImg.alt = title + " — image " + (index + 1);
         lbImg.onload = () => lbImg.classList.remove("swap");
         lbImg.onerror = () => lbImg.classList.remove("swap");
@@ -299,7 +300,7 @@ export function printAlbum(scope: Scope) {
       t.type = "button";
       t.className = "pf-lb__thumb" + (i === curIndex ? " is-active" : "");
       t.setAttribute("aria-label", "Go to image " + (i + 1));
-      t.innerHTML = '<img src="' + esc(src) + '" alt="' + esc(curProject!.title || "Print image") + " thumbnail " + (i + 1) + '" loading="lazy" />';
+      t.innerHTML = '<img src="' + esc(ikImage(src, IK_THUMB)) + '" alt="' + esc(curProject!.title || "Print image") + " thumbnail " + (i + 1) + '" loading="lazy" />';
       t.addEventListener("click", () => { curIndex = i; setImage(); });
       lbThumbs.appendChild(t);
     });

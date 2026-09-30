@@ -9,10 +9,8 @@ const nextConfig: NextConfig = {
   trailingSlash: false,
   turbopack: { root: path.resolve(".") },
 
-  // Page CSS is read from src/styles at build time (see components/layout/PageStyle.tsx).
   outputFileTracingIncludes: { "/**": ["./src/styles/**/*.css"] },
 
-  // Old .html URLs (links, bookmarks, search results) keep working.
   async redirects() {
     return [
       { source: "/index.html", destination: "/", permanent: true },
@@ -20,7 +18,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Cache policy carried over from the static site's vercel.json.
   async headers() {
     return [
       {

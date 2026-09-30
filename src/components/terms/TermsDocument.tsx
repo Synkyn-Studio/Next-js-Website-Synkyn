@@ -254,7 +254,7 @@ export default function TermsDocument() {
               <div>
                 <h3>Questions about these Terms?</h3>
                 <p>
-                  <a className="tc-inline" href="mailto:contact@synkynstudios.com">contact@synkynstudios.com</a>
+                  <a className="tc-inline js-email-cta" href="mailto:contact@synkynstudios.com">contact@synkynstudios.com</a>
                 </p>
               </div>
               <Link className="btn btn-md btn-primary" href="/contact">

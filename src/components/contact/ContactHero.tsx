@@ -14,7 +14,7 @@ export default function ContactHero() {
           One click — your email client opens, pre-filled and ready. No forms. No waiting. Just a direct conversation.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4 pointer-events-auto" data-delay="0.4" data-ns-animate="">
-          <a href="mailto:contact@synkynstudios.com" className="btn btn-primary btn-xl rounded-full px-8 flex items-center gap-3 bg-[#f2c200] text-black hover:bg-white transition-colors duration-300">
+          <a href="mailto:contact@synkynstudios.com" className="js-email-cta btn btn-primary btn-xl rounded-full px-8 flex items-center gap-3 bg-[#f2c200] text-black hover:bg-white transition-colors duration-300">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
               <rect x="2" y="4" width="20" height="16" rx="2" />
               <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />

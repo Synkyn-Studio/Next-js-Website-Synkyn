@@ -230,9 +230,9 @@ export default function DesktopNav() {
             subtitle="#NBK111 Glimpse - Entry of an Era"
             media={
               <picture>
-                <source srcSet="/images/ns-img-485.avif" type="image/avif" />
-                <source srcSet="/images/ns-img-485.webp" type="image/webp" />
-                <SafeImg alt="NBK111 Glimpse" className={BLURRED_MEDIA} decoding="async" loading="eager" fetchPriority="low" src="/images/ns-img-485.png" />
+                {/* 640px is 2x the card; it is shown blurred, so the 1280px originals bought nothing. */}
+                <source srcSet="/images/ns-img-485-640.webp" type="image/webp" />
+                <SafeImg alt="NBK111 Glimpse" className={BLURRED_MEDIA} decoding="async" loading="eager" fetchPriority="low" src="/images/ns-img-485-640.jpg" />
               </picture>
             }
           />
