@@ -1,14 +1,18 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
-/* robots.txt — same rules as the static site, for the clean URLs. */
+/*
+  robots.txt for the clean URLs.
+  /vendor/ is deliberately NOT blocked: it holds the GSAP / Lenis scripts the
+  pages render with, and crawlers that render JS need them to see the page.
+*/
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: ["/", "/printalbum"],
-      // Prevent indexing of 404 and unnecessary crawling of vendor assets and videos.
-      disallow: ["/404", "/404.html", "/vendor/", "/video/"],
+      allow: "/",
+      // Keep the 404 page out of the index and skip crawling raw video files.
+      disallow: ["/404", "/video/"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
