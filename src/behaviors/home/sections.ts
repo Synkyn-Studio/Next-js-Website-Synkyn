@@ -89,21 +89,13 @@ export function pipelineJourney(scope: Scope) {
   if (fleckLayer && !isMobileDevice()) {
     const rand = (min: number, max: number) => min + Math.random() * (max - min);
     const frag = document.createDocumentFragment();
-    for (let i = 0; i < 64; i++) {
-      const isTri = Math.random() < 0.6;
-      let el: SVGElement;
-      if (isTri) {
-        el = document.createElementNS(SVG_NS, "path");
-        const s = rand(3, 8);
-        el.setAttribute("d", `M0 0 L${s} ${s * 0.36} L${s * 0.2} ${s} Z`);
-      } else {
-        el = document.createElementNS(SVG_NS, "circle");
-        el.setAttribute("r", rand(0.6, 1.6).toFixed(2));
-      }
-      const x = rand(0, 1600).toFixed(1);
-      const y = rand(0, 900).toFixed(1);
-      if (isTri) el.setAttribute("transform", `translate(${x} ${y}) rotate(${rand(0, 360).toFixed(0)})`);
-      else { el.setAttribute("cx", x); el.setAttribute("cy", y); }
+    // Dust dots only. This SVG is scaled up to the whole (very tall) section,
+    // so the triangle flecks it used to include rendered as ~30px shards.
+    for (let i = 0; i < 26; i++) {
+      const el = document.createElementNS(SVG_NS, "circle");
+      el.setAttribute("r", rand(0.6, 1.6).toFixed(2));
+      el.setAttribute("cx", rand(0, 1600).toFixed(1));
+      el.setAttribute("cy", rand(0, 900).toFixed(1));
       el.setAttribute("class", "fleck" + (Math.random() < 0.35 ? " dust" : ""));
       el.style.setProperty("--fd", `${rand(10, 22).toFixed(1)}s`);
       el.style.setProperty("--ff", `${rand(3.5, 8).toFixed(1)}s`);
@@ -187,12 +179,17 @@ export function pipelineJourney(scope: Scope) {
   const initDesktopPath = (budgetMs = 0) => {
     if (pathLUT || !geo) return;
     if (!samplePoints(budgetMs)) {
-      // Not finished within this frame's budget — continue when idle.
+      /*
+        Not finished within this slice's budget — continue on the next tick.
+        Waiting for idle time instead never worked here: Home always has
+        animation running, so every slice sat out its full idle timeout and
+        the table took ~20s, and reaching the section sooner forced the rest
+        synchronously (a ~0.5s freeze mid-scroll). Back-to-back 6ms slices
+        finish in well under a second, under cover of the loader.
+      */
       if (!buildQueued) {
         buildQueued = true;
-        const resume = () => { buildQueued = false; initDesktopPath(6); };
-        const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-        if (ric) ric(resume, { timeout: 400 }); else scope.timeout(resume, 32);
+        scope.timeout(() => { buildQueued = false; initDesktopPath(6); }, 16);
       }
       return;
     }
@@ -281,7 +278,8 @@ export function pipelineJourney(scope: Scope) {
   };
 
   const setDesktopProgress = (p: number) => {
-    if (!pathLUT) { initDesktopPath(); if (!pathLUT) return; }
+    // Never build the whole table in one go here: that is a frame-blocking stall.
+    if (!pathLUT) { initDesktopPath(6); if (!pathLUT) return; }
     const drawn = L * p;
     const offset = (L - drawn).toFixed(1);
     layers.forEach((el) => { if (el) el.style.strokeDashoffset = offset; });
