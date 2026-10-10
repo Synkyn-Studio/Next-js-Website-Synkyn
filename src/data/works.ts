@@ -99,20 +99,6 @@ export const WORKS: Work[] = [
 
 export const WORKS_ROW: Work[] = [
   {
-    id: "work-red-bus",
-    title: "RedBus",
-    category: "AI VFX",
-    tag: "Film",
-    thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/redbuss.png?updatedAt=1784389746357",
-    description: "<strong>RedBus – GenAI Cleanups</strong><br><br><strong>Craft:</strong> Generative AI · VFX<br><strong>Focus:</strong> Seamless cleanups, frame refinement and photorealistic visual enhancement.",
-    sources: [
-      { type: "vimeo", src: "https://player.vimeo.com/video/1208148385" },
-      { type: "vimeo", src: "https://player.vimeo.com/video/1208148389" },
-      { type: "vimeo", src: "https://player.vimeo.com/video/1208148384" },
-      { type: "vimeo", src: "https://player.vimeo.com/video/1208148386" },
-    ],
-  },
-  {
     id: "work-row-2",
     title: "",
     category: "",
