@@ -7,6 +7,7 @@
   - starts the [data-ns-animate] reveal engine for the page's content.
 */
 
+import { heroParallax } from "@/behaviors/hero-parallax";
 import { revealOnScroll } from "@/behaviors/reveal";
 import { useBehavior, useImmediateBehavior } from "@/lib/runtime/use-behavior";
 import { applyLenisProfile, type LenisProfile, setProgressBarEnabled } from "@/lib/runtime/smooth-scroll";
@@ -32,5 +33,6 @@ export default function PageRuntime({ profile = "standard", progressBar = true, 
   }, [profile, progressBar]);
 
   useBehavior("reveal", revealOnScroll);
+  useBehavior("hero-parallax", heroParallax);
   return null;
 }

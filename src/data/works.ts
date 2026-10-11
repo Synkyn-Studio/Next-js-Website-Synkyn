@@ -20,11 +20,14 @@ export interface Work {
   thumbnail?: string;
   description: string;
   sources: WorkSource[];
+  /** For Vimeo-hosted films: publish date and length (from Vimeo), used for VideoObject structured data. */
+  published?: { uploadDate: string; seconds: number };
 }
 
 export const WORKS: Work[] = [
   {
     id: "work-ig-1",
+    published: { uploadDate: "2026-07-18T11:23:34+05:30", seconds: 16 },
     title: "Skroman Smart Switches",
     category: "Social Reel",
     tag: "Reels",
@@ -52,6 +55,7 @@ export const WORKS: Work[] = [
   },
   {
     id: "work-camel-2",
+    published: { uploadDate: "2026-07-10T13:30:58+05:30", seconds: 41 },
     title: "Camel",
     category: "Ad Film",
     tag: "Film",
@@ -61,6 +65,7 @@ export const WORKS: Work[] = [
   },
   {
     id: "work-tata-sampann",
+    published: { uploadDate: "2026-07-18T11:28:54+05:30", seconds: 4 },
     title: "Tata Sampann",
     category: "Ad Film",
     tag: "Film",
@@ -74,6 +79,7 @@ export const WORKS: Work[] = [
   },
   {
     id: "work-red-bus",
+    published: { uploadDate: "2026-07-08T12:07:41+05:30", seconds: 20 },
     title: "RedBus",
     category: "AI VFX",
     tag: "Film",

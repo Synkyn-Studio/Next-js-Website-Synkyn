@@ -1,7 +1,6 @@
 export default function PipelineSection() {
   return (
     <section className="pipeline-section bg-transparent relative overflow-hidden" id="pipeline-section">
-      <svg className="flecks" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1600 900" />
       <header className="hero">
         <p className="hero-eyebrow">The Pipeline</p>
         <h2 className="hero-title">

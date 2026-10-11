@@ -6,6 +6,17 @@
 import type { Metadata, Viewport } from "next";
 import { PAGE_META, type PageKey } from "@/data/seo-meta";
 
+/*
+  Carried over from the static pages but not used by any search engine, or
+  harmful: `googlebot`/`bingbot` said only "index, follow", which overrides the
+  fuller `robots` value for those crawlers (dropping max-image-preview:large).
+*/
+const IGNORED = new Set([
+  "googlebot", "bingbot", "language", "geo.region", "geo.placename", "geo.position", "ICBM",
+  "rating", "distribution", "revisit-after", "expires", "msapplication-tooltip", "msapplication-starturl",
+  "msapplication-TileImage", "msapplication-TileColor",
+]);
+
 /** Meta names mapped to typed Metadata fields (everything else goes to `other`). */
 const HANDLED = new Set([
   "__title", "__canonical", "title", "description", "author", "publisher", "robots", "viewport",
@@ -19,10 +30,8 @@ const HANDLED = new Set([
 export function pageMetadata(key: PageKey): Metadata {
   const m = PAGE_META[key];
   const other: Record<string, string> = {};
-  // The static pages repeated the title as <meta name="title">.
-  if (m.title) other.title = m.title;
   for (const [name, value] of Object.entries(m)) {
-    if (HANDLED.has(name)) continue;
+    if (HANDLED.has(name) || IGNORED.has(name)) continue;
     other[name] = value.replace(/^\.\//, "/").replace(/(["'(])\.\/(images)\//g, "$1/$2/");
   }
 

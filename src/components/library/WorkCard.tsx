@@ -56,7 +56,7 @@ export default function WorkCard({ work }: { work: Work }) {
       </span>
       <div className="bento-item__overlay absolute inset-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-end p-4 md:p-6">
         <p className="text-[#ffd84d] uppercase text-[10px] md:text-xs tracking-wider font-bold mb-1 drop-shadow-md">{work.category}</p>
-        <h4 className="text-white text-base md:text-xl font-bold drop-shadow-md leading-tight">{work.title}</h4>
+        <h3 className="text-white text-base md:text-xl font-bold drop-shadow-md leading-tight">{work.title}</h3>
       </div>
     </div>
   );

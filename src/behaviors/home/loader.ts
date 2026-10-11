@@ -58,6 +58,9 @@ export function loaderBootstrap(): LoaderHandle {
 
   if (!loader) { kill(); return handle; }
 
+  // Reduced motion: no 3.8s counter-and-split intro, just the page.
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { kill(); return handle; }
+
   /*
     Start the Vimeo Player API now, while the page is still parsing: the hero
     reveals on its first `playing` event. `loadScript("vimeo-api-js")` in

@@ -194,12 +194,3 @@ export function ambientCrystals(scope: Scope) {
     });
   }
 }
-
-/** fx.js §7 — block the context menu and image/video dragging site-wide. */
-export function contentProtection(scope: Scope) {
-  scope.on(document, "contextmenu", (e: MouseEvent) => e.preventDefault(), { passive: false });
-  scope.on(document, "dragstart", (e: DragEvent) => {
-    const tag = (e.target as Element)?.tagName ? (e.target as Element).tagName.toLowerCase() : "";
-    if (tag === "img" || tag === "video") e.preventDefault();
-  }, { passive: false });
-}

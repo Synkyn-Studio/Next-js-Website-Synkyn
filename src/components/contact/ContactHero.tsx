@@ -3,7 +3,7 @@ export default function ContactHero() {
     <section className="w-full min-h-[100svh] bg-transparent flex flex-col justify-center items-center px-4 py-20 relative overflow-hidden">
       {/* Background Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(760px,90vw)] aspect-square bg-[radial-gradient(circle,rgba(242,196,0,0.12),transparent_60%)] blur-[40px] pointer-events-none -z-10" aria-hidden="true" />
-      <div className="w-full max-w-[860px] mx-auto text-center relative z-10 pointer-events-none">
+      <div className="w-full max-w-[860px] mx-auto text-center relative z-10 pointer-events-none" data-hero-parallax="">
         <span className="inline-block badge badge-gradient-helix mb-6 pointer-events-auto" data-delay="0.1" data-ns-animate="">Get In Touch</span>
         <h1 className="text-white pointer-events-auto w-fit max-w-full mx-auto text-[32px] leading-[1.2] sm:text-[40px] md:text-[56px] md:leading-[1.1] lg:text-[64px] font-bold tracking-tight mb-6" data-delay="0.2" data-ns-animate="">
           {"Let's Build Something"}

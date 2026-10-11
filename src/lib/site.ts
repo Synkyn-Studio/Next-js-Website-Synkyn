@@ -6,7 +6,7 @@ export const CONTACT_EMAIL = "contact@synkynstudios.com";
 export const GTM_ID = "GTM-KLBKS7TM";
 export const GA_ID = "G-PST0K7RG3R";
 
-export const ASSET_VERSION = "3";
+export const ASSET_VERSION = "4";
 
 export const DEFAULT_BODY_CLASS = "bg-background-3 dark:bg-helix-blue-dark-2";
 

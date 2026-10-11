@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl, ROUTES } from "@/lib/site";
 
-const LAST_MODIFIED = "2026-09-07";
+const LAST_MODIFIED = "2026-10-11";
 
 /* sitemap.xml — same pages, change frequencies and priorities as the static site. */
 export default function sitemap(): MetadataRoute.Sitemap {

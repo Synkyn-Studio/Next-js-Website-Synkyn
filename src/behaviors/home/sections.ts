@@ -1,8 +1,5 @@
-/* Home page section behaviours (index.html inline scripts + main.js). */
-
 import type { Scope } from "@/lib/runtime/scope";
 
-/** index.html — adds `is-in-view` to .actually-area once it enters the viewport. */
 export function actuallyInView(scope: Scope) {
   const el = document.querySelector(".actually-area");
   if (!el) return;
@@ -18,7 +15,6 @@ export function actuallyInView(scope: Scope) {
   io.observe(el);
 }
 
-/** index.html — pinned, scrubbed gold sweep + zoom-through of the "actually" statement. */
 export function actuallyPinnedZoom() {
   const { gsap, ScrollTrigger } = window;
   if (!gsap || !ScrollTrigger) return;
@@ -28,27 +24,7 @@ export function actuallyPinnedZoom() {
   if (!section || !text) return;
   section.classList.add("is-in-view");
   const isMobile = window.innerWidth < 768;
-  /*
-    `.actually-area` carries `transition: opacity/transform .85s` for its
-    entry reveal, and `is-in-view` above has just finished it. `is-pinned`
-    drops the transition so nothing on the section is interpolated while the
-    zoom-through scrubs.
-  */
   section.classList.add("is-pinned");
-  /*
-    The section is held on screen by `position: sticky` inside
-    `.actually-track` (home.css), not by a ScrollTrigger pin: a fixed pin was
-    reported as a full-screen layout shift on every pass (CLS ≈ 1.5–2 on Home,
-    where "good" is < 0.1), a transform pin trails the finger on native touch
-    scrolling, and `anticipatePin` snapped it to the top 50–90px early. The
-    timeline just scrubs across the track's extra 170vh.
-
-    `scrub: true` rather than a smoothed `scrub: 0.6`. Lenis is already easing
-    the scroll position, so a second easing pass here means the timeline keeps
-    creeping toward its target after the wheel stops — and at the end of this
-    timeline the heading is scaled up 28×, where a progress change too small to
-    see becomes a large change in pixels. That creep is the shimmer.
-  */
   const track = section.closest(".actually-track") || section;
   const tl = gsap.timeline({
     scrollTrigger: { trigger: track, scrub: true, start: "top top", end: "bottom bottom", fastScrollEnd: true, invalidateOnRefresh: true },
@@ -58,16 +34,6 @@ export function actuallyPinnedZoom() {
   tl.set(text, { visibility: "hidden" });
   tl.to({}, { duration: 0.35 });
 }
-
-/*
-  main.js's `scroll-highlighted` module is deliberately not ported. It measured
-  `.actually-area` on every scroll event and toggled that class on the section
-  and its title — but no stylesheet on this site, here or in main.css, defines
-  a single `.scroll-highlighted` rule. So it read layout on every scroll frame,
-  inside the pinned section that can least afford it, and changed nothing.
-*/
-
-/** index.html — the rocket "pipeline" journey (flecks, clouds, nodes, path draw). */
 export function pipelineJourney(scope: Scope) {
   const SVG_NS = "http://www.w3.org/2000/svg";
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -79,37 +45,8 @@ export function pipelineJourney(scope: Scope) {
   const stops = Array.from(section.querySelectorAll<HTMLElement>(".stop"));
   const mobileTimelineBar = section.querySelector<HTMLElement>(".mobile-timeline-bar");
   const mobileRocket = section.querySelector<HTMLElement>(".mobile-rocket");
-
-  // Everything below is generated into empty SVG groups; clear it on teardown
-  // so a remount (e.g. navigating back to Home) starts from the same markup.
   const generated: Element[] = [];
   scope.add(() => generated.forEach((n) => n.remove()));
-
-  const fleckLayer = section.querySelector(".flecks");
-  if (fleckLayer && !isMobileDevice()) {
-    const rand = (min: number, max: number) => min + Math.random() * (max - min);
-    const frag = document.createDocumentFragment();
-    // Dust dots only. This SVG is scaled up to the whole (very tall) section,
-    // so the triangle flecks it used to include rendered as ~30px shards.
-    for (let i = 0; i < 26; i++) {
-      const el = document.createElementNS(SVG_NS, "circle");
-      el.setAttribute("r", rand(0.6, 1.6).toFixed(2));
-      el.setAttribute("cx", rand(0, 1600).toFixed(1));
-      el.setAttribute("cy", rand(0, 900).toFixed(1));
-      el.setAttribute("class", "fleck" + (Math.random() < 0.35 ? " dust" : ""));
-      el.style.setProperty("--fd", `${rand(10, 22).toFixed(1)}s`);
-      el.style.setProperty("--ff", `${rand(3.5, 8).toFixed(1)}s`);
-      el.style.setProperty("--fo", rand(0.18, 0.5).toFixed(2));
-      el.style.setProperty("--dx", `${rand(-16, 16).toFixed(1)}px`);
-      el.style.setProperty("--dy", `${rand(-22, -6).toFixed(1)}px`);
-      el.style.setProperty("--rot", `${rand(-40, 40).toFixed(0)}deg`);
-      el.style.animationDelay = `${rand(0, 8).toFixed(2)}s, ${rand(0, 5).toFixed(2)}s`;
-      if (reduceMotion) el.style.opacity = "0.25";
-      frag.appendChild(el);
-      generated.push(el);
-    }
-    fleckLayer.appendChild(frag);
-  }
 
   const geo = document.getElementById("trail-geo") as SVGGeometryElement | null;
   const layers = ["trail-halo", "trail-glow", "trail-core"].map((cls) => section.querySelector<SVGElement>(`.${cls}`));
@@ -121,17 +58,6 @@ export function pipelineJourney(scope: Scope) {
 
   let L = 0;
   let pathLUT: { x: number; y: number; rot: number }[] | null = null;
-  /*
-    Sampling the trail is by far the most expensive work on this page:
-    getPointAtLength costs ~0.3ms on this path. The original took three
-    samples per step (the point plus a ±36px chord for the rocket's angle)
-    at 3000 steps — about 3s of blocked main thread on load.
-
-    The same result comes from one sample per step: the chord endpoints are
-    points on the path we already sample, so the angle is read from the table
-    itself. At 1200 steps the spacing is ~4.6px, well under a rocket length,
-    and the build is time-sliced across idle frames (see buildPathTable).
-  */
   const NUM_SAMPLES = 1200;
   const CHORD_PX = 36;
   let nodes: { el: SVGGElement; len: number; stop: HTMLElement | null; lit: boolean; inState: boolean }[] = [];

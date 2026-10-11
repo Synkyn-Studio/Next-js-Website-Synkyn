@@ -49,7 +49,7 @@ export const PAGE_META: Record<PageKey, Record<string, string>> = {
     "msapplication-starturl": "/",
     "google-site-verification": "U6ECGq1OyJuADOEHcX9TC1W24aWH9jZQienHQgxDD1s",
     "__title": "Synkyn Studios | 404 - Page not found",
-    "__canonical": "https://www.synkynstudios.com/404"
+    "__canonical": ""
   },
   "home": {
     "msvalidate.01": "41DF851FCE84360A9074BDC7D98E6FE8",
@@ -104,7 +104,7 @@ export const PAGE_META: Record<PageKey, Record<string, string>> = {
     "msvalidate.01": "41DF851FCE84360A9074BDC7D98E6FE8",
     "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover",
     "title": "About Synkyn Studios | AI Film Studio in Bengaluru",
-    "description": "About Synkyn Studios — an AI-first film and creative production studio in Bengaluru creating commercials, product films, CGI visuals, and social content for modern brands.",
+    "description": "About Synkyn Studios, an AI-first film and creative studio in Bengaluru making commercials, product films, CGI visuals and social content for modern brands.",
     "author": "Synkyn Studios",
     "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
     "googlebot": "index, follow",
@@ -276,7 +276,7 @@ export const PAGE_META: Record<PageKey, Record<string, string>> = {
     "msvalidate.01": "41DF851FCE84360A9074BDC7D98E6FE8",
     "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover",
     "title": "Synkyn Studios | Terms & Conditions",
-    "description": "Read the Terms & Conditions for Synkyn Studios — covering engagement of services, fees, use of AI tools, intellectual property, liability, and governing law. AI-native production studio based in Bengaluru, India.",
+    "description": "Synkyn Studios' Terms & Conditions: services, fees, use of AI tools, intellectual property, liability and governing law for our Bengaluru AI production studio.",
     "author": "Synkyn Studios",
     "language": "English",
     "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",

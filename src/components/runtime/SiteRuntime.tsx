@@ -11,7 +11,8 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { ambientCrystals, contentProtection } from "@/behaviors/ambient-fx";
+import { ambientCrystals } from "@/behaviors/ambient-fx";
+import { contextMenu } from "@/behaviors/context-menu";
 import { emailCta } from "@/behaviors/email-cta";
 import { gradualBlur } from "@/behaviors/gradual-blur";
 import {
@@ -55,7 +56,7 @@ export default function SiteRuntime() {
   const cameFromHistory = useRef(false);
 
   useImmediateBehavior("ambient-fx", ambientCrystals);
-  useImmediateBehavior("content-protection", contentProtection);
+  useImmediateBehavior("context-menu", contextMenu);
   useImmediateBehavior("email-cta", emailCta);
 
   useImmediateBehavior("history-tracking", (scope) => {

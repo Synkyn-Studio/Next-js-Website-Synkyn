@@ -1,19 +1,7 @@
-/*
-  One-click email CTA (Home + Contact inline script): `.js-email-cta` opens the
-  native mail client on mobile and Gmail compose on desktop. Delegated so it
-  covers the persistent header CTA and page content alike.
-
-  Neither route is guaranteed to reach a working mail app (no default client,
-  signed out of Gmail, a different webmail…), so the address is also copied to
-  the clipboard and a short toast says so: the visitor always leaves the click
-  holding the address.
-
-  Contact clicks (email, Instagram, LinkedIn) are reported to GA4 as
-  `contact_click` so leads show up in Analytics.
-*/
 
 import type { Scope } from "@/lib/runtime/scope";
 import { CONTACT_EMAIL } from "@/lib/site";
+import { copyText, toast } from "@/lib/toast";
 
 type Gtag = (...args: unknown[]) => void;
 
@@ -22,33 +10,8 @@ function track(method: string, url: string) {
   if (typeof gtag === "function") gtag("event", "contact_click", { method, link_url: url });
 }
 
-let toastTimer: number | undefined;
-function toast(message: string) {
-  let el = document.getElementById("sk-toast");
-  if (!el) {
-    el = document.createElement("div");
-    el.id = "sk-toast";
-    el.className = "sk-toast";
-    el.setAttribute("role", "status");
-    el.setAttribute("aria-live", "polite");
-    document.body.appendChild(el);
-  }
-  el.textContent = message;
-  // Restart the entrance if a second click lands while it is still showing.
-  el.classList.remove("is-visible");
-  void el.offsetWidth;
-  el.classList.add("is-visible");
-  window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => el?.classList.remove("is-visible"), 2600);
-}
-
 async function copyEmail() {
-  try {
-    await navigator.clipboard.writeText(CONTACT_EMAIL);
-    toast(`Email copied: ${CONTACT_EMAIL}`);
-  } catch {
-    /* clipboard blocked (insecure context / permissions): the mail app still opens */
-  }
+  if (await copyText(CONTACT_EMAIL)) toast(`Email copied: ${CONTACT_EMAIL}`);
 }
 
 export function emailCta(scope: Scope) {

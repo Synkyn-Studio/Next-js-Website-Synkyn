@@ -1,7 +1,7 @@
 export default function TermsHero() {
   return (
     <section className="tc-hero" id="tc-top">
-      <div className="tc-hero__inner">
+      <div className="tc-hero__inner" data-hero-parallax="">
         <span className="inline-block badge badge-gradient-helix tc-reveal">Legal</span>
         <div className="md:space-y-4 space-y-2 mx-auto mt-5">
           <h1 className="text-accent w-fit max-w-full mx-auto max-md:text-[38px] max-md:leading-[1.1] tc-reveal">

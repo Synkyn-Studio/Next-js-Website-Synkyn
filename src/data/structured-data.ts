@@ -156,7 +156,8 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
           "thumbnailUrl": [
             "https://www.synkynstudios.com/images/showreel-poster.webp"
           ],
-          "uploadDate": "2026-01-01T00:00:00+05:30",
+          "uploadDate": "2026-07-17T15:02:15+05:30",
+          "duration": "PT1M3S",
           "embedUrl": "https://player.vimeo.com/video/1210886734",
           "publisher": {
             "@id": "https://www.synkynstudios.com/#organization"

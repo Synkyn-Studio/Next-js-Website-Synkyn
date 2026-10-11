@@ -1016,3 +1016,19 @@ body.modal-open .header-two {
     min-width: 74px;
   }
 }
+
+/* Card titles are h3 (h1 -> h2 -> h3 outline). main.css forces every h3 to
+   clamp(18px, 4.5vw, 22px) !important up to 768px; keep the card's own
+   text-base / md:text-xl sizes so the cards look exactly as before. */
+@media screen and (max-width: 768px) {
+    .bento-item h3 {
+        font-size: 1rem !important;
+        line-height: 1.25 !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 768px) {
+    .bento-item h3 {
+        font-size: 1.25rem !important;
+    }
+}
