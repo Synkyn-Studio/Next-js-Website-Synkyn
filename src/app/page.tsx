@@ -24,7 +24,8 @@ export default function HomePage() {
   preconnect("https://ik.imagekit.io");
   preconnect("https://player.vimeo.com");
   prefetchDNS("https://vod-progressive.akamaized.net");
-  prefetchDNS("https://vod-adaptive-ak.vimeocdn.com");
+  // The hero stream comes from here: open the connection early, not just the DNS lookup.
+  preconnect("https://vod-adaptive-ak.vimeocdn.com", { crossOrigin: "anonymous" });
   preconnect("https://i.vimeocdn.com", { crossOrigin: "anonymous" });
   preconnect("https://f.vimeocdn.com", { crossOrigin: "anonymous" });
 
