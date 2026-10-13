@@ -81,11 +81,6 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "addressRegion": "Karnataka",
             "addressCountry": "IN"
           },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 12.9716,
-            "longitude": 77.5946
-          },
           "areaServed": [
             {
               "@type": "Country",
@@ -457,11 +452,6 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
             "postalCode": "560001",
             "addressCountry": "IN"
           },
-          "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 12.9716,
-            "longitude": 77.5946
-          },
           "openingHoursSpecification": [
             {
               "@type": "OpeningHoursSpecification",
@@ -643,6 +633,29 @@ export const STRUCTURED_DATA: Record<PageKey, object[]> = {
               "name": "Terms & Conditions",
               "item": "https://www.synkynstudios.com/terms"
             }
+          ]
+        }
+      ]
+    }
+  ],
+  "privacy": [
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://www.synkynstudios.com/privacy#webpage",
+          "url": "https://www.synkynstudios.com/privacy",
+          "name": "Synkyn Studios | Privacy Policy",
+          "isPartOf": { "@id": "https://www.synkynstudios.com/#website" },
+          "publisher": { "@id": "https://www.synkynstudios.com/#organization" },
+          "inLanguage": "en"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.synkynstudios.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Privacy Policy", "item": "https://www.synkynstudios.com/privacy" }
           ]
         }
       ]

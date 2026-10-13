@@ -34,7 +34,7 @@ export default function AboutPage() {
       />
       {STRUCTURED_DATA.about.map((data, i) => <JsonLd key={i} data={data} />)}
       <PageTransition>
-        <main>
+        <main id="main-content" tabIndex={-1}>
           <AboutHeroSection />
           <OurStorySection />
           <TeamSection />

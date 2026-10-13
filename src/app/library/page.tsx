@@ -35,7 +35,7 @@ const LIBRARY_VIDEOS = {
       uploadDate: w.published!.uploadDate,
       duration: `PT${w.published!.seconds}S`,
       embedUrl: w.sources[0].src,
-      url: `${absoluteUrl(ROUTES.library)}#${w.id}`,
+      url: w.slug ? absoluteUrl(`/work/${w.slug}`) : `${absoluteUrl(ROUTES.library)}#${w.id}`,
       publisher: { "@id": "https://www.synkynstudios.com/#organization" },
     },
   })),
@@ -62,7 +62,7 @@ export default function LibraryPage() {
       {STRUCTURED_DATA.library.map((data, i) => <JsonLd key={i} data={data} />)}
       <JsonLd data={LIBRARY_VIDEOS} />
       <PageTransition>
-        <main>
+        <main id="main-content" tabIndex={-1}>
           <LibraryHero />
           <LibraryWorks />
           <MediaModal />

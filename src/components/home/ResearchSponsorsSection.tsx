@@ -30,14 +30,19 @@ function LogoCarousel({ logos, repeat, direction, ariaLabel }: { logos: Logo[]; 
       <div aria-hidden="true" className="logo-carousel-fade logo-carousel-fade--right" />
       <div className="logo-carousel-track-wrap">
         <div className="logo-carousel-track">
+          {/*
+            Each logo is announced once: the repeats that fill the track and the
+            looping copy are decorative (hidden from assistive tech, not focusable).
+            Lazy: the section is far below the fold, and every copy shares one URL.
+          */}
           {primary.map((logo, i) => (
-            <figure key={`p${i}`} className="logo-carousel-item" tabIndex={0} aria-label={`${logo.name} ${logo.label}`}>
-              <img alt={`${logo.name} logo`} className="logo-carousel-item-img" src={logoSrc(logo.file)} width={240} height={240} loading="eager" decoding="async" draggable={false} />
+            <figure key={`p${i}`} className="logo-carousel-item" aria-hidden={i >= logos.length || undefined}>
+              <img alt={i < logos.length ? `${logo.name} logo` : ""} className="logo-carousel-item-img" src={logoSrc(logo.file)} width={240} height={240} loading="lazy" decoding="async" draggable={false} />
             </figure>
           ))}
           {primary.map((logo, i) => (
             <figure key={`d${i}`} className="logo-carousel-item" aria-hidden="true">
-              <img alt="" className="logo-carousel-item-img" src={logoSrc(logo.file)} width={240} height={240} loading="eager" decoding="async" draggable={false} />
+              <img alt="" className="logo-carousel-item-img" src={logoSrc(logo.file)} width={240} height={240} loading="lazy" decoding="async" draggable={false} />
             </figure>
           ))}
         </div>

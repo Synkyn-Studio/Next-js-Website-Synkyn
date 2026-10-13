@@ -30,7 +30,7 @@ export default function TermsPage() {
       {STRUCTURED_DATA.terms.map((data, i) => <JsonLd key={i} data={data} />)}
       <FloatingTocButton />
       <PageTransition>
-        <main>
+        <main id="main-content" tabIndex={-1}>
           <TermsHero />
           <TermsDocument />
           <Footer currentPath={ROUTES.terms} active="terms" logoAlt="Synkyn Studios Logo" />

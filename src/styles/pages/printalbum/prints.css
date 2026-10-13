@@ -1838,3 +1838,8 @@
         }
     }
 }
+
+/* Result count line: #707070 on #080808 was 4.04:1; this grey clears WCAG AA (4.5:1) at 13px. */
+.pf-result-line {
+    color: #808080;
+}

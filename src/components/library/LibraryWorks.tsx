@@ -1,4 +1,7 @@
-import { WORKS, WORKS_ROW } from "@/data/works";
+import { isPublished, WORKS, WORKS_ROW } from "@/data/works";
+
+const GRID = WORKS.filter(isPublished);
+const ROW = WORKS_ROW.filter(isPublished);
 import WorkCard from "./WorkCard";
 
 export default function LibraryWorks() {
@@ -8,16 +11,18 @@ export default function LibraryWorks() {
         <div className="main-container 2xl:!max-w-[1440px]">
           <h2 className="sr-only">Selected work</h2>
           <div id="bento-grid-container">
-            {WORKS.map((work) => (
+            {GRID.map((work) => (
               <WorkCard key={work.id} work={work} />
             ))}
           </div>
           {/* Three 16:9 videos under the grid — edit WORKS_ROW in data/works.ts. */}
-          <div id="bento-row-3">
-            {WORKS_ROW.map((work) => (
-              <WorkCard key={work.id} work={work} />
-            ))}
-          </div>
+          {ROW.length > 0 && (
+            <div id="bento-row-3">
+              {ROW.map((work) => (
+                <WorkCard key={work.id} work={work} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

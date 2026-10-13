@@ -45,8 +45,14 @@ export function libraryWorks(scope: Scope) {
     const work = ALL_WORKS.find((w) => w.id === el.dataset.id);
     // A card whose media has not been filled in yet (WORKS_ROW) stays inert.
     if (!work || !work.sources.some((s) => s.src)) return;
-    scope.on(el, "click", () => openModal(work));
-    scope.on(el, "keydown", (e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(work); } });
+    // Cards for films with their own page are links: a plain click opens the
+    // quick-view modal; Ctrl/Cmd/Shift/middle-click keep their link behaviour.
+    scope.on(el, "click", (e: MouseEvent) => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      openModal(work);
+    });
+    if (el.tagName !== "A") scope.on(el, "keydown", (e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(work); } });
 
     const firstVideoSrc = work.sources.find((s) => s.type === "vimeo" || s.type === "youtube" || s.type === "video");
     if (!firstVideoSrc) return;
@@ -76,7 +82,7 @@ export function libraryWorks(scope: Scope) {
         const iframeStyle = "position:absolute; inset:0; width:100%; height:100%; border:0; pointer-events:none;";
         let inner = "";
         if (firstVideoSrc.type === "vimeo") {
-          inner = `<iframe src="https://player.vimeo.com/video/${getVimeoId(firstVideoSrc.src)}?background=1&autoplay=1&loop=1&muted=1&autopause=0" frameborder="0" allow="autoplay; fullscreen" style="${iframeStyle}"></iframe>`;
+          inner = `<iframe src="https://player.vimeo.com/video/${getVimeoId(firstVideoSrc.src)}?background=1&autoplay=1&loop=1&muted=1&autopause=0&dnt=1" frameborder="0" allow="autoplay; fullscreen" style="${iframeStyle}"></iframe>`;
         } else if (firstVideoSrc.type === "youtube") {
           const y = getYouTubeId(firstVideoSrc.src);
           inner = `<iframe src="https://www.youtube-nocookie.com/embed/${y}?autoplay=1&mute=1&controls=0&loop=1&playlist=${y}&playsinline=1&modestbranding=1&enablejsapi=1&origin=${encodeURIComponent(ytOrigin())}" title="Preview" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" style="${iframeStyle}"></iframe>`;

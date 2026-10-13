@@ -1115,3 +1115,76 @@ video {
         transition: none !important;
     }
 }
+
+/* Skip link: hidden until a keyboard user tabs to it, then a pill in the
+   site's yellow at the top-left, above the header. */
+.sk-skip {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1000003;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #f2d400;
+    color: #0a0a0a;
+    font: 600 14px/1.2 'Inter Tight', system-ui, sans-serif;
+    text-decoration: none;
+    transform: translateY(-160%);
+    transition: transform 0.2s ease;
+}
+
+.sk-skip:focus,
+.sk-skip:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+#main-content:focus {
+    outline: none;
+}
+
+/* ==========================================================================
+   Hero reveal, CSS-first (inner pages). Hero badge / heading / intro / CTA
+   used to stay at opacity 0 until GSAP had downloaded and run (7–9s on a
+   throttled phone, which was the pages' LCP). They now fade up on first paint
+   with the same blur-and-rise and the same data-delay stagger; GSAP skips them
+   (behaviors/reveal.ts). Content is never JS-dependent to appear.
+   ========================================================================== */
+@keyframes sk-hero-in {
+    from { opacity: 0; transform: translate3d(0, 26px, 0); filter: blur(10px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes sk-hero-in-left {
+    from { opacity: 0; transform: translate3d(-50px, 0, 0); filter: blur(10px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes sk-hero-in-up {
+    from { opacity: 0; transform: translate3d(0, -30px, 0); filter: blur(10px); }
+    to { opacity: 1; transform: none; filter: none; }
+}
+
+[data-hero-reveal] [data-ns-animate],
+[data-hero-reveal] .tc-reveal {
+    animation: sk-hero-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+[data-hero-reveal] [data-direction="left"] { animation-name: sk-hero-in-left !important; }
+[data-hero-reveal] [data-direction="up"] { animation-name: sk-hero-in-up !important; }
+[data-hero-reveal] [data-delay="0.1"] { animation-delay: 0.1s !important; }
+[data-hero-reveal] [data-delay="0.2"] { animation-delay: 0.2s !important; }
+[data-hero-reveal] [data-delay="0.3"] { animation-delay: 0.3s !important; }
+[data-hero-reveal] [data-delay="0.4"] { animation-delay: 0.4s !important; }
+[data-hero-reveal] [data-delay="0.7"] { animation-delay: 0.7s !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    [data-hero-reveal] [data-ns-animate],
+    [data-hero-reveal] .tc-reveal {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+    }
+}

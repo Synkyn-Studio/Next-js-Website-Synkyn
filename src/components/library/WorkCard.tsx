@@ -48,8 +48,9 @@ export default function WorkCard({ work }: { work: Work }) {
   const ar = (work.ratio || "16:9") === "9:16" ? "portrait" : "landscape";
   const { badge, node } = media(work);
   const label = work.sources.length > 1 ? `${badge} (1/${work.sources.length})` : badge;
-  return (
-    <div className={`relative bg-white dark:bg-background-8 group bento-item bento-ar--${ar}`} data-id={work.id} role="button" tabIndex={0} aria-label={`${work.title} — ${work.category}`}>
+  const className = `relative bg-white dark:bg-background-8 group bento-item bento-ar--${ar}`;
+  const inner = (
+    <>
       {node}
       <span className="bento-item__badge absolute top-3 left-3 z-20 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full" style={{ background: "rgba(0,0,0,0.72)", color: "#fff" }}>
         {label}
@@ -58,6 +59,20 @@ export default function WorkCard({ work }: { work: Work }) {
         <p className="text-[#ffd84d] uppercase text-[10px] md:text-xs tracking-wider font-bold mb-1 drop-shadow-md">{work.category}</p>
         <h3 className="text-white text-base md:text-xl font-bold drop-shadow-md leading-tight">{work.title}</h3>
       </div>
+    </>
+  );
+  // Films with their own page are real links (crawlable, open-in-new-tab, Back works);
+  // library.ts still opens the quick-view modal on a plain click.
+  if (work.slug) {
+    return (
+      <a href={`/work/${work.slug}`} className={className} data-id={work.id}>
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <div className={className} data-id={work.id} role="button" tabIndex={0}>
+      {inner}
     </div>
   );
 }

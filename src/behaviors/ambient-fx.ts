@@ -184,8 +184,15 @@ export function ambientCrystals(scope: Scope) {
 
   if (REDUCED) canvas.style.display = "none";
   else {
-    build();
-    scope.raf(() => { canvas.style.opacity = "1"; loop(); });
+    // Decorative: start after the page has loaded (it fades in over 1.2s anyway),
+    // so it never competes with first render and hydration.
+    const start = () => {
+      const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+      const go = () => { build(); scope.raf(() => { canvas.style.opacity = "1"; loop(); }); };
+      if (ric) ric(go, { timeout: 1500 }); else scope.timeout(go, 200);
+    };
+    if (document.readyState === "complete") start();
+    else scope.on(window, "load", start, { once: true });
   }
 
   const mq = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;

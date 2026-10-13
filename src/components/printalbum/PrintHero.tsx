@@ -1,6 +1,6 @@
 export default function PrintHero() {
   return (
-    <section className="pf-hero" id="pf-top">
+    <section className="pf-hero" id="pf-top" data-hero-reveal="">
       <div className="pf-hero__inner">
         <div className="space-y-5 text-center relative z-10 pointer-events-none">
           <span className="inline-block badge badge-gradient-helix pointer-events-auto pf-reveal" data-delay="0.1" data-ns-animate="" data-orion-obstacle="">

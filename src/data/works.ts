@@ -20,6 +20,10 @@ export interface Work {
   thumbnail?: string;
   description: string;
   sources: WorkSource[];
+  /** URL slug of the project's own page (/work/<slug>); only set for verified, Synkyn-hosted films. */
+  slug?: string;
+  /** Independent concept work, not commissioned by the brand shown. Labelled as such wherever it appears. */
+  spec?: boolean;
   /** For Vimeo-hosted films: publish date and length (from Vimeo), used for VideoObject structured data. */
   published?: { uploadDate: string; seconds: number };
 }
@@ -27,6 +31,7 @@ export interface Work {
 export const WORKS: Work[] = [
   {
     id: "work-ig-1",
+    slug: "skroman-smart-switches",
     published: { uploadDate: "2026-07-18T11:23:34+05:30", seconds: 16 },
     title: "Skroman Smart Switches",
     category: "Social Reel",
@@ -55,9 +60,11 @@ export const WORKS: Work[] = [
   },
   {
     id: "work-camel-2",
+    slug: "camel-crayons",
+    spec: true,
     published: { uploadDate: "2026-07-10T13:30:58+05:30", seconds: 41 },
     title: "Camel",
-    category: "Ad Film",
+    category: "Spec Ad Film",
     tag: "Film",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/hf_20260303_194843_2dc8f410-cfc2-417f-9dbd-b15e9bdd28c6.png?updatedAt=1784389455208",
     description: "<strong>Camel – Spec AI Film</strong><br><br><strong>Concept:</strong> Reimagining the world of Camel Crayons through AI-driven visual storytelling.",
@@ -65,6 +72,7 @@ export const WORKS: Work[] = [
   },
   {
     id: "work-tata-sampann",
+    slug: "tata-sampann",
     published: { uploadDate: "2026-07-18T11:28:54+05:30", seconds: 4 },
     title: "Tata Sampann",
     category: "Ad Film",
@@ -79,6 +87,7 @@ export const WORKS: Work[] = [
   },
   {
     id: "work-red-bus",
+    slug: "redbus",
     published: { uploadDate: "2026-07-08T12:07:41+05:30", seconds: 20 },
     title: "RedBus",
     category: "AI VFX",
@@ -126,8 +135,11 @@ export const WORKS_ROW: Work[] = [
   },
 ];
 
+/** A work is only shown once it has a title and at least one real source (no empty placeholder cards). */
+export const isPublished = (w: Work) => !!w.title.trim() && w.sources.some((src) => !!src.src);
+
 /** Every card on the Library page: the bento grid, then the row under it. */
-export const ALL_WORKS: Work[] = [...WORKS, ...WORKS_ROW];
+export const ALL_WORKS: Work[] = [...WORKS, ...WORKS_ROW].filter(isPublished);
 
 export function getYouTubeId(url: string) {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);
@@ -142,3 +154,6 @@ export function getVimeoId(url: string) {
   const m = String(url).match(/vimeo\.com\/(?:video\/)?(\d+)/) || String(url).match(/(\d{6,})/);
   return m ? m[1] : null;
 }
+
+/** Works that have their own project page, in Library order. */
+export const PROJECT_WORKS: Work[] = ALL_WORKS.filter((w) => !!w.slug);

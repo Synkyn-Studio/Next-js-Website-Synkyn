@@ -17,7 +17,9 @@ export function revealOnScroll(scope: Scope) {
   };
 
   const init = () => {
-    const els = document.querySelectorAll<HTMLElement>("[data-ns-animate]:not([data-ns-animate-init])");
+    // Hero content is revealed by CSS on first paint (see .sk-hero-in in navbar.css),
+    // so it never waits for GSAP; animating it again here would hide it a second time.
+    const els = Array.from(document.querySelectorAll<HTMLElement>("[data-ns-animate]:not([data-ns-animate-init])")).filter((el) => !el.closest("[data-hero-reveal]"));
     if (!els.length) return;
     const Springer = springer();
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -4,7 +4,7 @@
   Generated during the migration; edit freely.
 */
 
-export type PageKey = "notFound" | "home" | "about" | "library" | "contact" | "printAlbum" | "terms";
+export type PageKey = "notFound" | "home" | "about" | "library" | "contact" | "printAlbum" | "terms" | "privacy";
 
 export const PAGE_META: Record<PageKey, Record<string, string>> = {
   "notFound": {
@@ -313,5 +313,31 @@ export const PAGE_META: Record<PageKey, Record<string, string>> = {
     "google-site-verification": "U6ECGq1OyJuADOEHcX9TC1W24aWH9jZQienHQgxDD1s",
     "__title": "Synkyn Studios | Terms & Conditions",
     "__canonical": "https://www.synkynstudios.com/terms"
+  },
+  "privacy": {
+    "viewport": "width=device-width, initial-scale=1.0, viewport-fit=cover",
+    "description": "How the Synkyn Studios website handles your information: analytics, hosting, embedded video players, and the emails you send us.",
+    "author": "Synkyn Studios",
+    "robots": "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
+    "og:type": "website",
+    "og:url": "https://www.synkynstudios.com/privacy",
+    "og:site_name": "Synkyn Studios",
+    "og:title": "Synkyn Studios | Privacy Policy",
+    "og:description": "How the Synkyn Studios website handles your information: analytics, hosting, embedded video players, and the emails you send us.",
+    "og:image": "https://www.synkynstudios.com/og/terms.jpg",
+    "og:image:width": "1200",
+    "og:image:height": "630",
+    "og:image:alt": "Synkyn Studios | Privacy Policy",
+    "twitter:card": "summary_large_image",
+    "twitter:title": "Synkyn Studios | Privacy Policy",
+    "twitter:description": "How the Synkyn Studios website handles your information: analytics, hosting, embedded video players, and the emails you send us.",
+    "twitter:image": "https://www.synkynstudios.com/og/terms.jpg",
+    "twitter:image:alt": "Synkyn Studios | Privacy Policy",
+    "theme-color": "#000000",
+    "application-name": "Synkyn Studios",
+    "msvalidate.01": "41DF851FCE84360A9074BDC7D98E6FE8",
+    "google-site-verification": "U6ECGq1OyJuADOEHcX9TC1W24aWH9jZQienHQgxDD1s",
+    "__title": "Synkyn Studios | Privacy Policy",
+    "__canonical": "https://www.synkynstudios.com/privacy"
   }
 };

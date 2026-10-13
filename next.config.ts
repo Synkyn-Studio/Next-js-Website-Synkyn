@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/index.html", destination: "/", permanent: true },
+      { source: "/work", destination: "/library", permanent: true },
       ...LEGACY_PAGES.map((page) => ({ source: `/${page}.html`, destination: `/${page}`, permanent: true })),
     ];
   },

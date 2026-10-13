@@ -45,7 +45,7 @@ export default function HomePage() {
       {STRUCTURED_DATA.home.map((data, i) => <JsonLd key={i} data={data} />)}
       <HomeLoader />
       <PageTransition>
-        <main>
+        <main id="main-content" tabIndex={-1}>
           <HeroSection />
           <ActuallySection />
           <PipelineSection />

@@ -32,7 +32,7 @@ export default function PrintAlbumPage() {
       />
       {STRUCTURED_DATA.printAlbum.map((data, i) => <JsonLd key={i} data={data} />)}
       <PageTransition>
-        <main className="pf-page">
+        <main className="pf-page" id="main-content" tabIndex={-1}>
           <PrintHero />
           <FeaturedSection />
           <GalleryControls />

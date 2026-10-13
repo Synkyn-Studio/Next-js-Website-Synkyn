@@ -386,6 +386,9 @@ export function samePageLinkGuard(scope: Scope, closeMenus: () => void) {
       e.preventDefault();
       history.pushState(history.state, "", href);
       smoothScrollTo(target, { offset: -80, duration: 1.2, easing: expoEase });
+      // Move keyboard focus with the scroll (skip link, in-page links); a
+      // no-op for targets that are not focusable.
+      (target as HTMLElement).focus?.({ preventScroll: true });
       return;
     }
 

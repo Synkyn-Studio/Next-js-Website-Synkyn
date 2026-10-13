@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function AboutHeroSection() {
   return (
-    <div className="about-hero-origin-stack" data-particles-obstacle-root="">
+    <div className="about-hero-origin-stack" data-particles-obstacle-root="" data-hero-reveal="">
       <div className="about-hero-origin-stack__sticky-bg">
         <div className="particle-effect-container cursor-crosshair pointer-events-auto" data-particles-follow-scroll="" data-particles-origin-halo="" data-particles-orion="" data-particles-viewport-pinned="" id="particle-effect-container">
           <canvas className="block h-full w-full" height="1" id="particle-effect-canvas" width="1" />

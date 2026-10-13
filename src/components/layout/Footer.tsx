@@ -12,12 +12,12 @@ import { InstagramGlyph, LinkedInGlyph } from "@/components/ui/icons";
 import { ROUTES } from "@/lib/site";
 import FooterEffects from "./FooterEffects";
 
-type FooterKey = "team" | "contact" | "library" | "printAlbum" | "terms";
+type FooterKey = "team" | "contact" | "library" | "printAlbum" | "terms" | "privacy";
 
 const COLUMNS: { title: string; links: { key: FooterKey; href: string; label: string }[] }[] = [
   { title: "Company", links: [{ key: "team", href: ROUTES.team, label: "Our Team" }, { key: "contact", href: ROUTES.contact, label: "Contact Us" }] },
   { title: "Discover", links: [{ key: "library", href: ROUTES.library, label: "Library" }, { key: "printAlbum", href: ROUTES.printAlbum, label: "Print Album" }] },
-  { title: "Legal Policies", links: [{ key: "terms", href: ROUTES.terms, label: "Terms & Conditions" }] },
+  { title: "Legal Policies", links: [{ key: "terms", href: ROUTES.terms, label: "Terms & Conditions" }, { key: "privacy", href: ROUTES.privacy, label: "Privacy Policy" }] },
 ];
 
 export interface FooterProps {
@@ -81,9 +81,10 @@ export default function Footer({
                       const current = !hash;
                       return (
                         <li key={link.key}>
-                          <a className={current ? `${className} is-current` : className} aria-current={current ? "page" : undefined} style={{ cursor: "default", opacity: "0.5" }}>
+                          {/* Not a link (no href): a <span>, so crawlers aren't handed an anchor they can't follow. */}
+                          <span className={current ? `${className} is-current` : className} aria-current={current ? "page" : undefined} style={{ cursor: "default", opacity: "0.5" }}>
                             {link.label}
-                          </a>
+                          </span>
                         </li>
                       );
                     }

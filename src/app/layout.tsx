@@ -53,7 +53,13 @@ const BOOT_SCRIPT = `(function(){var d=document.documentElement;try{if(localStor
 */
 const LOADER_COVER_CSS = `html.show-loader{background:#080808}html.show-loader:not(.loader-open) body::before{content:"";position:fixed;inset:0;z-index:9999998;background:#080808;pointer-events:all}`;
 
-const GTM_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
+/*
+  Google Tag Manager starts once the page has loaded (idle), not during first
+  render. Its container currently holds no tags (only built-in URL variables),
+  so this only moves ~116 KB of script off the critical path; GA4 below still
+  loads as early as before, so measurement is unchanged.
+*/
+const GTM_SCRIPT = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var go=function(){var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);};var idle=function(){(w.requestIdleCallback||function(c){setTimeout(c,1)})(go,{timeout:2000});};if(d.readyState==='complete')idle();else w.addEventListener('load',idle,{once:true});})(window,document,'script','dataLayer','${GTM_ID}');`;
 
 const GTAG_SCRIPT = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`;
 
@@ -104,6 +110,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         ))}
       </head>
       <body className={DEFAULT_BODY_CLASS} suppressHydrationWarning>
+        <a href="#main-content" className="sk-skip">Skip to content</a>
         <GtmNoScript />
         <ScrollProgressBar />
         <BackToTopButton />

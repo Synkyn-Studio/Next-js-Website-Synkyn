@@ -1,6 +1,6 @@
 export default function LibraryHero() {
   return (
-    <section className="pf-hero" id="pf-top">
+    <section className="pf-hero" id="pf-top" data-hero-reveal="">
       <canvas className="pf-hero__canvas" id="pf-particles" aria-hidden="true" />
       <div className="pf-hero__inner">
         <div className="space-y-5 text-center relative z-10 pointer-events-none">

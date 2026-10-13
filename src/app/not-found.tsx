@@ -29,7 +29,7 @@ export default function NotFound() {
       />
       {STRUCTURED_DATA.notFound.map((data, i) => <JsonLd key={i} data={data} />)}
       <PageTransition>
-        <main className="s404-main" id="s404Main">
+        <main className="s404-main" id="main-content" tabIndex={-1}>
           <NotFoundStage />
           <NotFoundEffects />
         </main>

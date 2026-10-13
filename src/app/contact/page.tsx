@@ -29,7 +29,7 @@ export default function ContactPage() {
       />
       {STRUCTURED_DATA.contact.map((data, i) => <JsonLd key={i} data={data} />)}
       <PageTransition>
-        <main>
+        <main id="main-content" tabIndex={-1}>
           <ContactHero />
           <StudioDetailsSection />
           <FaqSection />

@@ -6,7 +6,7 @@ export const CONTACT_EMAIL = "contact@synkynstudios.com";
 export const GTM_ID = "GTM-KLBKS7TM";
 export const GA_ID = "G-PST0K7RG3R";
 
-export const ASSET_VERSION = "7";
+export const ASSET_VERSION = "8";
 
 export const DEFAULT_BODY_CLASS = "bg-background-3 dark:bg-helix-blue-dark-2";
 
@@ -18,6 +18,7 @@ export const ROUTES = {
   contact: "/contact",
   printAlbum: "/printalbum",
   terms: "/terms",
+  privacy: "/privacy",
 } as const;
 
 export type RoutePath = (typeof ROUTES)[Exclude<keyof typeof ROUTES, "team">];
