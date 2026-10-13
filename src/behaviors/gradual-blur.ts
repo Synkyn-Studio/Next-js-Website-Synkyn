@@ -27,7 +27,8 @@ export function gradualBlur(scope: Scope) {
       position: d.position || "bottom",
       strength: num(d.strength, 2),
       height: d.height || "6rem",
-      divCount: Math.max(1, Math.round(num(d.divCount, 5))),
+      // Each layer is a backdrop-filter re-blurred on every scroll frame; phones get 3.
+      divCount: Math.max(1, Math.min(window.innerWidth < 768 ? 3 : Infinity, Math.round(num(d.divCount, 5)))),
       exponential: typeof d.exponential === "string" && d.exponential === "true",
       zIndex: Math.round(num(d.zIndex, 50)),
       opacity: num(d.opacity, 1),

@@ -224,17 +224,21 @@ export function pipelineJourney(scope: Scope) {
     });
   };
 
+  // Height of the journey, taken from the rect frameStep already measures, so
+  // the mobile writes below never read layout themselves.
+  let journeyH = 0;
   const setMobileProgress = (p: number) => {
     if (mobileRocket && journey) {
-      const trackH = journey.offsetHeight - 40;
+      const trackH = journeyH - 40;
       const rY = Math.max(0, Math.min(trackH, p * trackH));
-      mobileRocket.style.setProperty("--rocket-y", `${rY.toFixed(1)}px`);
+      // A direct transform (not a CSS variable) so only the rocket's own layer moves.
+      mobileRocket.style.transform = `translate3d(-50%, ${rY.toFixed(2)}px, 0)`;
       let rocketOpacity = 1;
       if (p < 0.03) rocketOpacity = Math.max(0, p / 0.03);
       else if (p > 0.8) rocketOpacity = Math.max(0, (1 - p) / 0.2);
       mobileRocket.style.opacity = rocketOpacity.toFixed(3);
       if (mobileTimelineBar) {
-        const totalTrackH = Math.max(1, journey.offsetHeight - 40);
+        const totalTrackH = Math.max(1, trackH);
         const lineFillPx = Math.min(totalTrackH, rY + 48);
         mobileTimelineBar.style.transform = `scaleY(${(lineFillPx / totalTrackH).toFixed(4)})`;
         mobileTimelineBar.style.opacity = p > 0.88 ? Math.max(0, (1 - p) / 0.12).toFixed(3) : "1";
@@ -272,16 +276,51 @@ export function pipelineJourney(scope: Scope) {
     runs after Lenis has applied this frame's scroll position. Measuring and
     writing then both happen against the position that is about to be painted.
   */
-  const frameStep = () => {
+  /*
+    Viewport height for the progress maths, refreshed only when the width
+    changes (rotation). On phones innerHeight changes whenever the address bar
+    slides in or out, which used to jolt the rocket mid-scroll.
+  */
+  let viewH = window.innerHeight, viewW = window.innerWidth;
+  /*
+    The journey's page position and height are measured when layout changes
+    (ResizeObserver), not every frame: a per-frame getBoundingClientRect forced
+    a style recalc behind the previous frame's writes. Per frame, only scrollY
+    is read, which never touches layout.
+  */
+  let journeyTop = 0;
+  const measure = () => {
+    if (!journey) return;
+    const r = journey.getBoundingClientRect();
+    journeyTop = r.top + window.scrollY;
+    journeyH = r.height;
+    settled = false;
+  };
+  measure();
+  if ("ResizeObserver" in window && journey) {
+    const ro = scope.observe(new ResizeObserver(measure));
+    ro.observe(journey);
+    ro.observe(document.body); // content above (hero, images) changing size moves the journey
+  }
+  scope.on(window, "load", measure);
+  let isMobile = isMobileDevice();
+  const frameStep = (_time?: number, deltaMs?: number) => {
     if (!isVisible || !journey) return;
-    const isMobile = isMobileDevice();
     if (!isMobile && !pathLUT) initDesktopPath(6);
-    const rect = journey.getBoundingClientRect();
-    const raw = (window.innerHeight * 0.62 - rect.top) / (rect.height * 0.96);
+    // Lenis already tracks the position from its scroll listener; reading
+    // window.scrollY here can force Chrome to flush pending style work first.
+    const lenis = window.lenis;
+    const scrollY = lenis && typeof lenis.scroll === "number" ? lenis.scroll : window.scrollY;
+    const top = journeyTop - scrollY;
+    const raw = (viewH * 0.62 - top) / (journeyH * 0.96);
     target = Math.max(0, Math.min(1, raw));
     const diff = target - current;
     if (Math.abs(diff) > 0.0005) {
-      current += diff * (isMobile ? 0.35 : 0.38);
+      // Same feel as the old per-frame factor at 60fps, but frame-rate
+      // independent: 120Hz phones no longer ease twice as fast.
+      const k = isMobile ? 0.35 : 0.38;
+      const frames = Math.min(4, Math.max(0.25, (deltaMs || 16.67) / 16.67));
+      current += diff * (1 - Math.pow(1 - k, frames));
       settled = false;
     } else {
       if (settled) return; // parked: nothing left to write this frame
@@ -321,6 +360,9 @@ export function pipelineJourney(scope: Scope) {
 
   // A resize changes the track geometry; unpark so the next frame rewrites it.
   scope.on(window, "resize", () => {
+    if (window.innerWidth !== viewW || !isMobileDevice()) { viewW = window.innerWidth; viewH = window.innerHeight; }
+    isMobile = isMobileDevice();
+    measure();
     if (!isMobileDevice() && !pathLUT) initDesktopPath(6);
     current = -1;
     settled = false;

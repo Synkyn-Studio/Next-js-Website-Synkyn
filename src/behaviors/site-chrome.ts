@@ -264,6 +264,14 @@ export function mobileNavigation(scope: Scope): MobileNavApi | null {
   let lastY = readScroll();
   let ticking = false;
   const DELTA = 8;
+  let travel = 0;
+  // Page height, kept current by a ResizeObserver instead of being read (and
+  // possibly forcing layout) on every scroll frame.
+  let docH = document.documentElement.scrollHeight;
+  if ("ResizeObserver" in window) {
+    const ro = scope.observe(new ResizeObserver(() => { docH = document.documentElement.scrollHeight; }));
+    ro.observe(document.body);
+  }
   const TOP_BAND = 80;
   let readyForHide = false;
   let graceTimer: number | null = null;
@@ -285,11 +293,24 @@ export function mobileNavigation(scope: Scope): MobileNavApi | null {
     if (y < 0) y = 0;
     if (isOpen()) { lastY = y; return; }
     if (!readyForHide) { navbar.classList.remove("nav-hidden"); lastY = y; return; }
-    if (y <= TOP_BAND) { navbar.classList.remove("nav-hidden"); lastY = y; return; }
-    const docH = document.documentElement.scrollHeight;
-    const winH = window.innerHeight;
-    if (y + winH >= docH - 8) { lastY = y; return; }
+    if (y <= TOP_BAND) { navbar.classList.remove("nav-hidden"); lastY = y; travel = 0; return; }
+    if (y + window.innerHeight >= docH - 8) { lastY = y; return; }
     const delta = y - lastY;
+    if (window.innerWidth < 1280) {
+      /*
+        Mobile header: "headroom" behaviour. Distance is accumulated per
+        direction, so the small reversals of a momentum fling no longer flick
+        the bar in and out — it hides after a deliberate 24px down and comes
+        back after a deliberate 36px up.
+      */
+      lastY = y;
+      if (!delta) return;
+      if ((delta > 0) !== (travel > 0)) travel = 0;
+      travel += delta;
+      if (travel > 24) navbar.classList.add("nav-hidden");
+      else if (travel < -36) navbar.classList.remove("nav-hidden");
+      return;
+    }
     if (Math.abs(delta) < DELTA) return;
     if (delta > 0) navbar.classList.add("nav-hidden");
     else navbar.classList.remove("nav-hidden");

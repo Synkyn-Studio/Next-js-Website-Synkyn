@@ -113,8 +113,12 @@ header .header-two,
         align-items: center !important;
         justify-content: space-between !important;
         gap: 0 !important;
-        transition: top 0.4s ease, opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        will-change: transform, opacity, top;
+        /* Hide/reveal is a pure transform on its own GPU layer: no top/opacity
+           transitions competing with it, and a soft ease so the bar glides
+           rather than snaps. */
+        transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        will-change: transform;
+        backface-visibility: hidden;
     }
 
     /* Hidden state — slide the whole bar up out of view (no display:none) */
@@ -942,4 +946,172 @@ body::-webkit-scrollbar {
 img,
 video {
     -webkit-touch-callout: none;
+}
+
+/* ==========================================================================
+   TABLET (768px – 1279.98px)
+   ========================================================================== */
+
+/* Logo: the header carries a desktop logo (lg:block) and a mobile one
+   (lg:hidden). The mobile header hid the desktop one, and from 1024px
+   `lg:hidden` hid the mobile one, so 1024–1279px (iPad landscape, small
+   laptops) had no logo at all. Keep the mobile logo across the whole
+   mobile-header range. */
+@media (max-width: 1279.98px) {
+    .header-two figure.max-w-\[52px\] {
+        display: flex !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279.98px) {
+
+    /* Header bar: a touch taller with roomier gutters on a tablet screen. */
+    body header .header-two,
+    header .header-two,
+    .header-two {
+        --nav-height: 64px;
+        height: var(--nav-height) !important;
+        padding: 0 clamp(1.25rem, 3vw, 2rem) !important;
+    }
+
+    .header-two figure.max-w-\[52px\] img {
+        height: 30px !important;
+        max-height: 30px !important;
+    }
+
+    /* Menu: a side sheet over the dimmed page instead of a full-screen panel
+       built for phones (which left most of a tablet screen empty). */
+    .sidebar {
+        left: auto !important;
+        width: min(460px, 62vw) !important;
+        max-width: 460px !important;
+        border-radius: 24px 0 0 24px !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: -24px 0 80px rgba(0, 0, 0, 0.65) !important;
+    }
+
+    .mobile-menu-inner {
+        padding: 1.75rem 2rem 2rem !important;
+    }
+
+    .mobile-menu-top {
+        margin-bottom: clamp(2rem, 6vh, 3.25rem) !important;
+    }
+
+    .mobile-menu-links {
+        gap: 0.35rem !important;
+    }
+
+    .mobile-menu-link {
+        position: relative;
+        display: flex !important;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.4rem 0 !important;
+        font-size: clamp(1.6rem, 3.4vw, 2rem) !important;
+        color: rgba(255, 255, 255, 0.82) !important;
+    }
+
+    .mobile-menu-link::after {
+        content: "";
+        width: 0;
+        height: 2px;
+        border-radius: 2px;
+        background: #f2d400;
+        transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .mobile-menu-link:hover,
+    .mobile-menu-link:focus-visible {
+        color: #ffffff !important;
+        opacity: 1 !important;
+    }
+
+    .mobile-menu-link:hover::after,
+    .mobile-menu-link:focus-visible::after {
+        width: 18px;
+    }
+
+    /* The page you are on (SiteRuntime marks it .active). */
+    .mobile-menu-link.active {
+        color: #f2d400 !important;
+    }
+
+    .mobile-menu-link.active::after {
+        width: 18px;
+    }
+
+    .mobile-menu-divider {
+        margin: 0 -2rem clamp(1.5rem, 4vh, 2.25rem) -2rem !important;
+    }
+
+    .mobile-menu-email {
+        font-size: 1.2rem !important;
+    }
+
+    /* Links settle in one after another as the sheet arrives. */
+    .sidebar .mobile-menu-link,
+    .sidebar .mobile-menu-footer-block {
+        opacity: 0;
+        transform: translate3d(18px, 0, 0);
+        transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease !important;
+    }
+
+    .sidebar.show-sidebar .mobile-menu-link,
+    .sidebar.show-sidebar .mobile-menu-footer-block {
+        opacity: 1;
+        transform: none;
+    }
+
+    .sidebar.show-sidebar .mobile-menu-link:nth-child(1) { transition-delay: 0.08s, 0.08s, 0s !important; }
+    .sidebar.show-sidebar .mobile-menu-link:nth-child(2) { transition-delay: 0.12s, 0.12s, 0s !important; }
+    .sidebar.show-sidebar .mobile-menu-link:nth-child(3) { transition-delay: 0.16s, 0.16s, 0s !important; }
+    .sidebar.show-sidebar .mobile-menu-link:nth-child(4) { transition-delay: 0.2s, 0.2s, 0s !important; }
+    .sidebar.show-sidebar .mobile-menu-link:nth-child(5) { transition-delay: 0.24s, 0.24s, 0s !important; }
+    .sidebar.show-sidebar .mobile-menu-link:nth-child(6) { transition-delay: 0.28s, 0.28s, 0s !important; }
+    .sidebar.show-sidebar .mobile-menu-footer-block { transition-delay: 0.32s, 0.32s, 0s !important; }
+}
+
+/* Landscape tablets are short: keep the whole sheet on screen. */
+@media (min-width: 768px) and (max-width: 1279.98px) {
+    .mobile-menu-divider {
+        flex-shrink: 0;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279.98px) and (max-height: 860px) {
+    .mobile-menu-inner {
+        padding: 1.25rem 2rem 1.25rem !important;
+    }
+
+    .mobile-menu-top {
+        margin-bottom: 1.25rem !important;
+    }
+
+    .mobile-menu-links {
+        gap: 0.1rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .mobile-menu-link {
+        padding: 0.25rem 0 !important;
+        font-size: 1.6rem !important;
+    }
+
+    .mobile-menu-divider {
+        margin-bottom: 1.1rem !important;
+    }
+
+    .mobile-menu-footer-block {
+        margin-bottom: 0.9rem !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279.98px) and (prefers-reduced-motion: reduce) {
+    .sidebar .mobile-menu-link,
+    .sidebar .mobile-menu-footer-block {
+        opacity: 1;
+        transform: none;
+        transition: none !important;
+    }
 }

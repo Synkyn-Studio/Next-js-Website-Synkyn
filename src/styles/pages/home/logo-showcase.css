@@ -379,3 +379,11 @@
         animation: none !important;
     }
 }
+
+/* Touch screens have no hover zoom, so the 54 logo images don't need their own
+   GPU layers; only the two moving tracks do. */
+@media (hover: none) {
+    #research-sponsors .logo-carousel-item-img {
+        will-change: auto;
+    }
+}

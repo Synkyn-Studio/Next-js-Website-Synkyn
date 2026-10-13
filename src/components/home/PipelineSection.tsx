@@ -12,7 +12,13 @@ export default function PipelineSection() {
           <div className="mobile-timeline-bar" />
         </div>
         <div className="mobile-rocket" aria-hidden="true" style={{ display: "none" }}>
-          <svg viewBox="-70 -200 140 360" overflow="visible" style={{ width: "100%", height: "100%" }}>
+          {/*
+            Two layers rather than one SVG: an SVG repaints as a whole, so the
+            flickering flames used to re-render the masked, colour-filtered rocket
+            image every frame — the main cost of this section on phones. The
+            rocket body now sits in its own static SVG (drawn once) above the flames.
+          */}
+          <svg viewBox="-70 -200 140 360" overflow="visible" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
             <defs>
               <radialGradient id="m-g-node" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stopColor="#ffd77e" stopOpacity=".7" />
@@ -46,6 +52,12 @@ export default function PipelineSection() {
                   <path className="rt-flame-outer" d="M0 -1 C -7 16 -8 44 0 82 C 8 44 7 16 0 -1 Z" fill="url(#m-g-flame-outer)" opacity="0.95" />
                   <path className="rt-flame-core" d="M0 0 C -3.6 12 -4 32 0 58 C 4 32 3.6 12 0 0 Z" fill="url(#m-g-flame-core)" />
                 </g>
+              </g>
+            </g>
+          </svg>
+          <svg viewBox="-70 -200 140 360" overflow="visible" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", willChange: "transform" }}>
+            <g transform="rotate(180)">
+              <g className="rt-assembly-mobile">
                 <g className="rt-rocket" transform="scale(.86) translate(-32 -88)">
                   <svg x="-24.3" y="8" width="112.5" height="150" viewBox="81 40 668 891" preserveAspectRatio="xMidYMid meet" overflow="visible">
                     <svg x="0" y="0" width="810" height="1012" viewBox="0 0 810 1012.49997" preserveAspectRatio="xMidYMid meet">

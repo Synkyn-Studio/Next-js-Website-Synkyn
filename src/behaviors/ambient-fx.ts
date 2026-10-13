@@ -121,7 +121,9 @@ export function ambientCrystals(scope: Scope) {
       const c = Math.cos(this.rot) * s * DPR, sn = Math.sin(this.rot) * s * DPR;
       ctx.setTransform(c, sn, -sn, c, x * DPR, y * DPR);
       ctx.globalAlpha = alpha;
-      const glowing = this.glow || this.boost > 0.15;
+      // shadowBlur is the slowest canvas operation; on phones (no pointer glow,
+      // 1.5-4px crystals) it was most of the canvas cost for little visible effect.
+      const glowing = !IS_MOBILE && (this.glow || this.boost > 0.15);
       if (glowing) ctx.shadowBlur = (this.glow ? 6 : 0) + this.boost * 14 + 4 * pulse;
       ctx.fillStyle = this.color;
       ctx.fill(TRIANGLE);
