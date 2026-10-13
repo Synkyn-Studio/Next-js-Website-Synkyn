@@ -6,25 +6,29 @@ export interface TeamMember {
   photo: string;
   alt: string;
   accent: string;
-  profile: { kind: "imdb" | "linkedin"; href: string };
+  /** Profile links shown on the card, in order. */
+  profiles: { kind: "imdb" | "linkedin"; href: string }[];
 }
 
 export const TEAM: TeamMember[] = [
   {
     name: "Dhiraj Kishore",
-    role: "Co-founder, CBO",
+    role: "Co-founder",
     photo: "/images/album/Dhiraj.png",
-    alt: "Dhiraj Kishore - Co-founder and CBO of Synkyn Studios",
+    alt: "Dhiraj Kishore - Co-founder of Synkyn Studios",
     accent: "#06b6d4",
-    profile: { kind: "imdb", href: "https://www.imdb.com/name/nm14718630/?ref_=ext_shr_lnk" },
+    profiles: [
+      { kind: "imdb", href: "https://www.imdb.com/name/nm14718630/?ref_=ext_shr_lnk" },
+      { kind: "linkedin", href: "https://www.linkedin.com/in/dhiraj-kishore-3a5872393/" },
+    ],
   },
   {
     name: "Deepen Ingale",
-    role: "Co-founder, CEO",
+    role: "Co-founder",
     photo: "/images/album/Deepen.png",
-    alt: "Deepen Ingale - Co-founder and CEO of Synkyn Studios",
+    alt: "Deepen Ingale - Co-founder of Synkyn Studios",
     accent: "#3b82f6",
-    profile: { kind: "linkedin", href: "https://www.linkedin.com/in/deepeningale/" },
+    profiles: [{ kind: "linkedin", href: "https://www.linkedin.com/in/deepeningale/" }],
   },
   {
     name: "Pruthvij Prabhu",
@@ -32,6 +36,6 @@ export const TEAM: TeamMember[] = [
     photo: "/images/album/Pruthvij.png",
     alt: "Pruthvij Prabhu - Gen AI Artist at Synkyn Studios",
     accent: "#a855f7",
-    profile: { kind: "linkedin", href: "https://www.linkedin.com/in/pruthvij-v-prabhu-b58bb6299/" },
+    profiles: [{ kind: "linkedin", href: "https://www.linkedin.com/in/pruthvij-v-prabhu-b58bb6299/" }],
   },
 ];

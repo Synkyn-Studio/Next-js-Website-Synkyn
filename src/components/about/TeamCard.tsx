@@ -5,7 +5,7 @@ import { LinkedInGlyph } from "@/components/ui/icons";
 import type { TeamMember } from "@/data/team";
 
 export default function TeamCard({ member }: { member: TeamMember }) {
-  const { name, role, photo, alt, accent, profile } = member;
+  const { name, role, photo, alt, accent, profiles } = member;
   return (
     <article
       className="chroma-card relative flex h-full min-h-0 w-full min-w-0 max-w-[400px] flex-col items-stretch overflow-visible rounded-[18px] border border-[#333] transition-colors duration-300 sm:rounded-[20px] [background:var(--card-gradient)] lg:max-w-none"
@@ -26,14 +26,16 @@ export default function TeamCard({ member }: { member: TeamMember }) {
         <h3 className="name m-0 text-base leading-5 text-white">{name}</h3>
         <span className="handle text-[14px] text-accent/60 font-medium">{role}</span>
         <div className="chroma-social">
-          {profile.kind === "imdb" ? (
-            <a className="chroma-social__link chroma-social__link--imdb" href={profile.href} target="_blank" rel="noopener noreferrer" aria-label={`${name} on IMDb`} title="IMDb">
-              IMDb
-            </a>
-          ) : (
-            <a className="chroma-social__link" href={profile.href} target="_blank" rel="noopener noreferrer" aria-label={`${name} on LinkedIn`} title="LinkedIn">
-              <LinkedInGlyph />
-            </a>
+          {profiles.map((profile) =>
+            profile.kind === "imdb" ? (
+              <a key={profile.href} className="chroma-social__link chroma-social__link--imdb" href={profile.href} target="_blank" rel="noopener noreferrer" aria-label={`${name} on IMDb`} title="IMDb">
+                IMDb
+              </a>
+            ) : (
+              <a key={profile.href} className="chroma-social__link" href={profile.href} target="_blank" rel="noopener noreferrer" aria-label={`${name} on LinkedIn`} title="LinkedIn">
+                <LinkedInGlyph />
+              </a>
+            ),
           )}
         </div>
       </footer>

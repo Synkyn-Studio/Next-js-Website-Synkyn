@@ -96,3 +96,76 @@
         aspect-ratio: 284 / 270;
     }
 }
+
+/* Leadership grid on phones: Dhiraj centred on top, the other two side by
+   side below, all three the same size, so the whole team fits on one screen
+   instead of three stacked full-width cards (~1380px). */
+@media (max-width: 767px) {
+    .chroma-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        justify-items: stretch !important;
+    }
+
+    .chroma-grid > .chroma-card:first-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc((100% - 12px) / 2) !important;
+    }
+
+    .chroma-grid .chroma-card {
+        max-width: none !important;
+        border-radius: 16px !important;
+    }
+
+    .chroma-grid .chroma-img-wrapper {
+        padding: 6px !important;
+    }
+
+    /* Same portrait framing as the desktop cards, just smaller. */
+    .chroma-grid .chroma-img-wrapper > div {
+        height: auto !important;
+        aspect-ratio: 284 / 270;
+        border-radius: 11px !important;
+    }
+
+    .chroma-grid .chroma-info {
+        grid-template-columns: 1fr !important;
+        gap: 2px !important;
+        padding: 6px 10px 10px !important;
+    }
+
+    .chroma-grid .chroma-info .name {
+        font-size: 14px !important;
+        line-height: 1.25 !important;
+        letter-spacing: -0.01em;
+    }
+
+    .chroma-grid .chroma-info .handle {
+        font-size: 11.5px !important;
+        line-height: 1.3 !important;
+    }
+
+    .chroma-grid .chroma-social {
+        margin-top: 8px !important;
+        padding-top: 8px !important;
+        gap: 6px !important;
+    }
+
+    .chroma-grid .chroma-social__link {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    .chroma-grid .chroma-social__link svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .chroma-grid .chroma-social__link--imdb {
+        width: auto !important;
+        padding: 0 0.5rem !important;
+        border-radius: 8px !important;
+        font-size: 9px !important;
+    }
+}
