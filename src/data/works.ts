@@ -124,8 +124,8 @@ export const WORKS_ROW: Work[] = [
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/13-10-26/haldi%20thumbnail.png?updatedAt=1791894471499",
     description: "<strong>Tata Sampann – Haldi</strong><br><br><strong>Brand:</strong> Tata Sampann<br><strong>Product:</strong> Turmeric Powder with natural oils<br><strong>Line:</strong> “Har baar, har mausam, Sunehri haldi.”",
     sources: [
-      { type: "vimeo", src: "https://player.vimeo.com/video/1235396466" },
       { type: "vimeo", src: "https://player.vimeo.com/video/1235394944" },
+      { type: "vimeo", src: "https://player.vimeo.com/video/1235396466" },
     ],
   },
   {
