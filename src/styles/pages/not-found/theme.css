@@ -60,12 +60,6 @@
     filter: sepia(1) saturate(3.4) hue-rotate(10deg) brightness(1.12) contrast(1.04)
 }
 
-img[src*="HEHomeVid"],
-video[poster*="HEHomeVid"],
-[style*="HEHomeVid"] {
-    filter: sepia(.9) saturate(2.6) hue-rotate(8deg) brightness(1.06)
-}
-
 .actually-area {
     background-color: transparent !important
 }
