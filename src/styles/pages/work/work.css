@@ -293,36 +293,37 @@
   }
 }
 
-.work-others__grid > li {
-  container-type: inline-size;
-}
-
-/* 16:9 height plus 2cm (76px) of extra length. */
+/* Card = full 16:9 picture + a 2cm caption band underneath (no text over the image). */
 .work-others__card {
   position: relative;
-  display: block;
-  height: calc(100cqw * 9 / 16 + 2cm);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   border-radius: 16px;
   overflow: hidden;
   background: #0d0d0d;
   border: 1px solid rgba(255, 255, 255, 0.08);
   text-decoration: none;
-  isolation: isolate;
   transition: border-color 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
 }
 
-.is-portrait .work-others__fill {
+.work-others__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #080808;
+  isolation: isolate;
+}
+
+.work-others__fill {
   position: absolute;
   inset: -12%;
   width: 124%;
   height: 124%;
   object-fit: cover;
-  filter: blur(18px) brightness(0.45) saturate(1.1);
-  z-index: -3;
-}
-
-.is-portrait .work-others__img {
-  object-fit: contain;
+  filter: blur(18px) brightness(0.4) saturate(1.1);
+  z-index: -1;
 }
 
 .work-others__card:hover,
@@ -337,20 +338,12 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  z-index: -2;
+  object-fit: contain;
   transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .work-others__card:hover .work-others__img {
-  transform: scale(1.06);
-}
-
-.work-others__shade {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.45) 42%, rgba(0, 0, 0, 0.05) 70%);
+  transform: scale(1.04);
 }
 
 .work-others__badge {
@@ -368,14 +361,14 @@
 }
 
 .work-others__meta {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
+  flex: 1;
   flex-direction: column;
+  justify-content: center;
   gap: 5px;
-  padding: clamp(14px, 1.6vw, 20px);
+  min-height: 2cm;
+  padding: 12px clamp(14px, 1.4vw, 18px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .work-others__cat {
