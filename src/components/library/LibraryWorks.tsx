@@ -17,7 +17,7 @@ export default function LibraryWorks() {
           </div>
           {/* Three 16:9 videos under the grid — edit WORKS_ROW in data/works.ts. */}
           {ROW.length > 0 && (
-            <div id="bento-row-3">
+            <div id="bento-row-3" data-count={Math.min(ROW.length, 3)}>
               {ROW.map((work) => (
                 <WorkCard key={work.id} work={work} />
               ))}

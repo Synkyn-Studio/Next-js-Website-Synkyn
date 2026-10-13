@@ -100,6 +100,21 @@
   width: 100%;
 }
 
+/* The 16:9 row sizes itself to the films it has, so it never shows empty
+   columns: one film is centred at two-thirds width, two share the row. */
+@media (min-width: 641px) {
+  #bento-row-3[data-count="1"] {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 66.666%);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #bento-row-3[data-count="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (min-width: 641px) and (max-width: 1023.98px) {
   #bento-row-3 {
     gap: 26px;
