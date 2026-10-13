@@ -1,16 +1,21 @@
-type Logo = { name: string; file: number; label: string };
+/** `file`: number of a logo in the Logos folder, or a full ImageKit URL. */
+type Logo = { name: string; file: number | string; label: string };
 
 const LOGO_BASE = "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/Logos";
 /*
   The originals are ~110–155 KB full-size JPEGs shown at ≤116px. ImageKit
   resizes to 240px (covers 2x/3x screens) and serves WebP/AVIF: ~2 KB each.
 */
-const logoSrc = (file: number) => `${LOGO_BASE}/${file}.png?tr=w-240,h-240,q-85,f-auto`;
+const LOGO_TR = "tr=w-240,h-240,q-85,f-auto";
+const logoSrc = (file: number | string) =>
+  typeof file === "number" ? `${LOGO_BASE}/${file}.png?${LOGO_TR}` : `${file}${file.includes("?") ? "&" : "?"}${LOGO_TR}`;
 
 const BRANDS: Logo[] = [
   { name: "TATA", file: 8, label: "brand partner" },
   { name: "RedBus", file: 3, label: "brand partner" },
   { name: "SKROMAN", file: 7, label: "brand partner" },
+  { name: "BLCK", file: "https://ik.imagekit.io/mkzeqs9lt/13-10-26/11.png?updatedAt=1791890163565", label: "brand partner" },
+  { name: "The Reserve Club", file: "https://ik.imagekit.io/mkzeqs9lt/13-10-26/12.png?updatedAt=1791890163748", label: "brand partner" },
 ];
 
 const AGENCIES: Logo[] = [
@@ -75,7 +80,7 @@ export default function ResearchSponsorsSection() {
             <div className="showcase-category-label" data-delay="0.3" data-ns-animate="">
               <span className="showcase-category-tag">Brands</span>
             </div>
-            <LogoCarousel logos={BRANDS} repeat={4} direction="left" ariaLabel="Partner Brands Carousel" />
+            <LogoCarousel logos={BRANDS} repeat={3} direction="left" ariaLabel="Partner Brands Carousel" />
           </div>
           {/* Row 2: Agencies & Production Houses */}
           <div className="w-full min-w-0">
