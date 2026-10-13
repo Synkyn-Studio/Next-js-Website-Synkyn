@@ -10,7 +10,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import SafeImg from "@/components/ui/SafeImg";
 import VimeoStage from "@/components/work/VimeoStage";
 import WorkEffects from "@/components/work/WorkEffects";
-import { ALL_WORKS, getVimeoId, getYouTubeId, getYouTubeThumbnail, PROJECT_WORKS, type Work, type WorkSource } from "@/data/works";
+import { ALL_WORKS, getVimeoId, getYouTubeId, PROJECT_WORKS, type Work, type WorkSource } from "@/data/works";
 import { IK_CARD, IK_FULL, ikImage, ikOgImage } from "@/lib/imagekit";
 import { absoluteUrl, ROUTES, SITE_NAME } from "@/lib/site";
 
@@ -40,7 +40,8 @@ const cardThumb = (w: Work) => {
   if (w.thumbnail) return ikImage(w.thumbnail, IK_CARD);
   const yt = w.sources.find((x) => x.type === "youtube");
   const id = yt ? getYouTubeId(yt.src) : null;
-  return id ? getYouTubeThumbnail(id) : "";
+  // 16:9 frame without the letterbox bars of the default (4:3) thumbnail.
+  return id ? `https://i.ytimg.com/vi/${id}/hq720.jpg` : "";
 };
 const label = (w: Work) => (w.spec ? `${w.category} · Independent concept` : w.category);
 
@@ -201,11 +202,12 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
                   {others.map((o) => (
                     <li key={o.id} className={o.ratio === "9:16" ? "is-portrait" : undefined}>
                       <Link href={o.slug ? `/work/${o.slug}` : `${ROUTES.library}#${o.id}`} className="work-others__card">
-                        {/* 9:16 films: shown whole, centred over a soft blurred fill of the same frame. */}
-                        {o.ratio === "9:16" && <SafeImg src={cardThumb(o)} alt="" loading="lazy" decoding="async" className="work-others__fill" />}
-                        <SafeImg src={cardThumb(o)} alt="" loading="lazy" decoding="async" className="work-others__img" />
-                        <span className="work-others__shade" aria-hidden="true" />
-                        {o.tag && <span className="work-others__badge">{o.tag}</span>}
+                        {/* Whole thumbnail, never cropped: fitted inside a 16:9 frame over a blurred fill of itself. */}
+                        <span className="work-others__media">
+                          <SafeImg src={cardThumb(o)} alt="" loading="lazy" decoding="async" className="work-others__fill" />
+                          <SafeImg src={cardThumb(o)} alt="" loading="lazy" decoding="async" className="work-others__img" />
+                          {o.tag && <span className="work-others__badge">{o.tag}</span>}
+                        </span>
                         <span className="work-others__meta">
                           <span className="work-others__cat">{label(o)}</span>
                           <span className="work-others__name">{o.title}</span>
