@@ -24,6 +24,8 @@ export default function MediaModal() {
           <div id="modal-dots-container" className="media-modal__dots" />
         </div>
         <aside className="media-modal__detail">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img id="modal-logo" className="media-modal__logo" alt="" hidden />
           <p id="modal-subtitle" className="media-modal__eyebrow">Category</p>
           <h3 id="modal-title" className="media-modal__title">Project Title</h3>
           <span className="media-modal__rule" aria-hidden="true" />

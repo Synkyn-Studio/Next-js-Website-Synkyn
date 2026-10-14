@@ -210,6 +210,12 @@ export function libraryWorks(scope: Scope) {
     lastFocused = document.activeElement;
     titleEl!.textContent = work.title;
     subtitleEl!.textContent = work.category;
+    const logoEl = document.getElementById("modal-logo") as HTMLImageElement | null;
+    if (logoEl) {
+      // Brand logo only when the work has one; otherwise the slot stays hidden.
+      if (work.logo) { logoEl.src = ikImage(work.logo, 480); logoEl.alt = `${work.title} logo`; logoEl.hidden = false; }
+      else { logoEl.hidden = true; logoEl.removeAttribute("src"); logoEl.alt = ""; }
+    }
     descEl!.innerHTML = `<p>${work.description}</p>`;
     destroyVimeoPlayers();
     resetSlideListeners();

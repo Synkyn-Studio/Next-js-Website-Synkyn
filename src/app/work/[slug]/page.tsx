@@ -172,6 +172,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
                 )}
               </div>
               <aside className="media-modal__detail work-card__detail">
+                {w.logo && <SafeImg src={ikImage(w.logo, 480)} alt={`${w.title} logo`} className="media-modal__logo" decoding="async" />}
                 <p className="media-modal__eyebrow">{label(w)}</p>
                 <h1 className="media-modal__title">{w.title}</h1>
                 <span className="media-modal__rule" aria-hidden="true" />
