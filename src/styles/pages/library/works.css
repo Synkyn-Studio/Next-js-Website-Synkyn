@@ -474,6 +474,23 @@
   }
 }
 
+/* Brand logo above the category (optional per work). Logos come in every
+   shape and colour, so they sit whole inside a fixed-height slot. */
+.media-modal__logo {
+  display: block;
+  height: clamp(56px, 5vw, 72px);
+  width: auto;
+  max-width: min(220px, 75%);
+  object-fit: contain;
+  object-position: left center;
+  margin: 0 0 18px;
+  border-radius: 10px;
+}
+
+.media-modal__logo[hidden] {
+  display: none;
+}
+
 .media-modal__eyebrow {
   margin: 0 0 12px;
   font-size: 12px;

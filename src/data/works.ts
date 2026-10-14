@@ -20,6 +20,11 @@ export interface Work {
   thumbnail?: string;
   description: string;
   sources: WorkSource[];
+  /**
+   * Optional brand logo (image URL, e.g. ImageKit). Shown above the category in
+   * the Library modal and on the project page; leave it out and nothing shows.
+   */
+  logo?: string;
   /** URL slug of the project's own page (/work/<slug>); only set for verified, Synkyn-hosted films. */
   slug?: string;
   /** Independent concept work, not commissioned by the brand shown. Labelled as such wherever it appears. */
@@ -34,6 +39,7 @@ export const WORKS: Work[] = [
     slug: "skroman-smart-switches",
     published: { uploadDate: "2026-07-18T11:23:34+05:30", seconds: 16 },
     title: "Skroman Smart Switches",
+    logo: "https://www.skromanglobal.com/assets/images/logo/skroman.png",
     category: "Social Reel",
     tag: "Reels",
     ratio: "9:16",
@@ -64,6 +70,7 @@ export const WORKS: Work[] = [
     spec: true,
     published: { uploadDate: "2026-07-10T13:30:58+05:30", seconds: 41 },
     title: "Camel",
+    logo: "https://companieslogo.com/img/orig/KOKUYOCMLN.NS_BIG-a8b32293.png?t=1731048476",
     category: "Spec Ad Film",
     tag: "Film",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/hf_20260303_194843_2dc8f410-cfc2-417f-9dbd-b15e9bdd28c6.png?updatedAt=1784389455208",
@@ -75,6 +82,7 @@ export const WORKS: Work[] = [
     slug: "tata-sampann",
     published: { uploadDate: "2026-07-18T11:28:54+05:30", seconds: 4 },
     title: "Tata Sampann",
+    logo: "https://www.tataconsumer.com/brands/foods/tata-sampann/cfa-details/images/tata%20sampan%20logo%20png.png",
     category: "Ad Film",
     tag: "Film",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Tata%20Cover%20for%20web.png?updatedAt=1783526676609",
@@ -90,6 +98,7 @@ export const WORKS: Work[] = [
     slug: "redbus",
     published: { uploadDate: "2026-07-08T12:07:41+05:30", seconds: 20 },
     title: "RedBus",
+    logo: "data:image/png;base64,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",
     category: "AI VFX",
     tag: "Film",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/For%20Album/Album%20Covers/redbuss.png?updatedAt=1784389746357",
@@ -104,6 +113,7 @@ export const WORKS: Work[] = [
   {
     id: "work-skroman",
     title: "Skroman Automation",
+    logo: "https://www.skromanglobal.com/assets/images/logo/skroman.png",
     category: "Social Reel",
     tag: "Instagram",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/For-Website-Synkyn/skorman_web.png",
@@ -118,6 +128,7 @@ export const WORKS_ROW: Work[] = [
     slug: "tata-sampann-haldi",
     published: { uploadDate: "2026-10-13T08:37:17+05:30", seconds: 20 },
     title: "Tata Sampann Haldi",
+    logo: "https://www.tataconsumer.com/brands/foods/tata-sampann/cfa-details/images/tata%20sampan%20logo%20png.png",
     category: "Ad Film",
     tag: "Film",
     ratio: "16:9",
@@ -129,14 +140,17 @@ export const WORKS_ROW: Work[] = [
     ],
   },
   {
-    id: "work-row-3",
+    id: "work-the-reserve-club",
+    slug: "the-reserve-club",
+    published: { uploadDate: "2026-10-13T12:56:43+05:30", seconds: 62 },
     title: "The Reserve Club",
+    logo: "https://www.thereserveclub.in/assets/images/logo/trc-logo.webp",
     category: "Ad Film",
     tag: "Film",
     ratio: "16:9",
     thumbnail: "https://ik.imagekit.io/mkzeqs9lt/13-10-26/2.png?updatedAt=1791894484002",
     description: "<strong>The Reserve Club</strong><br><br><strong>Brand:</strong> The Reserve Club<br><strong>Product:</strong> Gym<br><strong>Line:</strong> Fitness, Redefined",
-    sources: [{ type: "vimeo", src: "https://vimeo.com/1235488798" }],
+    sources: [{ type: "vimeo", src: "https://player.vimeo.com/video/1235488798" }],
   },
 ];
 
