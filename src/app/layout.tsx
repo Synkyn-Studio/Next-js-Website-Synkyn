@@ -17,13 +17,14 @@ const GLOBAL_STYLESHEETS = ["/assets/main.css", "/assets/navbar.css", "/assets/f
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: SITE_NAME,
+  // ?v=2: icon files are cached for a year (next.config headers); bump to roll out a new icon.
   icons: {
     icon: [
-      { url: "/images/favicon-96x96.png", sizes: "96x96", type: "image/png" },
-      { url: "/images/favicon.svg", type: "image/svg+xml" },
+      { url: "/images/favicon-96x96.png?v=2", sizes: "96x96", type: "image/png" },
+      { url: "/images/favicon.svg?v=2", type: "image/svg+xml" },
     ],
-    shortcut: "/images/favicon.ico",
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: "/images/favicon.ico?v=2",
+    apple: [{ url: "/apple-touch-icon.png?v=2", sizes: "180x180" }],
   },
 };
 
