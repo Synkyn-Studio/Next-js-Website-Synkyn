@@ -1,4 +1,4 @@
-/* One founder card in the chroma grid (behaviour: behaviors/about/chroma.ts). */
+/* One founder card in the leadership grid (static; no hover effects). */
 
 import Image from "next/image";
 import { LinkedInGlyph } from "@/components/ui/icons";
@@ -9,10 +9,10 @@ export default function TeamCard({ member }: { member: TeamMember }) {
   return (
     <article
       className="chroma-card relative flex h-full min-h-0 w-full min-w-0 max-w-[400px] flex-col items-stretch overflow-visible rounded-[18px] border border-[#333] transition-colors duration-300 sm:rounded-[20px] [background:var(--card-gradient)] lg:max-w-none"
-      style={{ "--card-border": accent, "--card-gradient": `linear-gradient(145deg, ${accent}, #000)` }}
+      style={{ "--card-border": accent, "--card-gradient": `linear-gradient(180deg, ${accent} 0%, color-mix(in srgb, ${accent} 55%, #0a0a0a) 58%, #0a0a0a 100%)` }}
     >
       <div className="chroma-img-wrapper relative z-[1] box-border shrink-0 bg-transparent p-2 sm:p-[10px]">
-        <div className="relative h-[230px] w-full overflow-hidden rounded-[10px] sm:h-[270px] max-md:h-[300px] md:h-[200px] lg:h-[180px]">
+        <div className="chroma-photo relative h-[230px] w-full overflow-hidden rounded-[10px] sm:h-[270px] max-md:h-[300px] md:h-[200px] lg:h-[180px]">
           <Image
             alt={alt}
             className="absolute inset-0 h-full w-full object-cover object-top"

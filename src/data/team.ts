@@ -14,7 +14,7 @@ export const TEAM: TeamMember[] = [
   {
     name: "Dhiraj Kishore",
     role: "Co-founder",
-    photo: "/images/album/Dhiraj.png",
+    photo: "/images/album/Dhiraj.webp",
     alt: "Dhiraj Kishore - Co-founder of Synkyn Studios",
     accent: "#06b6d4",
     profiles: [
@@ -25,16 +25,16 @@ export const TEAM: TeamMember[] = [
   {
     name: "Deepen Ingale",
     role: "Co-founder",
-    photo: "/images/album/Deepen.png",
+    photo: "/images/album/Deepen.webp",
     alt: "Deepen Ingale - Co-founder of Synkyn Studios",
     accent: "#3b82f6",
     profiles: [{ kind: "linkedin", href: "https://www.linkedin.com/in/deepeningale/" }],
   },
   {
     name: "Pruthvij Prabhu",
-    role: "Gen AI artist",
-    photo: "/images/album/Pruthvij.png",
-    alt: "Pruthvij Prabhu - Gen AI Artist at Synkyn Studios",
+    role: "Senior GenAI Artist",
+    photo: "/images/album/Pruthvij.webp",
+    alt: "Pruthvij Prabhu - Senior GenAI Artist at Synkyn Studios",
     accent: "#a855f7",
     profiles: [{ kind: "linkedin", href: "https://www.linkedin.com/in/pruthvij-v-prabhu-b58bb6299/" }],
   },

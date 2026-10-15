@@ -169,3 +169,38 @@
         font-size: 9px !important;
     }
 }
+
+/* Team cards are static: no hover border change (the pointer light and the
+   grey spotlight veil were removed with behaviors/about/chroma.ts). */
+.chroma-grid .chroma-card,
+.chroma-grid .chroma-card:hover {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Card look: the accent colour lives only behind the portrait and fades to
+   black; the name/role/links panel is solid black, the same on every card.
+   The portrait's bottom edge dissolves into that black so there's no seam. */
+.chroma-grid .chroma-card {
+    background: #0a0a0a !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    overflow: hidden !important;
+}
+
+.chroma-grid .chroma-img-wrapper {
+    padding: 0 !important;
+}
+
+.chroma-grid .chroma-img-wrapper > .chroma-photo {
+    border-radius: 0 !important;
+    background: var(--card-gradient);
+}
+
+.chroma-grid .chroma-photo img {
+    -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+}
+
+.chroma-grid .chroma-info {
+    background: #0a0a0a;
+    padding-top: 14px !important;
+}
