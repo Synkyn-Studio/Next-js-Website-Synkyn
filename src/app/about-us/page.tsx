@@ -1,4 +1,3 @@
-import AboutEffects from "@/components/about/AboutEffects";
 import AboutHeroSection from "@/components/about/AboutHeroSection";
 import OurStorySection from "@/components/about/OurStorySection";
 import TeamSection from "@/components/about/TeamSection";
@@ -42,7 +41,6 @@ export default function AboutPage() {
           <Footer currentPath={ROUTES.about} />
         </main>
       </PageTransition>
-      <AboutEffects />
       <PageRuntime profile="standard" progressBar={false} />
     </>
   );
