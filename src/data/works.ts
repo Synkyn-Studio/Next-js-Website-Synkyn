@@ -152,6 +152,16 @@ export const WORKS_ROW: Work[] = [
     description: "<strong>The Reserve Club</strong><br><br><strong>Brand:</strong> The Reserve Club<br><strong>Product:</strong> Gym<br><strong>Line:</strong> Fitness, Redefined",
     sources: [{ type: "vimeo", src: "https://player.vimeo.com/video/1235488798" }],
   },
+  {
+    id: "work-418",
+    title: "#418 – The Last Warning",
+    category: "Film / Trailer",
+    tag: "YouTube",
+    ratio: "16:9",
+    thumbnail: "/images/works/418.avif",
+    description: "<strong>#418 – Official Trailer (Hindi)</strong><br><br><strong>Presented by:</strong> Prashanth Neel<br><strong>Written &amp; directed by:</strong> Kirtan Nadagouda<br><strong>Production:</strong> Mythri Movie Makers<br><strong>In cinemas:</strong> 23 October 2026",
+    sources: [{ type: "youtube", src: "https://youtu.be/SoTw56f1-OA" }],
+  },
 ];
 
 /** A work is only shown once it has a title and at least one real source (no empty placeholder cards). */
