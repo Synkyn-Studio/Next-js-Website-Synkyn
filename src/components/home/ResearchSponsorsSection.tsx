@@ -1,3 +1,5 @@
+import SponsorEffects from "@/components/home/SponsorEffects";
+
 /** `file`: number of a logo in the Logos folder, or a full ImageKit URL. */
 type Logo = { name: string; file: number | string; label: string };
 
@@ -30,11 +32,11 @@ function LogoCarousel({ logos, repeat, direction, ariaLabel }: { logos: Logo[]; 
   // The track is the primary set followed by an identical copy, so a -50% shift loops seamlessly.
   const primary = Array.from({ length: repeat }, () => logos).flat();
   return (
-    <div className={`logo-carousel-row logo-carousel-row--${direction} mx-auto w-full min-w-0`} role="region" aria-label={ariaLabel}>
+    <div className={`logo-carousel-row logo-carousel-row--${direction} mx-auto w-full min-w-0`} data-sp-in="" role="region" aria-label={ariaLabel}>
       <div aria-hidden="true" className="logo-carousel-fade logo-carousel-fade--left" />
       <div aria-hidden="true" className="logo-carousel-fade logo-carousel-fade--right" />
       <div className="logo-carousel-track-wrap">
-        <div className="logo-carousel-track">
+        <div className="logo-carousel-track" data-set={logos.length}>
           {/*
             Each logo is announced once: the repeats that fill the track and the
             looping copy are decorative (hidden from assistive tech, not focusable).
@@ -61,36 +63,37 @@ export default function ResearchSponsorsSection() {
     <section className="py-12 sm:py-16 md:py-20 lg:py-24" id="research-sponsors" aria-labelledby="showcase-heading">
       <div className="main-container w-full min-w-0 max-w-full">
         {/* Section Header */}
-        <div className="showcase-header" data-delay="0.2" data-ns-animate="">
-          <div className="showcase-badge">
+        <div className="showcase-header">
+          <div className="showcase-badge" data-sp-in="">
             <span className="showcase-badge-dot" aria-hidden="true" />
             Trusted Collaborations
           </div>
-          <h2 id="showcase-heading" className="showcase-title">
+          <h2 id="showcase-heading" className="showcase-title" data-sp-in="">
             {"Trusted by "}
             <span className="showcase-title-gold">Visionary Brands</span>
             {" & Studios"}
           </h2>
-          <p className="showcase-subtitle">Collaborating with forward-thinking enterprises, iconic brands, and creative powerhouses worldwide.</p>
+          <p className="showcase-subtitle" data-sp-in="">Collaborating with forward-thinking enterprises, iconic brands, and creative powerhouses worldwide.</p>
         </div>
-        {/* Carousel rows are animated by sponsorShowcase (behaviors/home/sections.ts). */}
+        {/* Entrance and loop motion: SponsorEffects (behaviors/home/sections.ts). */}
         <div className="mx-auto flex w-full min-w-0 max-w-full flex-col items-center gap-6 sm:gap-8 md:gap-10">
           {/* Row 1: Brands */}
           <div className="w-full min-w-0">
-            <div className="showcase-category-label" data-delay="0.3" data-ns-animate="">
+            <div className="showcase-category-label" data-sp-in="">
               <span className="showcase-category-tag">Brands</span>
             </div>
-            <LogoCarousel logos={BRANDS} repeat={3} direction="left" ariaLabel="Partner Brands Carousel" />
+            <LogoCarousel logos={BRANDS} repeat={4} direction="left" ariaLabel="Partner Brands Carousel" />
           </div>
           {/* Row 2: Agencies & Production Houses */}
           <div className="w-full min-w-0">
-            <div className="showcase-category-label" data-delay="0.4" data-ns-animate="">
+            <div className="showcase-category-label" data-sp-in="">
               <span className="showcase-category-tag">{"Agencies & Production Houses"}</span>
             </div>
-            <LogoCarousel logos={AGENCIES} repeat={3} direction="right" ariaLabel="Agency Partners Carousel" />
+            <LogoCarousel logos={AGENCIES} repeat={4} direction="right" ariaLabel="Agency Partners Carousel" />
           </div>
         </div>
       </div>
+      <SponsorEffects />
     </section>
   );
 }

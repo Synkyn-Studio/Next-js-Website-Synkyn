@@ -390,7 +390,7 @@ export function pauseOffscreenDecor(scope: Scope) {
 /**
  * index.html — GSAP sponsor marquee. Takes the loop over from the CSS keyframes
  * (fallback before GSAP loads) at the same position, then adds a staggered
- * card entrance, flywheel-style hover/touch inertia, a scroll-velocity boost,
+ * flywheel-style hover/touch inertia, a scroll-velocity boost,
  * and pauses the loops while the section is off-screen.
  */
 export function sponsorShowcase(scope: Scope) {
@@ -410,29 +410,80 @@ export function sponsorShowcase(scope: Scope) {
     return duration ? (time % duration) / duration : 0;
   };
 
-  const loops = rows.flatMap((row) => {
+  /*
+    Never an empty stretch: each half of the track (the loop shifts by -50%)
+    must be wider than the visible row plus one full logo set, on any screen
+    or zoom level. Short tracks are topped up with decorative clones of the
+    set, added equally to both halves so the -50% loop stays seamless.
+  */
+  const fill = (row: HTMLElement, track: HTMLElement) => {
+    const set = Number(track.dataset.set) || 0;
+    const items = Array.from(track.children) as HTMLElement[];
+    if (!set || items.length < set * 2) return;
+    const sets = items.length / set;
+    const unit = track.scrollWidth / sets;
+    if (!unit) return;
+    const needed = Math.ceil((row.clientWidth + unit) / unit);
+    const extra = needed - sets / 2;
+    if (extra <= 0) return;
+    const half = items.length / 2;
+    const proto = items.slice(0, set).map((el) => {
+      const c = el.cloneNode(true) as HTMLElement;
+      c.setAttribute("aria-hidden", "true");
+      c.querySelector("img")?.setAttribute("alt", "");
+      return c;
+    });
+    const batch = () => {
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < extra; i++) proto.forEach((c) => frag.appendChild(c.cloneNode(true)));
+      return frag;
+    };
+    track.insertBefore(batch(), items[half]);
+    track.appendChild(batch());
+  };
+
+  /*
+    A calm, constant drift in pixels per second, whatever the track length
+    (the fill above makes tracks longer on wide screens; the pace stays put).
+  */
+  const PX_PER_SEC = { left: 26, right: 22 };
+  const loopDuration = (track: HTMLElement, reverse: boolean) =>
+    Math.max(20, track.scrollWidth / 2 / (reverse ? PX_PER_SEC.right : PX_PER_SEC.left));
+
+  // Read where the CSS loops are, then switch them off (.is-gsap) before GSAP
+  // touches the tracks, so it doesn't adopt a keyframe offset as its own x.
+  const starts = rows.map((row) => {
     const track = row.querySelector<HTMLElement>(".logo-carousel-track");
-    if (!track) return [];
-    const reverse = row.classList.contains("logo-carousel-row--right");
-    const progress = cssProgress(track);
-    const tween = gsap.fromTo(track, { xPercent: reverse ? -50 : 0 }, { xPercent: reverse ? 0 : -50, duration: reverse ? 52 : 42, ease: "none", repeat: -1 });
-    tween.progress(progress);
-    return [{ row, tween, speed: { value: 1 } }];
+    return track ? cssProgress(track) : 0;
   });
   section.classList.add("is-gsap");
   scope.add(() => section.classList.remove("is-gsap"));
 
+  const loops = rows.flatMap((row, i) => {
+    const track = row.querySelector<HTMLElement>(".logo-carousel-track");
+    if (!track) return [];
+    // Every logo decoded up front: off-screen copies must not show up blank.
+    track.querySelectorAll("img").forEach((img) => { img.loading = "eager"; });
+    fill(row, track);
+    const reverse = row.classList.contains("logo-carousel-row--right");
+    const progress = starts[i];
+    gsap.set(track, { x: 0, xPercent: 0 });
+    const tween = gsap.fromTo(track, { xPercent: reverse ? -50 : 0 }, { xPercent: reverse ? 0 : -50, duration: loopDuration(track, reverse), ease: "none", repeat: -1 });
+    tween.progress(progress);
+    return [{ row, track, reverse, tween, speed: { value: 1 } }];
+  });
+
   /*
-    Hover / touch / focus coasts a row to a stop and back, like a flywheel.
-    Stopping: "sine.out" on the speed responds the instant the cursor lands and
-    lands softly at zero (no end jolt); the row drifts only ~30px while braking.
-    Resuming: "sine.inOut" over a longer span so it gathers speed gradually.
+    Hover / touch / focus on any logo row glides it to a stop and back.
+    Stopping: "power2.out" over 1.6s eases off the moment the cursor lands
+    and settles softly at zero (the row drifts only ~20px while braking).
+    Resuming: "sine.inOut" over 2.4s so it gathers speed gradually.
     `overwrite` continues from the current speed, so quick in/out never snaps.
   */
   loops.forEach(({ row, speed }) => {
     const ease = (value: number) => gsap.to(speed, value
-      ? { value, duration: 1.8, ease: "sine.inOut", overwrite: true }
-      : { value, duration: 1.3, ease: "sine.out", overwrite: true });
+      ? { value, duration: 2.4, ease: "sine.inOut", overwrite: true }
+      : { value, duration: 1.6, ease: "power2.out", overwrite: true });
     scope.on(row, "mouseenter", () => ease(0));
     scope.on(row, "mouseleave", () => ease(1));
     scope.on(row, "focusin", () => ease(0));
@@ -442,7 +493,7 @@ export function sponsorShowcase(scope: Scope) {
     scope.on(row, "touchcancel", () => ease(1), { passive: true });
   });
 
-  // Scrolling past the section briefly speeds the logos up.
+  // Scrolling past the section gives the logos a gentle nudge (at most +60%).
   const boost = { value: 1 };
   const tick = () => loops.forEach(({ tween, speed }) => tween.timeScale(speed.value * boost.value));
   gsap.ticker.add(tick);
@@ -454,39 +505,59 @@ export function sponsorShowcase(scope: Scope) {
     end: "bottom top",
     onToggle: (self: { isActive: boolean }) => setPlaying(self.isActive),
     onUpdate: (self: { getVelocity(): number }) => {
-      const v = Math.min(Math.abs(self.getVelocity()) / 900, 3);
+      const v = Math.min(Math.abs(self.getVelocity()) / 4000, 0.6);
       if (v < 0.05) return;
       gsap.to(boost, {
-        value: 1 + v, duration: 0.25, ease: "power2.out", overwrite: true,
-        onComplete: () => { gsap.to(boost, { value: 1, duration: 1.4, ease: "power3.out", overwrite: true }); },
+        value: 1 + v, duration: 0.6, ease: "sine.out", overwrite: true,
+        onComplete: () => { gsap.to(boost, { value: 1, duration: 1.8, ease: "sine.inOut", overwrite: true }); },
       });
     },
   });
   if (!visibility.isActive) setPlaying(false);
 
-  // Entrance — skipped if the section is already on screen (e.g. reload mid-page).
-  if (section.getBoundingClientRect().top < window.innerHeight * 0.85) return;
-  const imagesReady = (root: Element, cap: number) => Promise.race([
-    Promise.all(Array.from(root.querySelectorAll("img")).map((img) => img.decode().catch(() => undefined))),
-    new Promise((resolve) => { scope.timeout(resolve, cap); }),
-  ]);
-  rows.forEach((row) => {
-    const cards = Array.from(row.querySelectorAll<HTMLElement>(".logo-carousel-item"));
-    gsap.set(cards, { autoAlpha: 0, y: 34, scale: 0.82 });
-    ScrollTrigger.create({
-      trigger: row,
-      start: "top 88%",
-      once: true,
-      onEnter: () => scope.then(imagesReady(row, 700), () => {
-        // Sweep left-to-right across whatever is visible, wherever the loop is.
-        const box = row.getBoundingClientRect();
-        const at = (el: HTMLElement) => Math.max(0, Math.min(1, (el.getBoundingClientRect().left - box.left) / box.width));
-        gsap.to(cards, {
-          autoAlpha: 1, y: 0, scale: 1, duration: 1.1, ease: "expo.out",
-          delay: (_: number, el: HTMLElement) => at(el) * 0.6,
-          clearProps: "transform,opacity,visibility",
-        });
-      }),
-    });
+  // Wider window or zoom-out later: top the tracks up again (xPercent keeps the loop position).
+  let resizeTimer = 0;
+  scope.on(window, "resize", () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => loops.forEach(({ row, track, reverse, tween }) => {
+      fill(row, track);
+      tween.duration(loopDuration(track, reverse));
+    }), 200);
   });
+  scope.add(() => window.clearTimeout(resizeTimer));
+}
+
+/**
+ * Entrance for the "Trusted Collaborations" section: header, labels and the
+ * two logo rows rise and fade in as they reach the viewport. Only opacity and
+ * transform change (one composited layer per block, no blur filter, no
+ * per-logo tweens), so it costs nothing while the page scrolls. The CSS lives
+ * in logo-showcase.css under `.sp-armed`; without this script, or when the
+ * section is already on screen, nothing is ever hidden.
+ */
+export function sponsorReveal(scope: Scope) {
+  const section = document.getElementById("research-sponsors");
+  if (!section || !("IntersectionObserver" in window)) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (section.getBoundingClientRect().top < window.innerHeight * 0.9) return;
+  const items = Array.from(section.querySelectorAll<HTMLElement>("[data-sp-in]"));
+  if (!items.length) return;
+  section.classList.add("sp-armed");
+  scope.add(() => {
+    section.classList.remove("sp-armed");
+    items.forEach((el) => { el.classList.remove("is-in"); el.style.transitionDelay = ""; });
+  });
+  const io = scope.observe(new IntersectionObserver((entries) => {
+    // Blocks that arrive together cascade 90ms apart, in page order.
+    entries
+      .filter((e) => e.isIntersecting)
+      .map((e) => e.target as HTMLElement)
+      .sort((a, b) => items.indexOf(a) - items.indexOf(b))
+      .forEach((el, i) => {
+        el.style.transitionDelay = `${i * 90}ms`;
+        el.classList.add("is-in");
+        io.unobserve(el);
+      });
+  }, { rootMargin: "0px 0px -12% 0px" }));
+  items.forEach((el) => io.observe(el));
 }
