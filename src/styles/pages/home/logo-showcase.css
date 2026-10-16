@@ -203,11 +203,18 @@
 
 /* Seamless loop keyframes — the fallback until sponsorShowcase (GSAP) takes over and sets .is-gsap */
 #research-sponsors:not(.is-gsap) .logo-carousel-row--left .logo-carousel-track {
-    animation: synkyn-carousel-left 42s linear infinite !important;
+    animation: synkyn-carousel-left 110s linear infinite !important;
 }
 
 #research-sponsors:not(.is-gsap) .logo-carousel-row--right .logo-carousel-track {
-    animation: synkyn-carousel-right 52s linear infinite !important;
+    animation: synkyn-carousel-right 130s linear infinite !important;
+}
+
+/* Once GSAP drives the loop, no CSS keyframes may run on the track: main.css
+   carries a 40s loop of its own that would override GSAP's transform (and
+   with it the pace and the hover braking). */
+#research-sponsors.is-gsap .logo-carousel-track {
+    animation: none !important;
 }
 
 @keyframes synkyn-carousel-left {
@@ -304,7 +311,6 @@
     transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
                 filter 0.55s cubic-bezier(0.16, 1, 0.3, 1),
                 opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    will-change: transform, filter;
     pointer-events: none;
 }
 
@@ -386,4 +392,39 @@
     #research-sponsors .logo-carousel-item-img {
         will-change: auto;
     }
+}
+
+/* ---------- Scroll-in entrance (armed by sponsorReveal) ----------
+   Opacity + transform only: each block is one composited layer, so the
+   entrance never repaints while the page scrolls. Rows drift in from the
+   side they travel towards, so the motion hands straight over to the loop. */
+#research-sponsors.sp-armed [data-sp-in] {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+#research-sponsors.sp-armed .logo-carousel-row--left[data-sp-in] {
+    transform: translate3d(48px, 0, 0);
+}
+
+#research-sponsors.sp-armed .logo-carousel-row--right[data-sp-in] {
+    transform: translate3d(-48px, 0, 0);
+}
+
+#research-sponsors.sp-armed .logo-carousel-row[data-sp-in] {
+    transition-duration: 1.1s, 1.4s;
+}
+
+#research-sponsors.sp-armed [data-sp-in].is-in {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+}
+
+/* The rows' sideways drift must never widen the page. */
+#research-sponsors {
+    overflow-x: clip;
 }
